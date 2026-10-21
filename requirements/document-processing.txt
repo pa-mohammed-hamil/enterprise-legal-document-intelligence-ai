@@ -1,0 +1,1585 @@
+
+# ============================================================
+# LEXORA AI — DOCUMENT PROCESSING PIPELINE
+# File: document-processing.txt
+# ============================================================
+
+PROJECT_NAME=Lexora AI
+MODULE_NAME=Enterprise Legal Document Processing
+MODULE_VERSION=1.0.0
+
+# ============================================================
+# 1. OBJECTIVE
+# ============================================================
+
+Build a secure, scalable, multi-tenant document processing
+system for legal documents.
+
+The pipeline must support:
+
+- Document upload and validation
+- File security scanning
+- File type detection
+- Text extraction
+- OCR for scanned documents
+- Layout and table extraction
+- Legal document classification
+- Clause identification and extraction
+- Named entity recognition
+- Contract metadata extraction
+- Obligation extraction
+- Legal risk analysis
+- Expiry and renewal intelligence
+- Document comparison
+- Semantic chunking
+- Embedding generation
+- Vector database indexing
+- BM25 keyword indexing
+- Hybrid retrieval
+- Reranking
+- Evidence-grounded legal question answering
+- Source citations
+- Multi-tenant access control
+- Audit logging
+- Background processing
+- Retry and failure recovery
+- AI evaluation and monitoring
+
+
+# ============================================================
+# 2. SUPPORTED DOCUMENT FORMATS
+# ============================================================
+
+SUPPORTED_FORMATS:
+
+PDF:
+  - .pdf
+  - Native text PDFs
+  - Scanned PDFs
+  - Mixed text/image PDFs
+  - Multi-page legal contracts
+
+WORD:
+  - .docx
+  - .doc
+
+TEXT:
+  - .txt
+  - .rtf
+  - .odt
+
+IMAGES:
+  - .png
+  - .jpg
+  - .jpeg
+  - .tif
+  - .tiff
+
+REQUIRED_PROCESSING:
+
+PDF:
+  Native text extraction
+  OCR fallback
+  Page detection
+  Table extraction
+  Layout preservation
+
+DOCX:
+  Paragraph extraction
+  Heading detection
+  Table extraction
+  Header/footer extraction
+
+DOC:
+  Safe conversion to supported internal format
+  Conversion timeout and resource limits
+
+TXT:
+  Encoding detection
+  Unicode normalization
+
+RTF:
+  Safe rich-text extraction
+
+ODT:
+  Paragraph and table extraction
+
+IMAGES:
+  OCR
+  Image preprocessing
+  Layout detection
+  Confidence estimation
+
+
+# ============================================================
+# 3. SYSTEM ARCHITECTURE
+# ============================================================
+
+CLIENT
+  |
+  v
+FASTAPI DOCUMENT API
+  |
+  v
+AUTHENTICATION + AUTHORIZATION
+  |
+  v
+FILE VALIDATION
+  |
+  v
+SECURITY SCANNING
+  |
+  v
+OBJECT STORAGE
+  |
+  v
+PROCESSING JOB QUEUE
+  |
+  v
+DOCUMENT PROCESSING WORKER
+  |
+  +-- File Type Detection
+  |
+  +-- Text Extraction
+  |
+  +-- OCR
+  |
+  +-- Layout Analysis
+  |
+  +-- Text Normalization
+  |
+  +-- Document Classification
+  |
+  +-- Legal Entity Extraction
+  |
+  +-- Clause Extraction
+  |
+  +-- Obligation Extraction
+  |
+  +-- Risk Analysis
+  |
+  +-- Expiry/Renewal Extraction
+  |
+  +-- Semantic Chunking
+  |
+  +-- Embedding Generation
+  |
+  +-- Vector Indexing
+  |
+  +-- BM25 Indexing
+  |
+  v
+POSTGRESQL + VECTOR DATABASE
+  |
+  v
+LEGAL SEARCH + RAG + AI AGENTS
+
+
+# ============================================================
+# 4. RECOMMENDED BACKEND FILE STRUCTURE
+# ============================================================
+
+backend/
+  app/
+    api/
+      routes/
+        documents.py
+        document_processing.py
+
+    services/
+      document_service.py
+      document_processing_service.py
+      document_validation_service.py
+      document_storage_service.py
+      document_security_service.py
+
+    document_processing/
+      __init__.py
+      pipeline.py
+      orchestrator.py
+      processor.py
+
+      ingestion/
+        file_detector.py
+        file_validator.py
+        file_scanner.py
+        upload_handler.py
+
+      parsers/
+        pdf_parser.py
+        docx_parser.py
+        doc_parser.py
+        txt_parser.py
+        rtf_parser.py
+        odt_parser.py
+        image_parser.py
+
+      ocr/
+        ocr_engine.py
+        image_preprocessing.py
+        layout_analysis.py
+        table_extraction.py
+        confidence_scoring.py
+
+      extraction/
+        metadata_extractor.py
+        clause_extractor.py
+        entity_extractor.py
+        obligation_extractor.py
+        date_extractor.py
+        party_extractor.py
+        signature_extractor.py
+
+      classification/
+        document_classifier.py
+        clause_classifier.py
+
+      analysis/
+        legal_risk_analyzer.py
+        expiry_analyzer.py
+        renewal_analyzer.py
+        contract_comparison.py
+
+      rag/
+        chunking.py
+        embeddings.py
+        bm25_indexer.py
+        vector_indexer.py
+        hybrid_retrieval.py
+        reranker.py
+        citations.py
+
+      security/
+        pii_detection.py
+        prompt_injection_detection.py
+        access_control.py
+
+      evaluation/
+        extraction_evaluation.py
+        ocr_evaluation.py
+        classification_evaluation.py
+        retrieval_evaluation.py
+        citation_evaluation.py
+
+    models/
+      document.py
+      document_chunk.py
+      document_version.py
+      processing_job.py
+
+    schemas/
+      document.py
+      document_processing.py
+
+    workers/
+      document_worker.py
+
+    repositories/
+      document_repository.py
+      processing_job_repository.py
+
+    core/
+      config.py
+      logging.py
+      security.py
+
+tests/
+  unit/
+    test_document_parser.py
+    test_document_processing.py
+    test_ocr.py
+    test_clause_extraction.py
+    test_document_classifier.py
+    test_chunking.py
+    test_embeddings.py
+
+  integration/
+    test_document_pipeline.py
+    test_document_storage.py
+    test_document_search.py
+    test_tenant_isolation.py
+
+  security/
+    test_file_validation.py
+    test_malware_scanning.py
+    test_pii.py
+    test_prompt_injection.py
+
+
+# ============================================================
+# 5. DOCUMENT UPLOAD
+# ============================================================
+
+ENDPOINT:
+  POST /api/v1/documents/upload
+
+AUTHENTICATION:
+  Required
+
+AUTHORIZATION:
+  documents:create
+
+CONTENT_TYPE:
+  multipart/form-data
+
+REQUEST_FIELDS:
+  file
+  document_type
+  title
+  description
+  tags
+  department
+  classification
+  workspace_id
+
+SERVER_GENERATED_FIELDS:
+  document_id
+  tenant_id
+  owner_id
+  storage_key
+  created_at
+  processing_job_id
+
+UPLOAD_WORKFLOW:
+
+1. Authenticate user.
+2. Resolve tenant from trusted authentication context.
+3. Validate workspace access.
+4. Validate file size.
+5. Validate extension.
+6. Validate detected file type.
+7. Validate file structure.
+8. Scan for malware.
+9. Calculate SHA-256 checksum.
+10. Generate document ID.
+11. Store original in private object storage.
+12. Create document database record.
+13. Create processing job.
+14. Enqueue background processing.
+15. Return document and job identifiers.
+
+RESPONSE_STATUS:
+  202 Accepted
+
+EXAMPLE_RESPONSE:
+
+{
+  "document_id": "doc_12345",
+  "processing_job_id": "job_12345",
+  "status": "queued",
+  "message": "Document accepted for processing"
+}
+
+
+# ============================================================
+# 6. FILE VALIDATION
+# ============================================================
+
+MAX_FILE_SIZE_MB=20
+
+VALIDATION_RULES:
+
+- Reject empty files.
+- Reject unsupported extensions.
+- Reject extension/MIME mismatches.
+- Reject malformed documents.
+- Reject encrypted documents without approved handling.
+- Reject excessive decompression ratios.
+- Reject unsafe embedded content.
+- Reject path traversal attempts.
+- Reject files exceeding configured limits.
+- Reject unsupported nested archives.
+
+FILE_TYPE_DETECTION:
+
+Use content-based detection.
+
+Do not trust:
+  - Filename extension alone
+  - Browser Content-Type alone
+  - Client-provided metadata alone
+
+SECURITY:
+
+- Normalize filenames.
+- Generate storage keys server-side.
+- Store files outside public web roots.
+- Prevent executable uploads.
+- Scan before parsing.
+- Apply parser resource limits.
+- Use isolated conversion processes.
+- Avoid executing embedded scripts or macros.
+
+
+# ============================================================
+# 7. DOCUMENT PROCESSING STATES
+# ============================================================
+
+PROCESSING_STATES:
+
+  uploaded
+  validated
+  scanning
+  queued
+  processing
+  extracting
+  analyzing
+  indexing
+  completed
+  failed
+  quarantined
+  cancelled
+
+NORMAL_FLOW:
+
+uploaded
+  -> validated
+  -> scanning
+  -> queued
+  -> processing
+  -> extracting
+  -> analyzing
+  -> indexing
+  -> completed
+
+FAILURE_FLOW:
+
+Any processing stage
+  -> failed
+
+SECURITY_FLOW:
+
+scanning
+  -> quarantined
+
+JOB_FIELDS:
+
+  job_id
+  document_id
+  tenant_id
+  status
+  current_stage
+  progress_percent
+  attempt_count
+  max_attempts
+  started_at
+  completed_at
+  error_code
+  error_message
+
+PROGRESS_EXAMPLE:
+
+{
+  "document_id": "doc_12345",
+  "status": "processing",
+  "current_stage": "clause_extraction",
+  "progress_percent": 65
+}
+
+
+# ============================================================
+# 8. DOCUMENT TEXT EXTRACTION
+# ============================================================
+
+INPUT:
+  Validated document
+
+OUTPUT:
+  Normalized document content
+
+EXTRACTION_FIELDS:
+
+  document_id
+  tenant_id
+  filename
+  file_type
+  page_count
+  pages
+  full_text
+  tables
+  headings
+  extraction_method
+  extraction_confidence
+
+PAGE_STRUCTURE:
+
+{
+  "page_number": 1,
+  "text": "Agreement text...",
+  "tables": [],
+  "headings": [],
+  "extraction_method": "native_pdf",
+  "confidence": 0.99
+}
+
+EXTRACTION_RULES:
+
+- Preserve page references.
+- Preserve paragraph order.
+- Preserve clause numbering.
+- Preserve heading hierarchy.
+- Preserve table cell relationships.
+- Preserve source offsets where possible.
+- Do not silently invent missing text.
+- Record extraction errors.
+- Preserve original source file.
+
+
+# ============================================================
+# 9. OCR PIPELINE
+# ============================================================
+
+OCR_ENGINES:
+  Tesseract
+  PaddleOCR
+  EasyOCR
+  Cloud OCR providers where configured
+
+OCR_TRIGGER:
+
+- Scanned PDF
+- Image-only PDF page
+- PNG/JPG/TIFF upload
+- Native extraction confidence below threshold
+
+IMAGE_PREPROCESSING:
+
+1. Orientation correction
+2. Deskewing
+3. Noise reduction
+4. Contrast enhancement
+5. Resolution normalization
+6. Region detection
+7. OCR execution
+8. Text confidence calculation
+
+OCR_OUTPUT:
+
+{
+  "page": 1,
+  "text": "This Agreement is entered into...",
+  "confidence": 0.94,
+  "blocks": [
+    {
+      "text": "Master Service Agreement",
+      "bbox": [20, 30, 400, 80],
+      "confidence": 0.98
+    }
+  ]
+}
+
+OCR_REQUIREMENTS:
+
+- Preserve bounding boxes.
+- Preserve page references.
+- Track confidence per region.
+- Mark low-confidence text.
+- Support human verification.
+- Avoid treating uncertain OCR as verified evidence.
+
+
+# ============================================================
+# 10. DOCUMENT CLASSIFICATION
+# ============================================================
+
+SUPPORTED_DOCUMENT_CLASSES:
+
+- Master Service Agreement
+- Non-Disclosure Agreement
+- Employment Agreement
+- Lease Agreement
+- Vendor Agreement
+- Service Level Agreement
+- Purchase Agreement
+- Licensing Agreement
+- Partnership Agreement
+- Insurance Agreement
+- Privacy Policy
+- Terms and Conditions
+- Legal Notice
+- Amendment
+- Other
+
+CLASSIFIER_OUTPUT:
+
+{
+  "document_type": "Master Service Agreement",
+  "confidence": 0.96,
+  "model_version": "legal_classifier_v1"
+}
+
+CLASSIFICATION_REQUIREMENTS:
+
+- Return confidence score.
+- Support configurable taxonomy.
+- Support human corrections.
+- Record model version.
+- Mark uncertain predictions for review.
+
+
+# ============================================================
+# 11. LEGAL CLAUSE EXTRACTION
+# ============================================================
+
+CLAUSE_TYPES:
+
+- Confidentiality
+- Indemnification
+- Limitation of Liability
+- Termination
+- Governing Law
+- Dispute Resolution
+- Payment Terms
+- Intellectual Property
+- Data Protection
+- Force Majeure
+- Non-Compete
+- Non-Solicitation
+- Assignment
+- Warranty
+- Renewal
+- Notice
+- Insurance
+- Audit Rights
+
+CLAUSE_OUTPUT:
+
+{
+  "clause_id": "clause_123",
+  "document_id": "doc_12345",
+  "clause_type": "Termination",
+  "clause_number": "12.1",
+  "text": "Either party may terminate...",
+  "page": 8,
+  "confidence": 0.95
+}
+
+REQUIREMENTS:
+
+- Preserve exact extracted text.
+- Preserve clause numbering.
+- Preserve page and source offsets.
+- Support nested clauses.
+- Support multiple clauses of the same type.
+- Flag ambiguous classification.
+- Do not manufacture absent clauses.
+
+
+# ============================================================
+# 12. NAMED ENTITY EXTRACTION
+# ============================================================
+
+LEGAL_ENTITIES:
+
+- Contracting Parties
+- Organizations
+- Individuals
+- Effective Dates
+- Expiry Dates
+- Renewal Dates
+- Notice Deadlines
+- Monetary Amounts
+- Currencies
+- Jurisdictions
+- Addresses
+- Legal References
+- Governing Laws
+
+ENTITY_OUTPUT:
+
+{
+  "entity_type": "ORGANIZATION",
+  "value": "Example Corporation",
+  "page": 1,
+  "confidence": 0.97,
+  "source_text": "Example Corporation"
+}
+
+REQUIREMENTS:
+
+- Link entities to source evidence.
+- Normalize dates carefully.
+- Preserve original text.
+- Support multiple entities.
+- Record uncertainty.
+- Never infer missing parties without evidence.
+
+
+# ============================================================
+# 13. OBLIGATION EXTRACTION
+# ============================================================
+
+OBLIGATION_FIELDS:
+
+  obligation_id
+  document_id
+  responsible_party
+  obligation_type
+  description
+  due_date
+  recurrence
+  trigger_condition
+  source_clause_id
+  page
+  confidence
+
+OBLIGATION_TYPES:
+
+- Payment
+- Delivery
+- Reporting
+- Compliance
+- Confidentiality
+- Insurance
+- Renewal
+- Notice
+- Audit
+- Maintenance
+- Performance
+
+EXAMPLE:
+
+{
+  "obligation_type": "Payment",
+  "responsible_party": "Customer",
+  "description": "Pay invoice within 30 days",
+  "due_date": null,
+  "source_clause_id": "clause_12",
+  "confidence": 0.94
+}
+
+
+# ============================================================
+# 14. LEGAL RISK ANALYSIS
+# ============================================================
+
+RISK_CATEGORIES:
+
+- Liability
+- Indemnification
+- Termination
+- Confidentiality
+- Payment
+- Compliance
+- Intellectual Property
+- Data Protection
+- Dispute Resolution
+
+RISK_SEVERITIES:
+
+  low
+  medium
+  high
+  critical
+
+RISK_OUTPUT:
+
+{
+  "clause_id": "clause_123",
+  "risk_category": "liability",
+  "severity": "high",
+  "risk_score": 82,
+  "risk_factors": [
+    "Broad liability obligation"
+  ],
+  "recommendations": [
+    "Request legal review of liability cap"
+  ],
+  "evidence": [
+    {
+      "page": 8,
+      "clause_id": "clause_123"
+    }
+  ]
+}
+
+RISK_REQUIREMENTS:
+
+- Use documented scoring rules.
+- Validate model outputs.
+- Link findings to source clauses.
+- Record model version.
+- Allow reviewer override.
+- Treat results as decision support.
+- Do not present AI output as legal advice.
+
+
+# ============================================================
+# 15. EXPIRY AND RENEWAL INTELLIGENCE
+# ============================================================
+
+EXTRACT:
+
+- Effective date
+- Expiration date
+- Renewal term
+- Automatic renewal
+- Notice period
+- Termination notice deadline
+- Renewal conditions
+
+NOTICE_DEADLINE_FORMULA:
+
+notice_deadline = expiry_date - notice_period_days
+
+ALERT_WINDOWS:
+
+  90 days
+  60 days
+  30 days
+  14 days
+  7 days
+  1 day
+
+ALERT_CHANNELS:
+
+  Email
+  In-app
+  Webhook
+  Push notifications
+
+REQUIREMENTS:
+
+- Handle leap years.
+- Handle date boundaries.
+- Support business-day rules when configured.
+- Support timezone-aware scheduling.
+- Prevent duplicate alerts.
+- Track notification delivery status.
+- Support user acknowledgment.
+- Preserve audit history.
+
+
+# ============================================================
+# 16. SEMANTIC CHUNKING
+# ============================================================
+
+CHUNKING_STRATEGIES:
+
+- Recursive text splitting
+- Semantic chunking
+- Heading-aware chunking
+- Clause-aware chunking
+- Parent-child chunking
+
+DEFAULT_CHUNK_SIZE=800
+DEFAULT_CHUNK_OVERLAP=120
+
+CHUNK_FIELDS:
+
+  chunk_id
+  document_id
+  tenant_id
+  text
+  page_start
+  page_end
+  clause_id
+  heading
+  parent_chunk_id
+  token_count
+  metadata
+
+CHUNKING_RULES:
+
+- Preserve legal clause boundaries.
+- Avoid splitting section headings from content.
+- Maintain citation offsets.
+- Preserve parent-child relationships.
+- Record source document version.
+- Prevent cross-tenant chunk mixing.
+
+
+# ============================================================
+# 17. EMBEDDING GENERATION
+# ============================================================
+
+EMBEDDING_PROVIDERS:
+
+- OpenAI
+- Azure OpenAI
+- Sentence Transformers
+- BGE
+- E5
+- Configured local embedding models
+
+EMBEDDING_WORKFLOW:
+
+1. Read validated chunks.
+2. Select configured embedding model.
+3. Batch chunks.
+4. Generate embeddings.
+5. Validate vector dimensions.
+6. Validate finite vector values.
+7. Attach document metadata.
+8. Write to tenant-scoped vector index.
+
+EMBEDDING_METADATA:
+
+  model_name
+  model_version
+  vector_dimension
+  generated_at
+  document_version
+  chunk_id
+  tenant_id
+
+
+# ============================================================
+# 18. VECTOR INDEXING
+# ============================================================
+
+VECTOR_DATABASE_OPTIONS:
+
+- Qdrant
+- Pinecone
+- Weaviate
+- Milvus
+- FAISS
+- Chroma
+
+INDEX_FIELDS:
+
+  vector_id
+  tenant_id
+  document_id
+  document_version
+  chunk_id
+  embedding
+  text
+  page
+  clause_id
+  metadata
+
+INDEXING_REQUIREMENTS:
+
+- Tenant-aware namespaces or filters.
+- Document-level ACL filtering.
+- Version-aware indexing.
+- Idempotent upserts.
+- Safe reindexing.
+- Index deletion on retention/deletion events.
+- Index health monitoring.
+
+
+# ============================================================
+# 19. BM25 KEYWORD INDEXING
+# ============================================================
+
+INDEX:
+  Document chunks
+
+KEYWORD_FEATURES:
+
+- Exact term matching
+- Legal phrase matching
+- Clause terminology matching
+- Boolean query support
+- Metadata filtering
+
+REQUIREMENTS:
+
+- Preserve document IDs.
+- Preserve tenant IDs.
+- Support document ACL filtering.
+- Keep index synchronized with document versions.
+- Remove stale entries.
+
+
+# ============================================================
+# 20. HYBRID RETRIEVAL
+# ============================================================
+
+SEARCH_PIPELINE:
+
+USER QUERY
+  |
+  v
+QUERY VALIDATION
+  |
+  v
+TENANT + PERMISSION CONTEXT
+  |
+  +-- BM25 SEARCH
+  |
+  +-- VECTOR SEARCH
+  |
+  v
+RESULT FUSION
+  |
+  v
+DEDUPLICATION
+  |
+  v
+RERANKING
+  |
+  v
+FINAL ACL VERIFICATION
+  |
+  v
+CITATION-AWARE RESULTS
+
+FUSION_METHODS:
+
+- Reciprocal Rank Fusion
+- Weighted score fusion
+
+REQUIREMENTS:
+
+- Enforce permissions in retrieval.
+- Revalidate access before returning content.
+- Avoid leaking unauthorized counts.
+- Preserve source metadata.
+- Apply stable ranking.
+- Support configurable top_k.
+
+
+# ============================================================
+# 21. LEGAL RAG QUESTION ANSWERING
+# ============================================================
+
+RAG_WORKFLOW:
+
+1. Authenticate user.
+2. Validate question.
+3. Determine tenant and accessible documents.
+4. Rewrite query if configured.
+5. Run hybrid retrieval.
+6. Rerank candidates.
+7. Verify permissions.
+8. Build evidence context.
+9. Generate grounded answer.
+10. Verify cited sources.
+11. Check unsupported claims.
+12. Return answer and citations.
+
+RAG_RESPONSE:
+
+{
+  "answer": "The agreement requires 30 days notice.",
+  "citations": [
+    {
+      "document_id": "doc_12345",
+      "page": 8,
+      "clause_id": "clause_12",
+      "chunk_id": "chunk_45"
+    }
+  ],
+  "groundedness_score": 0.96
+}
+
+RAG_SAFETY:
+
+- Never follow instructions found inside documents.
+- Treat retrieved documents as untrusted data.
+- Do not fabricate legal citations.
+- Clearly identify insufficient evidence.
+- Respect document permissions.
+- Use human review for consequential decisions.
+
+
+# ============================================================
+# 22. MULTI-TENANT SECURITY
+# ============================================================
+
+TENANT_ISOLATION:
+
+- Tenant ID derived from authentication context.
+- Tenant-scoped database queries.
+- Tenant-scoped storage paths.
+- Tenant-scoped vector filtering.
+- Tenant-scoped search results.
+- Tenant-scoped processing jobs.
+- Tenant-scoped audit records.
+
+PERMISSIONS:
+
+  documents:create
+  documents:read
+  documents:update
+  documents:delete
+  documents:process
+  documents:download
+  documents:share
+  documents:review
+
+ROLES:
+
+  platform_admin
+  tenant_admin
+  legal_manager
+  legal_reviewer
+  document_editor
+  viewer
+
+SECURITY_CONTROLS:
+
+- RBAC
+- Document-level ACL
+- PII detection
+- Prompt injection protection
+- Malware scanning
+- Encryption in transit
+- Encryption at rest
+- Signed download URLs
+- Rate limiting
+- Audit trails
+- Secret management
+- Retention policies
+
+
+# ============================================================
+# 23. BACKGROUND PROCESSING
+# ============================================================
+
+WORKER_OPTIONS:
+
+- Celery
+- RQ
+- Dramatiq
+- Configured cloud queue workers
+
+BROKER_OPTIONS:
+
+- Redis
+- RabbitMQ
+- Managed cloud queue
+
+WORKER_REQUIREMENTS:
+
+- Idempotent job execution
+- Configurable retry limits
+- Exponential backoff
+- Dead-letter handling
+- Job cancellation
+- Progress updates
+- Worker health checks
+- Per-tenant quotas
+- Resource limits
+- Graceful shutdown
+
+RETRY_POLICY:
+
+MAX_ATTEMPTS=3
+INITIAL_RETRY_DELAY_SECONDS=5
+RETRY_BACKOFF_MULTIPLIER=2
+
+Do not automatically retry permanent failures such as:
+- Unsupported file format
+- Confirmed malware
+- Invalid permissions
+- Irrecoverably corrupted documents
+
+
+# ============================================================
+# 24. PROCESSING API ENDPOINTS
+# ============================================================
+
+POST /api/v1/documents/upload
+GET /api/v1/documents
+GET /api/v1/documents/{document_id}
+GET /api/v1/documents/{document_id}/status
+GET /api/v1/documents/{document_id}/processing
+POST /api/v1/documents/{document_id}/reprocess
+GET /api/v1/documents/{document_id}/text
+GET /api/v1/documents/{document_id}/clauses
+GET /api/v1/documents/{document_id}/entities
+GET /api/v1/documents/{document_id}/obligations
+GET /api/v1/documents/{document_id}/risks
+GET /api/v1/documents/{document_id}/versions
+GET /api/v1/documents/{document_id}/download
+DELETE /api/v1/documents/{document_id}
+
+POST /api/v1/search
+POST /api/v1/legal-rag/query
+
+GET /api/v1/processing/jobs/{job_id}
+POST /api/v1/processing/jobs/{job_id}/cancel
+
+Every endpoint must enforce authentication,
+tenant isolation, and resource authorization.
+
+
+# ============================================================
+# 25. DATABASE ENTITIES
+# ============================================================
+
+DOCUMENT:
+
+  id
+  tenant_id
+  owner_id
+  workspace_id
+  title
+  filename
+  content_type
+  file_size
+  checksum_sha256
+  storage_key
+  classification
+  processing_status
+  current_version
+  created_at
+  updated_at
+  deleted_at
+
+DOCUMENT_VERSION:
+
+  id
+  tenant_id
+  document_id
+  version_number
+  storage_key
+  checksum_sha256
+  created_by
+  created_at
+
+PROCESSING_JOB:
+
+  id
+  tenant_id
+  document_id
+  status
+  stage
+  progress_percent
+  attempt_count
+  error_code
+  created_at
+  started_at
+  completed_at
+
+DOCUMENT_CHUNK:
+
+  id
+  tenant_id
+  document_id
+  document_version
+  clause_id
+  page_start
+  page_end
+  text
+  embedding_reference
+  created_at
+
+LEGAL_CLAUSE:
+
+  id
+  tenant_id
+  document_id
+  clause_type
+  clause_number
+  text
+  page
+  confidence
+
+DOCUMENT_ENTITY:
+
+  id
+  tenant_id
+  document_id
+  entity_type
+  value
+  page
+  confidence
+
+LEGAL_OBLIGATION:
+
+  id
+  tenant_id
+  document_id
+  responsible_party
+  obligation_type
+  description
+  due_date
+  source_clause_id
+
+DOCUMENT_RISK:
+
+  id
+  tenant_id
+  document_id
+  clause_id
+  category
+  severity
+  score
+  recommendations
+
+AUDIT_EVENT:
+
+  id
+  tenant_id
+  user_id
+  document_id
+  action
+  outcome
+  created_at
+
+
+# ============================================================
+# 26. OBSERVABILITY
+# ============================================================
+
+METRICS:
+
+- Documents uploaded
+- Documents processed
+- Processing success rate
+- Processing failure rate
+- Average processing duration
+- OCR processing duration
+- Extraction confidence
+- Classification confidence
+- Clause extraction accuracy
+- Embedding latency
+- Vector indexing latency
+- Search latency
+- RAG response latency
+- LLM token usage
+- AI inference cost
+- Worker queue depth
+- Retry count
+- Security rejection count
+
+MONITORING:
+
+- Prometheus
+- Grafana
+- OpenTelemetry
+- Structured application logs
+- Distributed tracing
+
+LOGGING_RULES:
+
+- Include correlation ID.
+- Include tenant ID where authorized.
+- Include document ID.
+- Include processing stage.
+- Include error code.
+- Do not log full legal document text.
+- Do not log passwords or API keys.
+- Redact sensitive personal information.
+
+
+# ============================================================
+# 27. TESTING REQUIREMENTS
+# ============================================================
+
+UNIT_TESTS:
+
+- File type detection
+- File validation
+- PDF parsing
+- DOCX parsing
+- DOC parsing
+- OCR
+- Text normalization
+- Layout analysis
+- Clause extraction
+- Metadata extraction
+- Named entity extraction
+- Obligation extraction
+- Risk analysis
+- Date extraction
+- Expiry analysis
+- Chunking
+- Embedding validation
+- Citation mapping
+
+INTEGRATION_TESTS:
+
+- Upload to storage
+- Upload to processing queue
+- Worker processing
+- Database persistence
+- Vector indexing
+- BM25 indexing
+- Search retrieval
+- Legal RAG
+- Document reprocessing
+- Version updates
+- Index cleanup
+
+SECURITY_TESTS:
+
+- Cross-tenant access
+- Unauthorized download
+- Path traversal
+- Malicious upload
+- Oversized file
+- MIME mismatch
+- Prompt injection
+- PII leakage
+- Permission bypass
+- Signed URL expiration
+
+CONCURRENCY_TESTS:
+
+- Parallel uploads
+- Parallel document processing
+- Duplicate job submission
+- Concurrent version updates
+- Concurrent index writes
+- Worker retry races
+
+EVALUATION_METRICS:
+
+OCR:
+  Character Error Rate
+  Word Error Rate
+
+CLASSIFICATION:
+  Accuracy
+  Precision
+  Recall
+  Macro F1
+
+EXTRACTION:
+  Entity Precision
+  Entity Recall
+  Entity F1
+  Clause Boundary Accuracy
+
+RETRIEVAL:
+  Recall@K
+  Precision@K
+  MRR
+  NDCG
+
+RAG:
+  Faithfulness
+  Groundedness
+  Citation Accuracy
+  Answer Relevance
+  Hallucination Rate
+
+SECURITY:
+  Unauthorized Retrieval Rate
+  Tenant Isolation Violations
+  Prompt Injection Success Rate
+
+
+# ============================================================
+# 28. DEPLOYMENT
+# ============================================================
+
+SUPPORTED_ENVIRONMENTS:
+
+- Local development
+- Docker Compose
+- Kubernetes
+- AWS
+- Azure
+- Google Cloud
+- On-premise
+- Hybrid cloud
+- Air-gapped deployment
+
+INFRASTRUCTURE:
+
+- FastAPI API service
+- Background worker service
+- PostgreSQL database
+- Redis
+- Object storage
+- Vector database
+- Monitoring stack
+
+PRODUCTION_REQUIREMENTS:
+
+- Health checks
+- Readiness probes
+- Horizontal scaling
+- Database migrations
+- Backup and recovery
+- Secret management
+- Encryption
+- Access logging
+- Resource quotas
+- Disaster recovery
+- CI/CD
+- Automated security testing
+
+
+# ============================================================
+# 29. END-TO-END ACCEPTANCE CRITERIA
+# ============================================================
+
+ACCEPTANCE_01:
+  Authorized user uploads a supported document.
+
+ACCEPTANCE_02:
+  File validation and malware scanning complete.
+
+ACCEPTANCE_03:
+  Original file is securely stored.
+
+ACCEPTANCE_04:
+  Background processing job is created.
+
+ACCEPTANCE_05:
+  Text is extracted accurately where possible.
+
+ACCEPTANCE_06:
+  OCR runs for scanned pages.
+
+ACCEPTANCE_07:
+  Page references and clause numbering are retained.
+
+ACCEPTANCE_08:
+  Document classification result is stored.
+
+ACCEPTANCE_09:
+  Legal clauses and entities are extracted.
+
+ACCEPTANCE_10:
+  Contract obligations are extracted.
+
+ACCEPTANCE_11:
+  Legal risks include evidence references.
+
+ACCEPTANCE_12:
+  Expiry and renewal fields are extracted.
+
+ACCEPTANCE_13:
+  Chunks are generated with source metadata.
+
+ACCEPTANCE_14:
+  Embeddings are generated and validated.
+
+ACCEPTANCE_15:
+  Vector and BM25 indexes are updated.
+
+ACCEPTANCE_16:
+  Authorized users can search the document.
+
+ACCEPTANCE_17:
+  Unauthorized users cannot retrieve its content.
+
+ACCEPTANCE_18:
+  Legal RAG responses cite actual source passages.
+
+ACCEPTANCE_19:
+  Reprocessing is idempotent.
+
+ACCEPTANCE_20:
+  Processing errors are recoverable and observable.
+
+ACCEPTANCE_21:
+  Document versions remain traceable.
+
+ACCEPTANCE_22:
+  Cross-tenant isolation is enforced.
+
+ACCEPTANCE_23:
+  Audit records are generated for sensitive actions.
+
+ACCEPTANCE_24:
+  Low-confidence extraction is flagged for review.
+
+ACCEPTANCE_25:
+  No fabricated citations or unsupported legal findings
+  are presented as verified facts.
+
+
+# ============================================================
+# END OF DOCUMENT PROCESSING SPECIFICATION
+# ============================================================

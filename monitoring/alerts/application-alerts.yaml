@@ -1,0 +1,445 @@
+# =============================================================================
+# Enterprise Legal Document Intelligence AI
+# File: monitoring/prometheus/rules/application-alerts.yaml
+# =============================================================================
+
+groups:
+  # ===========================================================================
+  # Application Availability
+  # ===========================================================================
+  - name: legal_ai_application_availability
+    interval: 30s
+    rules:
+      - alert: LegalAIApplicationDown
+        expr: up{job="legal-ai-backend"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: backend
+          team: platform
+        annotations:
+          summary: "Legal AI backend is unavailable"
+          description: "Prometheus cannot scrape {{ $labels.instance }} for 2 minutes."
+          runbook_url: "https://example.com/runbooks/application-down"
+
+      - alert: LegalAIApplicationTargetsMissing
+        expr: absent(up{job="legal-ai-backend"})
+        for: 5m
+        labels:
+          severity: critical
+          service: backend
+          team: platform
+        annotations:
+          summary: "No Legal AI backend targets discovered"
+          description: "Prometheus has no targets for the legal-ai-backend job."
+
+  # ===========================================================================
+  # HTTP Errors
+  # ===========================================================================
+  - name: legal_ai_http_errors
+    interval: 30s
+    rules:
+      - alert: LegalAIHighHTTP5xxRate
+        expr: |
+          (
+            sum(rate(http_requests_total{
+              job="legal-ai-backend",
+              status=~"5.."
+            }[5m]))
+            /
+            clamp_min(
+              sum(rate(http_requests_total{
+                job="legal-ai-backend"
+              }[5m])),
+              0.001
+            )
+          ) > 0.05
+          and
+          sum(increase(http_requests_total{
+            job="legal-ai-backend"
+          }[5m])) >= 100
+        for: 5m
+        labels:
+          severity: critical
+          service: backend
+          team: platform
+        annotations:
+          summary: "High HTTP 5xx error rate"
+          description: "More than 5% of backend requests are returning 5xx errors."
+
+      - alert: LegalAIHighHTTP4xxRate
+        expr: |
+          (
+            sum(rate(http_requests_total{
+              job="legal-ai-backend",
+              status=~"4.."
+            }[10m]))
+            /
+            clamp_min(
+              sum(rate(http_requests_total{
+                job="legal-ai-backend"
+              }[10m])),
+              0.001
+            )
+          ) > 0.30
+          and
+          sum(increase(http_requests_total{
+            job="legal-ai-backend"
+          }[10m])) >= 100
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+          team: platform
+        annotations:
+          summary: "Elevated HTTP 4xx response rate"
+          description: "More than 30% of requests are returning 4xx responses."
+
+  # ===========================================================================
+  # Application Latency
+  # ===========================================================================
+  - name: legal_ai_application_latency
+    interval: 30s
+    rules:
+      - alert: LegalAIHighP95Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(http_request_duration_seconds_bucket{
+                job="legal-ai-backend"
+              }[5m])
+            )
+          ) > 2
+          and
+          sum(increase(http_requests_total{
+            job="legal-ai-backend"
+          }[5m])) >= 100
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+          team: platform
+        annotations:
+          summary: "Backend P95 latency exceeds 2 seconds"
+          description: "The backend has sustained elevated request latency."
+
+      - alert: LegalAIHighP99Latency
+        expr: |
+          histogram_quantile(
+            0.99,
+            sum by (le) (
+              rate(http_request_duration_seconds_bucket{
+                job="legal-ai-backend"
+              }[5m])
+            )
+          ) > 5
+          and
+          sum(increase(http_requests_total{
+            job="legal-ai-backend"
+          }[5m])) >= 100
+        for: 10m
+        labels:
+          severity: critical
+          service: backend
+          team: platform
+        annotations:
+          summary: "Backend P99 latency exceeds 5 seconds"
+          description: "The slowest 1% of requests are exceeding 5 seconds."
+
+  # ===========================================================================
+  # Document Processing
+  # ===========================================================================
+  - name: legal_ai_document_processing
+    interval: 30s
+    rules:
+      - alert: LegalAIDocumentProcessingFailures
+        expr: |
+          sum(increase(legal_ai_document_processing_total{
+            status="failed"
+          }[15m])) >= 5
+        for: 5m
+        labels:
+          severity: warning
+          service: document-processing
+          team: ai-platform
+        annotations:
+          summary: "Document processing failures detected"
+          description: "At least 5 document processing failures occurred in 15 minutes."
+
+      - alert: LegalAIDocumentProcessingBacklog
+        expr: |
+          sum(legal_ai_document_processing_queue_depth) > 100
+        for: 10m
+        labels:
+          severity: warning
+          service: document-processing
+          team: ai-platform
+        annotations:
+          summary: "Document processing queue backlog"
+          description: "More than 100 documents are waiting for processing."
+
+      - alert: LegalAIDocumentProcessingSlow
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(
+                legal_ai_document_processing_duration_seconds_bucket[15m]
+              )
+            )
+          ) > 120
+        for: 10m
+        labels:
+          severity: warning
+          service: document-processing
+          team: ai-platform
+        annotations:
+          summary: "Slow document processing"
+          description: "P95 document processing duration exceeds 120 seconds."
+
+      - alert: LegalAIOCRFailureRateHigh
+        expr: |
+          (
+            sum(rate(legal_ai_ocr_requests_total{
+              status="failed"
+            }[10m]))
+            /
+            clamp_min(
+              sum(rate(legal_ai_ocr_requests_total[10m])),
+              0.001
+            )
+          ) > 0.10
+          and
+          sum(increase(legal_ai_ocr_requests_total[10m])) >= 20
+        for: 10m
+        labels:
+          severity: warning
+          service: ocr
+          team: ai-platform
+        annotations:
+          summary: "High OCR failure rate"
+          description: "More than 10% of OCR operations are failing."
+
+  # ===========================================================================
+  # RAG and LLM
+  # ===========================================================================
+  - name: legal_ai_rag_llm
+    interval: 30s
+    rules:
+      - alert: LegalAIRAGFailuresHigh
+        expr: |
+          sum(increase(legal_ai_rag_requests_total{
+            status="failed"
+          }[10m])) >= 5
+        for: 5m
+        labels:
+          severity: warning
+          service: rag
+          team: ai-platform
+        annotations:
+          summary: "Legal RAG request failures"
+          description: "At least 5 RAG requests failed within 10 minutes."
+
+      - alert: LegalAIRAGHighLatency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(legal_ai_rag_duration_seconds_bucket[10m])
+            )
+          ) > 15
+        for: 10m
+        labels:
+          severity: warning
+          service: rag
+          team: ai-platform
+        annotations:
+          summary: "RAG P95 latency exceeds 15 seconds"
+          description: "Legal RAG responses are taking longer than expected."
+
+      - alert: LegalAILLMProviderErrors
+        expr: |
+          sum(increase(legal_ai_llm_requests_total{
+            status="failed"
+          }[10m])) >= 10
+        for: 5m
+        labels:
+          severity: warning
+          service: llm
+          team: ai-platform
+        annotations:
+          summary: "LLM provider errors"
+          description: "At least 10 LLM calls failed in the last 10 minutes."
+
+      - alert: LegalAILLMTokenUsageSpike
+        expr: |
+          sum(rate(legal_ai_llm_tokens_total[15m])) > 5000
+        for: 15m
+        labels:
+          severity: warning
+          service: llm
+          team: ai-platform
+        annotations:
+          summary: "High LLM token consumption"
+          description: "LLM token usage exceeds the configured example threshold."
+
+      - alert: LegalAIEmbeddingFailures
+        expr: |
+          sum(increase(legal_ai_embedding_requests_total{
+            status="failed"
+          }[15m])) >= 5
+        for: 5m
+        labels:
+          severity: warning
+          service: embeddings
+          team: ai-platform
+        annotations:
+          summary: "Embedding generation failures"
+          description: "Embedding generation is experiencing repeated failures."
+
+  # ===========================================================================
+  # Database
+  # ===========================================================================
+  - name: legal_ai_database
+    interval: 30s
+    rules:
+      - alert: LegalAIDatabaseConnectionFailures
+        expr: |
+          sum(increase(legal_ai_database_connection_errors_total[5m])) > 3
+        for: 5m
+        labels:
+          severity: critical
+          service: database
+          team: platform
+        annotations:
+          summary: "Database connection failures"
+          description: "Repeated database connection errors have been detected."
+
+      - alert: LegalAIDatabasePoolExhaustion
+        expr: |
+          (
+            sum(legal_ai_database_pool_checked_out_connections)
+            /
+            clamp_min(
+              sum(legal_ai_database_pool_size),
+              1
+            )
+          ) > 0.90
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+          team: platform
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "More than 90% of available database connections are checked out."
+
+      - alert: LegalAIDatabaseSlowQueries
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (
+              rate(legal_ai_database_query_duration_seconds_bucket[5m])
+            )
+          ) > 2
+        for: 10m
+        labels:
+          severity: warning
+          service: database
+          team: platform
+        annotations:
+          summary: "Slow database queries"
+          description: "P95 database query latency exceeds 2 seconds."
+
+  # ===========================================================================
+  # Authentication and Security
+  # ===========================================================================
+  - name: legal_ai_security
+    interval: 30s
+    rules:
+      - alert: LegalAIAuthenticationFailureSpike
+        expr: |
+          sum(increase(legal_ai_auth_attempts_total{
+            result="failure"
+          }[5m])) > 50
+        for: 2m
+        labels:
+          severity: warning
+          service: authentication
+          team: security
+        annotations:
+          summary: "Authentication failure spike"
+          description: "More than 50 failed authentication attempts occurred in 5 minutes."
+
+      - alert: LegalAIPermissionDenialSpike
+        expr: |
+          sum(increase(legal_ai_authorization_denials_total[5m])) > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: authorization
+          team: security
+        annotations:
+          summary: "High authorization denial count"
+          description: "Unusually high numbers of authorization denials were detected."
+
+      - alert: LegalAIPromptInjectionSpike
+        expr: |
+          sum(increase(legal_ai_prompt_injection_detections_total[10m])) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: ai-security
+          team: security
+        annotations:
+          summary: "Prompt injection detection spike"
+          description: "Multiple prompt injection attempts were detected."
+
+  # ===========================================================================
+  # Workers and Resources
+  # ===========================================================================
+  - name: legal_ai_workers_resources
+    interval: 30s
+    rules:
+      - alert: LegalAIWorkerFailures
+        expr: |
+          sum(increase(legal_ai_worker_tasks_total{
+            status="failed"
+          }[10m])) >= 10
+        for: 5m
+        labels:
+          severity: warning
+          service: workers
+          team: platform
+        annotations:
+          summary: "Background worker failures"
+          description: "At least 10 worker tasks failed within 10 minutes."
+
+      - alert: LegalAIHighProcessMemory
+        expr: |
+          process_resident_memory_bytes{
+            job="legal-ai-backend"
+          } > 2147483648
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+          team: platform
+        annotations:
+          summary: "Backend process memory exceeds 2 GiB"
+          description: "Backend process {{ $labels.instance }} is consuming more than 2 GiB of resident memory."
+
+      - alert: LegalAIHighProcessCPU
+        expr: |
+          rate(process_cpu_seconds_total{
+            job="legal-ai-backend"
+          }[5m]) > 0.90
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+          team: platform
+        annotations:
+          summary: "High backend CPU utilization"
+          description: "Backend process {{ $labels.instance }} is consuming more than 0.9 CPU cores."

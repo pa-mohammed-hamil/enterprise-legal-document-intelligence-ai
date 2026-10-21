@@ -1,0 +1,942 @@
+# =============================================================================
+# Enterprise Legal Document Intelligence AI
+# File: monitoring/prometheus/rules/security-alerts.yaml
+#
+# Security Monitoring:
+# - Authentication and authorization
+# - RBAC and multi-tenant isolation
+# - Document and contract access security
+# - PII and sensitive information
+# - Prompt injection and LLM security
+# - File upload and malware scanning
+# - API security and rate limiting
+# - Secrets and token security
+# - Audit logging and compliance
+# - Agent tool execution security
+#
+# IMPORTANT:
+# All legal_ai_* metrics must be instrumented by the application.
+# Avoid tenant IDs, user IDs, document IDs, tokens, or PII as metric labels.
+# =============================================================================
+
+groups:
+
+  # ===========================================================================
+  # 1. Authentication Security
+  # ===========================================================================
+
+  - name: legal_ai_authentication_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIAuthenticationFailureSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_auth_attempts_total{
+                result="failure"
+              }[5m]
+            )
+          ) > 50
+        for: 2m
+        labels:
+          severity: warning
+          component: authentication
+          team: security
+        annotations:
+          summary: "Authentication failure spike"
+          description: >-
+            More than 50 failed authentication attempts
+            occurred within the last 5 minutes.
+            Investigate potential credential attacks.
+
+      - alert: LegalAIAuthenticationFailureRateHigh
+        expr: |
+          (
+            sum(
+              rate(
+                legal_ai_auth_attempts_total{
+                  result="failure"
+                }[10m]
+              )
+            )
+            /
+            clamp_min(
+              sum(
+                rate(
+                  legal_ai_auth_attempts_total[10m]
+                )
+              ),
+              0.001
+            )
+          ) > 0.30
+          and
+          sum(
+            increase(
+              legal_ai_auth_attempts_total[10m]
+            )
+          ) >= 50
+        for: 5m
+        labels:
+          severity: warning
+          component: authentication
+          team: security
+        annotations:
+          summary: "Authentication failure rate above 30%"
+          description: >-
+            Authentication failures exceed 30% of
+            attempted logins over the last 10 minutes.
+
+      - alert: LegalAIAccountLockoutSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_account_lockouts_total[10m]
+            )
+          ) >= 10
+        for: 1m
+        labels:
+          severity: warning
+          component: authentication
+          team: security
+        annotations:
+          summary: "Multiple account lockouts detected"
+          description: >-
+            At least 10 account lockouts occurred
+            in the past 10 minutes.
+
+      - alert: LegalAIInvalidTokenSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_token_validation_failures_total[5m]
+            )
+          ) >= 30
+        for: 2m
+        labels:
+          severity: warning
+          component: token-security
+          team: security
+        annotations:
+          summary: "Invalid authentication token spike"
+          description: >-
+            Repeated JWT or authentication token
+            validation failures have been detected.
+
+      - alert: LegalAIMFAFailureSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_mfa_attempts_total{
+                result="failure"
+              }[10m]
+            )
+          ) >= 15
+        for: 2m
+        labels:
+          severity: warning
+          component: mfa
+          team: security
+        annotations:
+          summary: "MFA verification failures elevated"
+          description: >-
+            Multiple multi-factor authentication
+            verification failures were detected.
+
+  # ===========================================================================
+  # 2. Authorization and RBAC
+  # ===========================================================================
+
+  - name: legal_ai_authorization_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIAuthorizationDenialSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_authorization_denials_total[5m]
+            )
+          ) > 30
+        for: 2m
+        labels:
+          severity: warning
+          component: authorization
+          team: security
+        annotations:
+          summary: "Authorization denial spike"
+          description: >-
+            More than 30 authorization denials
+            occurred in the last 5 minutes.
+
+      - alert: LegalAIPrivilegeEscalationAttempt
+        expr: |
+          sum(
+            increase(
+              legal_ai_privilege_escalation_attempts_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: rbac
+          team: security
+        annotations:
+          summary: "Potential privilege escalation attempt"
+          description: >-
+            An attempted unauthorized privilege
+            escalation has been recorded.
+            Investigate the corresponding security audit event.
+
+      - alert: LegalAIUnauthorizedAdminAccess
+        expr: |
+          sum(
+            increase(
+              legal_ai_admin_access_denied_total[5m]
+            )
+          ) >= 3
+        for: 1m
+        labels:
+          severity: critical
+          component: admin-security
+          team: security
+        annotations:
+          summary: "Repeated unauthorized admin access"
+          description: >-
+            At least three unauthorized administrative
+            access attempts occurred in five minutes.
+
+      - alert: LegalAIRBACPolicyViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_rbac_policy_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: rbac
+          team: security
+        annotations:
+          summary: "RBAC policy violation detected"
+          description: >-
+            A role-based access control policy
+            violation has been detected.
+
+  # ===========================================================================
+  # 3. Multi-Tenant Isolation
+  # ===========================================================================
+
+  - name: legal_ai_tenant_isolation
+    interval: 30s
+    rules:
+
+      - alert: LegalAICrossTenantAccessAttempt
+        expr: |
+          sum(
+            increase(
+              legal_ai_cross_tenant_access_attempts_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: tenant-isolation
+          team: security
+        annotations:
+          summary: "Cross-tenant access attempt detected"
+          description: >-
+            A cross-tenant resource access attempt
+            was detected. Investigate access controls,
+            tenant filters, and associated audit records.
+
+      - alert: LegalAITenantIsolationViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_tenant_isolation_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: tenant-isolation
+          team: security
+        annotations:
+          summary: "Tenant isolation violation detected"
+          description: >-
+            A confirmed tenant isolation violation
+            was recorded. Investigate potential
+            unauthorized cross-organization data access.
+
+      - alert: LegalAIVectorSearchTenantFilterMissing
+        expr: |
+          sum(
+            increase(
+              legal_ai_vector_search_missing_tenant_filter_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: vector-search-security
+          team: security
+        annotations:
+          summary: "Vector search missing tenant filter"
+          description: >-
+            A vector search request was detected
+            without the required tenant isolation filter.
+
+  # ===========================================================================
+  # 4. Document and Contract Access Security
+  # ===========================================================================
+
+  - name: legal_ai_document_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIUnauthorizedDocumentAccess
+        expr: |
+          sum(
+            increase(
+              legal_ai_document_access_denied_total[5m]
+            )
+          ) >= 10
+        for: 1m
+        labels:
+          severity: warning
+          component: document-security
+          team: security
+        annotations:
+          summary: "Repeated unauthorized document access"
+          description: >-
+            At least 10 document access requests
+            were denied in five minutes.
+
+      - alert: LegalAIUnauthorizedContractAccess
+        expr: |
+          sum(
+            increase(
+              legal_ai_contract_access_denied_total[5m]
+            )
+          ) >= 10
+        for: 1m
+        labels:
+          severity: warning
+          component: contract-security
+          team: security
+        annotations:
+          summary: "Repeated unauthorized contract access"
+          description: >-
+            Multiple unauthorized contract access
+            attempts have been detected.
+
+      - alert: LegalAIBulkDocumentExportAnomaly
+        expr: |
+          sum(
+            increase(
+              legal_ai_document_exports_total[10m]
+            )
+          ) > 500
+        for: 2m
+        labels:
+          severity: warning
+          component: data-export
+          team: security
+        annotations:
+          summary: "Unusual document export volume"
+          description: >-
+            More than 500 document export operations
+            occurred in the past 10 minutes.
+            Review whether this is authorized activity.
+
+      - alert: LegalAIDocumentIntegrityFailure
+        expr: |
+          sum(
+            increase(
+              legal_ai_document_integrity_failures_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: document-integrity
+          team: security
+        annotations:
+          summary: "Document integrity verification failed"
+          description: >-
+            A document checksum or integrity
+            verification failure was recorded.
+
+  # ===========================================================================
+  # 5. PII and Sensitive Data Protection
+  # ===========================================================================
+
+  - name: legal_ai_pii_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIPIIExposureDetected
+        expr: |
+          sum(
+            increase(
+              legal_ai_pii_exposure_events_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: pii-protection
+          team: security
+        annotations:
+          summary: "Potential PII exposure detected"
+          description: >-
+            A potential sensitive personal data exposure
+            event was detected. Review the associated
+            incident using restricted audit logs.
+
+      - alert: LegalAIPIIRedactionFailure
+        expr: |
+          sum(
+            increase(
+              legal_ai_pii_redaction_failures_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: pii-redaction
+          team: security
+        annotations:
+          summary: "PII redaction failure detected"
+          description: >-
+            Sensitive information redaction failed
+            during document processing or AI output generation.
+
+      - alert: LegalAISensitiveDataLoggingViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_sensitive_logging_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: logging-security
+          team: security
+        annotations:
+          summary: "Sensitive information detected in logs"
+          description: >-
+            A logging security control detected
+            sensitive information in application logs.
+
+  # ===========================================================================
+  # 6. Prompt Injection and LLM Security
+  # ===========================================================================
+
+  - name: legal_ai_llm_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIPromptInjectionSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_prompt_injection_detections_total[10m]
+            )
+          ) > 10
+        for: 1m
+        labels:
+          severity: warning
+          component: prompt-injection
+          team: ai-security
+        annotations:
+          summary: "Prompt injection detection spike"
+          description: >-
+            Multiple potential prompt injection
+            attempts were detected in legal AI inputs.
+
+      - alert: LegalAIHighSeverityPromptInjection
+        expr: |
+          sum(
+            increase(
+              legal_ai_prompt_injection_detections_total{
+                severity="critical"
+              }[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: prompt-injection
+          team: ai-security
+        annotations:
+          summary: "Critical prompt injection detected"
+          description: >-
+            A high-severity prompt injection attempt
+            was detected in the legal AI workflow.
+
+      - alert: LegalAIIndirectPromptInjection
+        expr: |
+          sum(
+            increase(
+              legal_ai_indirect_prompt_injection_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: warning
+          component: rag-security
+          team: ai-security
+        annotations:
+          summary: "Indirect prompt injection detected"
+          description: >-
+            Potential malicious instructions were detected
+            in retrieved documents or external content.
+
+      - alert: LegalAILLMOutputPolicyViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_llm_output_policy_violations_total[5m]
+            )
+          ) >= 3
+        for: 1m
+        labels:
+          severity: warning
+          component: llm-guardrails
+          team: ai-security
+        annotations:
+          summary: "Repeated LLM output policy violations"
+          description: >-
+            The LLM output validation layer recorded
+            multiple policy violations.
+
+      - alert: LegalAIRAGPermissionFilterViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_rag_permission_filter_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: rag-authorization
+          team: security
+        annotations:
+          summary: "RAG permission filtering violation"
+          description: >-
+            A retrieval result failed the required
+            document-level permission checks.
+
+  # ===========================================================================
+  # 7. File Upload and Malware Security
+  # ===========================================================================
+
+  - name: legal_ai_file_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIMaliciousFileUploadDetected
+        expr: |
+          sum(
+            increase(
+              legal_ai_malicious_file_uploads_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: file-security
+          team: security
+        annotations:
+          summary: "Malicious file upload detected"
+          description: >-
+            A potentially malicious file was detected
+            during document upload scanning.
+
+      - alert: LegalAIFileScannerUnavailable
+        expr: |
+          legal_ai_file_scanner_healthy == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: malware-scanner
+          team: security
+        annotations:
+          summary: "File security scanner unavailable"
+          description: >-
+            The document malware scanning service
+            is reporting an unhealthy state.
+
+      - alert: LegalAIFileScanFailures
+        expr: |
+          sum(
+            increase(
+              legal_ai_file_scan_failures_total[10m]
+            )
+          ) >= 5
+        for: 2m
+        labels:
+          severity: warning
+          component: malware-scanner
+          team: security
+        annotations:
+          summary: "Repeated file scanning failures"
+          description: >-
+            At least five file scanning operations
+            failed in the last 10 minutes.
+
+      - alert: LegalAIUnsupportedFileUploadSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_upload_rejections_total{
+                reason="unsupported_file_type"
+              }[10m]
+            )
+          ) >= 20
+        for: 2m
+        labels:
+          severity: warning
+          component: upload-security
+          team: security
+        annotations:
+          summary: "Unsupported file upload spike"
+          description: >-
+            Multiple uploads of unsupported file
+            types were rejected.
+
+      - alert: LegalAIFileSizeLimitAttack
+        expr: |
+          sum(
+            increase(
+              legal_ai_upload_rejections_total{
+                reason="size_limit"
+              }[10m]
+            )
+          ) >= 20
+        for: 2m
+        labels:
+          severity: warning
+          component: upload-security
+          team: security
+        annotations:
+          summary: "Repeated oversized upload attempts"
+          description: >-
+            Numerous oversized document upload
+            attempts have been detected.
+
+  # ===========================================================================
+  # 8. API Security
+  # ===========================================================================
+
+  - name: legal_ai_api_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIRateLimitViolationSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_rate_limit_rejections_total[5m]
+            )
+          ) >= 100
+        for: 2m
+        labels:
+          severity: warning
+          component: api-security
+          team: security
+        annotations:
+          summary: "API rate limiting spike"
+          description: >-
+            At least 100 API requests were rejected
+            by rate limiting within five minutes.
+
+      - alert: LegalAIWAFBlockedRequestsSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_waf_blocked_requests_total[5m]
+            )
+          ) >= 50
+        for: 2m
+        labels:
+          severity: warning
+          component: waf
+          team: security
+        annotations:
+          summary: "WAF blocked request spike"
+          description: >-
+            The web application firewall blocked
+            at least 50 requests in five minutes.
+
+      - alert: LegalAISuspiciousRequestSpike
+        expr: |
+          sum(
+            increase(
+              legal_ai_suspicious_requests_total[5m]
+            )
+          ) >= 20
+        for: 2m
+        labels:
+          severity: warning
+          component: api-security
+          team: security
+        annotations:
+          summary: "Suspicious API request activity"
+          description: >-
+            Multiple requests were classified
+            as suspicious by API security controls.
+
+  # ===========================================================================
+  # 9. Secrets and Credentials
+  # ===========================================================================
+
+  - name: legal_ai_secrets_security
+    interval: 1m
+    rules:
+
+      - alert: LegalAISecretExposureDetected
+        expr: |
+          sum(
+            increase(
+              legal_ai_secret_exposure_events_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: secrets
+          team: security
+        annotations:
+          summary: "Potential secret exposure detected"
+          description: >-
+            A credential, API key, or other secret
+            exposure event was detected.
+
+      - alert: LegalAISecretRotationOverdue
+        expr: |
+          legal_ai_secret_rotation_age_seconds > 7776000
+        for: 1h
+        labels:
+          severity: warning
+          component: secrets
+          team: security
+        annotations:
+          summary: "Secret rotation age exceeds 90 days"
+          description: >-
+            A managed secret exceeds the example
+            90-day rotation policy.
+            Verify the applicable credential policy.
+
+      - alert: LegalAISecretManagerUnavailable
+        expr: |
+          legal_ai_secret_manager_healthy == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: secrets
+          team: security
+        annotations:
+          summary: "Secret manager unavailable"
+          description: >-
+            The secret management integration
+            is reporting an unhealthy state.
+
+  # ===========================================================================
+  # 10. Audit Logging and Compliance
+  # ===========================================================================
+
+  - name: legal_ai_audit_security
+    interval: 1m
+    rules:
+
+      - alert: LegalAIAuditLoggingFailure
+        expr: |
+          sum(
+            increase(
+              legal_ai_audit_log_write_failures_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: audit
+          team: security
+        annotations:
+          summary: "Security audit logging failure"
+          description: >-
+            One or more audit log writes failed.
+            Investigate the audit storage pipeline.
+
+      - alert: LegalAIAuditPipelineUnhealthy
+        expr: |
+          legal_ai_audit_pipeline_healthy == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: audit
+          team: security
+        annotations:
+          summary: "Audit logging pipeline unhealthy"
+          description: >-
+            The security audit event pipeline
+            is reporting an unhealthy state.
+
+      - alert: LegalAIAuditEventBacklog
+        expr: |
+          sum(
+            legal_ai_audit_event_queue_depth
+          ) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: audit
+          team: security
+        annotations:
+          summary: "Security audit event backlog"
+          description: >-
+            More than 1000 audit events
+            are waiting to be processed.
+
+      - alert: LegalAIAuditIntegrityViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_audit_integrity_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: audit-integrity
+          team: security
+        annotations:
+          summary: "Audit trail integrity violation"
+          description: >-
+            An audit log integrity verification
+            failure has been recorded.
+
+  # ===========================================================================
+  # 11. Agent and Tool Execution Security
+  # ===========================================================================
+
+  - name: legal_ai_agent_security
+    interval: 30s
+    rules:
+
+      - alert: LegalAIAgentUnauthorizedToolCall
+        expr: |
+          sum(
+            increase(
+              legal_ai_agent_unauthorized_tool_calls_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: agent-security
+          team: ai-security
+        annotations:
+          summary: "Unauthorized AI agent tool call"
+          description: >-
+            An AI agent attempted to execute a tool
+            outside its authorized permissions.
+
+      - alert: LegalAIAgentPolicyViolation
+        expr: |
+          sum(
+            increase(
+              legal_ai_agent_policy_violations_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: agent-security
+          team: ai-security
+        annotations:
+          summary: "AI agent security policy violation"
+          description: >-
+            An agent action violated an enforced
+            tool execution or workflow security policy.
+
+      - alert: LegalAIAgentApprovalBypass
+        expr: |
+          sum(
+            increase(
+              legal_ai_agent_approval_bypass_attempts_total[5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          component: agent-approval
+          team: ai-security
+        annotations:
+          summary: "AI agent approval bypass attempt"
+          description: >-
+            An attempt to bypass a required
+            human approval step was detected.
+
+      - alert: LegalAIAgentSensitiveActionBlocked
+        expr: |
+          sum(
+            increase(
+              legal_ai_agent_sensitive_actions_blocked_total[10m]
+            )
+          ) >= 5
+        for: 1m
+        labels:
+          severity: warning
+          component: agent-security
+          team: ai-security
+        annotations:
+          summary: "Repeated sensitive agent actions blocked"
+          description: >-
+            Multiple sensitive AI agent actions
+            were blocked by security controls.
+
+  # ===========================================================================
+  # 12. Security Control Availability
+  # ===========================================================================
+
+  - name: legal_ai_security_control_health
+    interval: 1m
+    rules:
+
+      - alert: LegalAISecurityControlsUnhealthy
+        expr: |
+          legal_ai_security_control_healthy == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: security-controls
+          team: security
+        annotations:
+          summary: "Security control unhealthy"
+          description: >-
+            Security control {{ $labels.control_name }}
+            is reporting an unhealthy state.
+
+      - alert: LegalAISecurityMetricsMissing
+        expr: |
+          absent(
+            legal_ai_security_control_healthy{
+              control_name="tenant_isolation"
+            }
+          )
+        for: 10m
+        labels:
+          severity: warning
+          component: security-monitoring
+          team: security
+        annotations:
+          summary: "Tenant isolation security telemetry missing"
+          description: >-
+            Prometheus is not receiving the expected
+            tenant isolation security health metric.

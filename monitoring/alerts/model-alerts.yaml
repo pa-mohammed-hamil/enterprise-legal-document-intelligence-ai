@@ -1,0 +1,800 @@
+# =============================================================================
+# Enterprise Legal Document Intelligence AI
+# File: monitoring/prometheus/rules/model-alerts.yaml
+#
+# Model Monitoring:
+# - Document Classifier
+# - Clause Classifier
+# - Legal NER
+# - Risk Classifier
+# - Embedding Model
+# - Reranker
+# - Model Registry
+# - Model Serving
+# - Model Drift
+# - Model Quality and Evaluation
+#
+# Prometheus metric names below are an instrumentation contract.
+# =============================================================================
+
+groups:
+
+  # ===========================================================================
+  # 1. Model Availability
+  # ===========================================================================
+
+  - name: legal_ai_model_availability
+    interval: 30s
+    rules:
+
+      - alert: LegalAIModelServerDown
+        expr: up{job="legal-ai-model-serving"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: model-serving
+          team: ml-platform
+        annotations:
+          summary: "Legal AI model server unavailable"
+          description: >-
+            Model serving instance {{ $labels.instance }}
+            has been unreachable for more than 2 minutes.
+
+      - alert: LegalAIModelServingTargetsMissing
+        expr: absent(up{job="legal-ai-model-serving"})
+        for: 5m
+        labels:
+          severity: critical
+          component: model-serving
+          team: ml-platform
+        annotations:
+          summary: "No model-serving targets discovered"
+          description: >-
+            Prometheus cannot discover any targets for
+            the legal-ai-model-serving job.
+
+      - alert: LegalAIModelNotLoaded
+        expr: legal_ai_model_loaded == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: model-loader
+          team: ml-platform
+        annotations:
+          summary: "Legal AI model is not loaded"
+          description: >-
+            Model {{ $labels.model_name }} on
+            {{ $labels.instance }} is not loaded.
+
+      - alert: LegalAIModelUnhealthy
+        expr: legal_ai_model_health_status == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: model-health
+          team: ml-platform
+        annotations:
+          summary: "Legal AI model health check failed"
+          description: >-
+            Model {{ $labels.model_name }} failed
+            its serving health check.
+
+  # ===========================================================================
+  # 2. Model Inference Errors
+  # ===========================================================================
+
+  - name: legal_ai_model_inference_errors
+    interval: 30s
+    rules:
+
+      - alert: LegalAIModelInferenceFailureRateHigh
+        expr: |
+          (
+            sum by (model_name) (
+              rate(legal_ai_model_inference_requests_total{
+                status="failed"
+              }[5m])
+            )
+            /
+            clamp_min(
+              sum by (model_name) (
+                rate(legal_ai_model_inference_requests_total[5m])
+              ),
+              0.001
+            )
+          ) > 0.05
+          and
+          sum by (model_name) (
+            increase(legal_ai_model_inference_requests_total[5m])
+          ) >= 50
+        for: 5m
+        labels:
+          severity: critical
+          component: inference
+          team: ml-platform
+        annotations:
+          summary: "High model inference failure rate"
+          description: >-
+            Model {{ $labels.model_name }} has an
+            inference failure rate above 5%.
+
+      - alert: LegalAIModelInferenceFailures
+        expr: |
+          sum by (model_name) (
+            increase(legal_ai_model_inference_requests_total{
+              status="failed"
+            }[15m])
+          ) >= 10
+        for: 5m
+        labels:
+          severity: warning
+          component: inference
+          team: ml-platform
+        annotations:
+          summary: "Repeated model inference failures"
+          description: >-
+            Model {{ $labels.model_name }} has experienced
+            at least 10 failed inference requests in 15 minutes.
+
+      - alert: LegalAIModelFallbackSpike
+        expr: |
+          sum by (model_name) (
+            increase(legal_ai_model_fallback_total[10m])
+          ) >= 10
+        for: 5m
+        labels:
+          severity: warning
+          component: model-fallback
+          team: ml-platform
+        annotations:
+          summary: "Model fallback usage increased"
+          description: >-
+            Model {{ $labels.model_name }} has triggered
+            at least 10 fallback operations in 10 minutes.
+
+  # ===========================================================================
+  # 3. Model Inference Latency
+  # ===========================================================================
+
+  - name: legal_ai_model_latency
+    interval: 30s
+    rules:
+
+      - alert: LegalAIModelP95LatencyHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (model_name, le) (
+              rate(
+                legal_ai_model_inference_duration_seconds_bucket[5m]
+              )
+            )
+          ) > 3
+          and
+          sum by (model_name) (
+            increase(legal_ai_model_inference_requests_total[5m])
+          ) >= 30
+        for: 10m
+        labels:
+          severity: warning
+          component: inference
+          team: ml-platform
+        annotations:
+          summary: "Model P95 latency exceeds 3 seconds"
+          description: >-
+            Model {{ $labels.model_name }} has sustained
+            P95 inference latency above 3 seconds.
+
+      - alert: LegalAIModelP99LatencyHigh
+        expr: |
+          histogram_quantile(
+            0.99,
+            sum by (model_name, le) (
+              rate(
+                legal_ai_model_inference_duration_seconds_bucket[5m]
+              )
+            )
+          ) > 8
+          and
+          sum by (model_name) (
+            increase(legal_ai_model_inference_requests_total[5m])
+          ) >= 30
+        for: 10m
+        labels:
+          severity: critical
+          component: inference
+          team: ml-platform
+        annotations:
+          summary: "Model P99 latency exceeds 8 seconds"
+          description: >-
+            Model {{ $labels.model_name }} has sustained
+            P99 inference latency above 8 seconds.
+
+      - alert: LegalAIModelQueueBacklog
+        expr: |
+          sum by (model_name) (
+            legal_ai_model_inference_queue_depth
+          ) > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: inference-queue
+          team: ml-platform
+        annotations:
+          summary: "Model inference queue backlog"
+          description: >-
+            Model {{ $labels.model_name }} has more
+            than 100 pending inference requests.
+
+  # ===========================================================================
+  # 4. Document Classification Quality
+  # ===========================================================================
+
+  - name: legal_ai_document_classifier
+    interval: 1m
+    rules:
+
+      - alert: LegalAIDocumentClassifierAccuracyLow
+        expr: |
+          legal_ai_model_evaluation_accuracy{
+            model_name="document_classifier"
+          } < 0.90
+        for: 5m
+        labels:
+          severity: warning
+          component: document-classifier
+          team: ml-platform
+        annotations:
+          summary: "Document classifier accuracy below target"
+          description: >-
+            Document classifier accuracy is
+            {{ $value | humanizePercentage }},
+            below the 90% target.
+
+      - alert: LegalAIDocumentClassifierMacroF1Low
+        expr: |
+          legal_ai_model_evaluation_macro_f1{
+            model_name="document_classifier"
+          } < 0.88
+        for: 5m
+        labels:
+          severity: warning
+          component: document-classifier
+          team: ml-platform
+        annotations:
+          summary: "Document classifier macro F1 below target"
+          description: >-
+            Document classifier macro F1 is
+            {{ $value | humanizePercentage }},
+            below the 88% threshold.
+
+  # ===========================================================================
+  # 5. Clause Classification Quality
+  # ===========================================================================
+
+  - name: legal_ai_clause_classifier
+    interval: 1m
+    rules:
+
+      - alert: LegalAIClauseClassifierAccuracyLow
+        expr: |
+          legal_ai_model_evaluation_accuracy{
+            model_name="clause_classifier"
+          } < 0.90
+        for: 5m
+        labels:
+          severity: warning
+          component: clause-classifier
+          team: ml-platform
+        annotations:
+          summary: "Clause classifier accuracy below target"
+          description: >-
+            Clause classifier accuracy is
+            {{ $value | humanizePercentage }},
+            below the 90% target.
+
+      - alert: LegalAIClauseClassifierMacroF1Low
+        expr: |
+          legal_ai_model_evaluation_macro_f1{
+            model_name="clause_classifier"
+          } < 0.87
+        for: 5m
+        labels:
+          severity: warning
+          component: clause-classifier
+          team: ml-platform
+        annotations:
+          summary: "Clause classifier macro F1 below target"
+          description: >-
+            Clause classifier macro F1 is
+            {{ $value | humanizePercentage }},
+            below the 87% threshold.
+
+  # ===========================================================================
+  # 6. Legal NER Quality
+  # ===========================================================================
+
+  - name: legal_ai_ner_model
+    interval: 1m
+    rules:
+
+      - alert: LegalAINERPrecisionLow
+        expr: |
+          legal_ai_model_evaluation_precision{
+            model_name="legal_ner"
+          } < 0.88
+        for: 5m
+        labels:
+          severity: warning
+          component: legal-ner
+          team: ml-platform
+        annotations:
+          summary: "Legal NER precision below target"
+          description: >-
+            Legal NER entity-level precision is below 88%.
+
+      - alert: LegalAINERRecallLow
+        expr: |
+          legal_ai_model_evaluation_recall{
+            model_name="legal_ner"
+          } < 0.88
+        for: 5m
+        labels:
+          severity: warning
+          component: legal-ner
+          team: ml-platform
+        annotations:
+          summary: "Legal NER recall below target"
+          description: >-
+            Legal NER entity-level recall is below 88%.
+
+      - alert: LegalAINERF1Low
+        expr: |
+          legal_ai_model_evaluation_f1{
+            model_name="legal_ner"
+          } < 0.88
+        for: 5m
+        labels:
+          severity: critical
+          component: legal-ner
+          team: ml-platform
+        annotations:
+          summary: "Legal NER entity F1 below target"
+          description: >-
+            Legal NER strict entity-level F1 is below 88%.
+
+  # ===========================================================================
+  # 7. Legal Risk Classification Quality
+  # ===========================================================================
+
+  - name: legal_ai_risk_classifier
+    interval: 1m
+    rules:
+
+      - alert: LegalAIRiskClassifierMacroF1Low
+        expr: |
+          legal_ai_model_evaluation_macro_f1{
+            model_name="risk_classifier"
+          } < 0.85
+        for: 5m
+        labels:
+          severity: warning
+          component: risk-classifier
+          team: legal-ai-safety
+        annotations:
+          summary: "Risk classifier macro F1 below target"
+          description: >-
+            Risk classifier macro F1 is below 85%.
+
+      - alert: LegalAIHighRiskRecallLow
+        expr: |
+          legal_ai_model_evaluation_class_recall{
+            model_name="risk_classifier",
+            class="high"
+          } < 0.92
+        for: 5m
+        labels:
+          severity: critical
+          component: risk-classifier
+          team: legal-ai-safety
+        annotations:
+          summary: "High-risk recall below safety threshold"
+          description: >-
+            High-risk recall is below 92%.
+            Review missed high-risk contract clauses.
+
+      - alert: LegalAICriticalRiskRecallLow
+        expr: |
+          legal_ai_model_evaluation_class_recall{
+            model_name="risk_classifier",
+            class="critical"
+          } < 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: risk-classifier
+          team: legal-ai-safety
+        annotations:
+          summary: "Critical-risk recall below safety threshold"
+          description: >-
+            Critical-risk recall is below 95%.
+            Investigate potential missed critical legal risks.
+
+      - alert: LegalAICriticalRiskFalseNegatives
+        expr: |
+          increase(legal_ai_model_false_negatives_total{
+            model_name="risk_classifier",
+            class="critical"
+          }[1h]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          component: risk-classifier
+          team: legal-ai-safety
+        annotations:
+          summary: "Critical-risk false negative detected"
+          description: >-
+            At least one critical-risk false negative
+            was recorded in the past hour.
+
+      - alert: LegalAIHighRiskFalseNegatives
+        expr: |
+          increase(legal_ai_model_false_negatives_total{
+            model_name="risk_classifier",
+            class="high"
+          }[1h]) >= 3
+        for: 1m
+        labels:
+          severity: warning
+          component: risk-classifier
+          team: legal-ai-safety
+        annotations:
+          summary: "Multiple high-risk false negatives detected"
+          description: >-
+            At least three high-risk false negatives
+            were recorded in the past hour.
+
+  # ===========================================================================
+  # 8. Model Confidence
+  # ===========================================================================
+
+  - name: legal_ai_model_confidence
+    interval: 1m
+    rules:
+
+      - alert: LegalAILowConfidencePredictionRate
+        expr: |
+          (
+            sum by (model_name) (
+              rate(legal_ai_model_predictions_total{
+                confidence_band="low"
+              }[15m])
+            )
+            /
+            clamp_min(
+              sum by (model_name) (
+                rate(legal_ai_model_predictions_total[15m])
+              ),
+              0.001
+            )
+          ) > 0.20
+          and
+          sum by (model_name) (
+            increase(legal_ai_model_predictions_total[15m])
+          ) >= 50
+        for: 10m
+        labels:
+          severity: warning
+          component: model-confidence
+          team: ml-platform
+        annotations:
+          summary: "Low-confidence prediction rate elevated"
+          description: >-
+            Model {{ $labels.model_name }} has more
+            than 20% low-confidence predictions.
+
+      - alert: LegalAIModelHumanReviewBacklog
+        expr: |
+          sum by (model_name) (
+            legal_ai_model_human_review_queue_depth
+          ) > 100
+        for: 15m
+        labels:
+          severity: warning
+          component: human-review
+          team: legal-ai-safety
+        annotations:
+          summary: "Model human-review backlog"
+          description: >-
+            Model {{ $labels.model_name }} has
+            more than 100 predictions awaiting review.
+
+  # ===========================================================================
+  # 9. Embedding Model
+  # ===========================================================================
+
+  - name: legal_ai_embedding_model
+    interval: 30s
+    rules:
+
+      - alert: LegalAIEmbeddingModelFailures
+        expr: |
+          sum by (model_name) (
+            increase(legal_ai_embedding_requests_total{
+              status="failed"
+            }[10m])
+          ) >= 10
+        for: 5m
+        labels:
+          severity: warning
+          component: embeddings
+          team: ml-platform
+        annotations:
+          summary: "Embedding model failures"
+          description: >-
+            Embedding model {{ $labels.model_name }}
+            has at least 10 failures in 10 minutes.
+
+      - alert: LegalAIEmbeddingLatencyHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (model_name, le) (
+              rate(
+                legal_ai_embedding_duration_seconds_bucket[5m]
+              )
+            )
+          ) > 3
+        for: 10m
+        labels:
+          severity: warning
+          component: embeddings
+          team: ml-platform
+        annotations:
+          summary: "Embedding generation latency elevated"
+          description: >-
+            Embedding model {{ $labels.model_name }}
+            has P95 latency above 3 seconds.
+
+      - alert: LegalAIEmbeddingDimensionMismatch
+        expr: |
+          legal_ai_embedding_dimension_mismatch_total > 0
+        for: 1m
+        labels:
+          severity: critical
+          component: embeddings
+          team: ml-platform
+        annotations:
+          summary: "Embedding dimension mismatch detected"
+          description: >-
+            Embedding dimension mismatch counter is nonzero.
+            Check embedding model and vector index compatibility.
+
+  # ===========================================================================
+  # 10. Reranker Model
+  # ===========================================================================
+
+  - name: legal_ai_reranker_model
+    interval: 30s
+    rules:
+
+      - alert: LegalAIRerankerFailureRateHigh
+        expr: |
+          (
+            sum by (model_name) (
+              rate(legal_ai_reranker_requests_total{
+                status="failed"
+              }[10m])
+            )
+            /
+            clamp_min(
+              sum by (model_name) (
+                rate(legal_ai_reranker_requests_total[10m])
+              ),
+              0.001
+            )
+          ) > 0.05
+          and
+          sum by (model_name) (
+            increase(legal_ai_reranker_requests_total[10m])
+          ) >= 30
+        for: 5m
+        labels:
+          severity: warning
+          component: reranker
+          team: ml-platform
+        annotations:
+          summary: "Reranker failure rate elevated"
+          description: >-
+            Reranker {{ $labels.model_name }}
+            has more than 5% failed requests.
+
+      - alert: LegalAIRerankerLatencyHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (model_name, le) (
+              rate(
+                legal_ai_reranker_duration_seconds_bucket[5m]
+              )
+            )
+          ) > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: reranker
+          team: ml-platform
+        annotations:
+          summary: "Reranker latency elevated"
+          description: >-
+            Reranker {{ $labels.model_name }}
+            has P95 latency above 5 seconds.
+
+  # ===========================================================================
+  # 11. Model Drift
+  # ===========================================================================
+
+  - name: legal_ai_model_drift
+    interval: 5m
+    rules:
+
+      - alert: LegalAIModelDataDriftHigh
+        expr: |
+          legal_ai_model_data_drift_score > 0.20
+        for: 15m
+        labels:
+          severity: warning
+          component: model-drift
+          team: ml-platform
+        annotations:
+          summary: "Model input data drift detected"
+          description: >-
+            Model {{ $labels.model_name }} has
+            a data drift score above 0.20.
+
+      - alert: LegalAIModelPredictionDriftHigh
+        expr: |
+          legal_ai_model_prediction_drift_score > 0.20
+        for: 15m
+        labels:
+          severity: warning
+          component: model-drift
+          team: ml-platform
+        annotations:
+          summary: "Model prediction drift detected"
+          description: >-
+            Model {{ $labels.model_name }} has
+            a prediction drift score above 0.20.
+
+      - alert: LegalAIModelConfidenceDriftHigh
+        expr: |
+          legal_ai_model_confidence_drift_score > 0.15
+        for: 15m
+        labels:
+          severity: warning
+          component: model-drift
+          team: ml-platform
+        annotations:
+          summary: "Model confidence drift detected"
+          description: >-
+            Model {{ $labels.model_name }} has
+            a confidence drift score above 0.15.
+
+  # ===========================================================================
+  # 12. Model Registry and Deployment
+  # ===========================================================================
+
+  - name: legal_ai_model_registry
+    interval: 1m
+    rules:
+
+      - alert: LegalAIModelRegistryUnavailable
+        expr: up{job="legal-ai-model-registry"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: model-registry
+          team: ml-platform
+        annotations:
+          summary: "Model registry unavailable"
+          description: >-
+            The Legal AI model registry instance
+            {{ $labels.instance }} is unavailable.
+
+      - alert: LegalAIModelRegistryTargetsMissing
+        expr: absent(up{job="legal-ai-model-registry"})
+        for: 5m
+        labels:
+          severity: warning
+          component: model-registry
+          team: ml-platform
+        annotations:
+          summary: "Model registry targets missing"
+          description: >-
+            Prometheus cannot discover any model registry targets.
+
+      - alert: LegalAIModelVersionMismatch
+        expr: |
+          legal_ai_model_version_mismatch == 1
+        for: 5m
+        labels:
+          severity: critical
+          component: model-registry
+          team: ml-platform
+        annotations:
+          summary: "Model version mismatch"
+          description: >-
+            Model {{ $labels.model_name }}
+            is serving an unexpected version.
+
+      - alert: LegalAIUnapprovedModelDeployed
+        expr: |
+          legal_ai_model_deployment_approved == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: model-governance
+          team: ml-platform
+        annotations:
+          summary: "Unapproved model deployment detected"
+          description: >-
+            Model {{ $labels.model_name }}
+            is deployed without recorded approval.
+
+  # ===========================================================================
+  # 13. Evaluation Freshness
+  # ===========================================================================
+
+  - name: legal_ai_model_evaluation_freshness
+    interval: 5m
+    rules:
+
+      - alert: LegalAIModelEvaluationStale
+        expr: |
+          (
+            time()
+            -
+            legal_ai_model_last_evaluation_timestamp_seconds
+          ) > 604800
+        for: 30m
+        labels:
+          severity: warning
+          component: model-evaluation
+          team: ml-platform
+        annotations:
+          summary: "Model evaluation is more than 7 days old"
+          description: >-
+            Model {{ $labels.model_name }} has not had
+            a recorded evaluation in over 7 days.
+
+      - alert: LegalAIModelEvaluationFailed
+        expr: |
+          legal_ai_model_last_evaluation_success == 0
+        for: 5m
+        labels:
+          severity: critical
+          component: model-evaluation
+          team: ml-platform
+        annotations:
+          summary: "Latest model evaluation failed"
+          description: >-
+            The latest evaluation for
+            {{ $labels.model_name }} failed.
+
+      - alert: LegalAIModelEvaluationMetricsMissing
+        expr: |
+          absent(
+            legal_ai_model_last_evaluation_timestamp_seconds{
+              model_name="risk_classifier"
+            }
+          )
+        for: 15m
+        labels:
+          severity: warning
+          component: model-evaluation
+          team: ml-platform
+        annotations:
+          summary: "Risk classifier evaluation metrics missing"
+          description: >-
+            No latest evaluation timestamp is being exported
+            for the risk classifier.

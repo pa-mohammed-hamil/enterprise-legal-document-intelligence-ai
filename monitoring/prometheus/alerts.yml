@@ -1,0 +1,312 @@
+# =============================================================================
+# Enterprise Legal Document Intelligence AI
+# File: monitoring/loki/rules/alerts.yml
+# Loki LogQL Alerting Rules
+# =============================================================================
+
+groups:
+  - name: legal-ai-application-logs
+    interval: 1m
+    rules:
+      - alert: LegalAIHighApplicationErrorRate
+        expr: |
+          sum(
+            count_over_time(
+              {service="legal-ai-backend"}
+              | json
+              | level="error"
+              | __error__=""
+              [5m]
+            )
+          ) > 30
+        for: 2m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "High application error count"
+          description: "More than 30 backend error logs in five minutes."
+
+      - alert: LegalAICriticalApplicationError
+        expr: |
+          sum(
+            count_over_time(
+              {service="legal-ai-backend"}
+              |= "CRITICAL"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "Critical application error"
+          description: "A critical backend log event was detected."
+
+      - alert: LegalAIUnhandledExceptionSpike
+        expr: |
+          sum(
+            count_over_time(
+              {service="legal-ai-backend"}
+              |~ "UnhandledException|Traceback|UncaughtException"
+              [5m]
+            )
+          ) > 10
+        for: 1m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Unhandled exceptions detected"
+          description: "Repeated unhandled exceptions appeared in backend logs."
+
+  - name: legal-ai-document-processing-logs
+    interval: 1m
+    rules:
+      - alert: LegalAIDocumentProcessingFailureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="document-processing"}
+              |~ "processing_failed|document_processing_error"
+              [10m]
+            )
+          ) >= 10
+        for: 2m
+        labels:
+          severity: warning
+          team: document-intelligence
+        annotations:
+          summary: "Document processing failures"
+          description: "At least 10 document processing failure logs in ten minutes."
+
+      - alert: LegalAIOCRFailureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="ocr"}
+              |~ "ocr_failed|ocr_processing_error"
+              [10m]
+            )
+          ) >= 10
+        for: 2m
+        labels:
+          severity: warning
+          team: document-intelligence
+        annotations:
+          summary: "OCR failure spike"
+          description: "Repeated OCR processing failures detected."
+
+      - alert: LegalAIMaliciousDocumentDetected
+        expr: |
+          sum(
+            count_over_time(
+              {component="file-security"}
+              |~ "malware_detected|malicious_upload"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Malicious document detected"
+          description: "A potentially malicious document upload was detected."
+
+  - name: legal-ai-rag-llm-logs
+    interval: 1m
+    rules:
+      - alert: LegalAIRAGFailureSpike
+        expr: |
+          sum(
+            count_over_time(
+              {component="rag"}
+              |~ "rag_failed|retrieval_failed|generation_failed"
+              [5m]
+            )
+          ) > 10
+        for: 2m
+        labels:
+          severity: warning
+          team: ai-platform
+        annotations:
+          summary: "RAG pipeline failure spike"
+          description: "Multiple retrieval or generation failures detected."
+
+      - alert: LegalAILLMProviderFailureSpike
+        expr: |
+          sum(
+            count_over_time(
+              {component="llm"}
+              |~ "provider_error|llm_request_failed|model_unavailable"
+              [5m]
+            )
+          ) > 10
+        for: 2m
+        labels:
+          severity: warning
+          team: ai-platform
+        annotations:
+          summary: "LLM provider failure spike"
+          description: "Repeated LLM provider or model availability errors detected."
+
+      - alert: LegalAIPromptInjectionLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="ai-security"}
+              |~ "prompt_injection_detected|indirect_injection_detected"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: ai-security
+        annotations:
+          summary: "Prompt injection attempt detected"
+          description: "Potential prompt injection was detected by AI security controls."
+
+      - alert: LegalAIRAGPermissionViolationLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="rag-security"}
+              |~ "permission_filter_violation|unauthorized_retrieval"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "RAG permission violation"
+          description: "Unauthorized retrieval or permission filtering violation detected."
+
+  - name: legal-ai-authentication-security-logs
+    interval: 1m
+    rules:
+      - alert: LegalAILoginFailureSpike
+        expr: |
+          sum(
+            count_over_time(
+              {component="authentication"}
+              |= "login_failed"
+              [5m]
+            )
+          ) > 30
+        for: 2m
+        labels:
+          severity: warning
+          team: security
+        annotations:
+          summary: "Repeated login failures"
+          description: "Potential credential attack or abnormal authentication activity."
+
+      - alert: LegalAIPrivilegeEscalationLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="authorization"}
+              |= "privilege_escalation_attempt"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Privilege escalation attempt"
+          description: "An unauthorized privilege escalation attempt was logged."
+
+      - alert: LegalAICrossTenantAccessLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="tenant-security"}
+              |~ "cross_tenant_access|tenant_isolation_violation"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Cross-tenant access detected"
+          description: "Potential tenant isolation violation detected."
+
+      - alert: LegalAIPIIExposureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="pii-security"}
+              |~ "pii_exposure_detected|redaction_failed"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Potential PII exposure"
+          description: "Sensitive data protection or redaction failure detected."
+
+  - name: legal-ai-worker-database-logs
+    interval: 1m
+    rules:
+      - alert: LegalAIWorkerFailureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="worker"}
+              |~ "task_failed|worker_crashed|job_failed"
+              [10m]
+            )
+          ) >= 10
+        for: 2m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Background worker failures"
+          description: "Repeated background task or worker failures detected."
+
+      - alert: LegalAIDatabaseConnectionFailureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="database"}
+              |~ "connection_failed|connection_refused|pool_timeout"
+              [5m]
+            )
+          ) >= 5
+        for: 2m
+        labels:
+          severity: critical
+          team: infrastructure
+        annotations:
+          summary: "Database connection failures"
+          description: "Repeated PostgreSQL connection or pool timeout errors detected."
+
+      - alert: LegalAIAuditLoggingFailureLogs
+        expr: |
+          sum(
+            count_over_time(
+              {component="audit"}
+              |~ "audit_write_failed|audit_integrity_violation"
+              [5m]
+            )
+          ) > 0
+        for: 0m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Audit logging failure"
+          description: "Audit logging or integrity verification failure detected."
