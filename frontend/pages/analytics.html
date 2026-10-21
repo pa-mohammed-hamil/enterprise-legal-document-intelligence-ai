@@ -1,0 +1,828 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1422">
+<title>Analytics | Lexora Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0b1422;
+  --navy2:#142338;
+  --navy3:#1d3049;
+  --gold:#d6b477;
+  --gold-light:#f3e4c5;
+  --cream:#f6f4ee;
+  --white:#fff;
+  --ink:#182334;
+  --muted:#8390a0;
+  --line:#e8e9e7;
+  --green:#238669;
+  --red:#cc6865;
+  --orange:#ca944d;
+  --blue:#6488c3;
+  --radius:18px;
+  --shadow:0 12px 40px rgba(15,28,45,.045);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:260px;position:fixed;inset:0 auto 0 0;
+  background:var(--navy);color:white;
+  padding:28px 17px;display:flex;flex-direction:column;
+  z-index:50;transition:transform .3s
+}
+.logo{display:flex;gap:12px;align-items:center;padding:0 12px 32px}
+.logo-mark{
+  width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid rgba(214,180,119,.5);
+  border-radius:12px;background:rgba(214,180,119,.08);
+  font:25px Georgia,serif;color:var(--gold)
+}
+.logo strong{font:800 19px Manrope,sans-serif;letter-spacing:-.7px}
+.logo small{display:block;color:#90a0b5;font-size:10px;letter-spacing:2px;margin-top:4px}
+.nav-title{font-size:10px;color:#778aa1;letter-spacing:2px;font-weight:800;padding:20px 13px 10px}
+.nav-item{
+  width:100%;display:flex;gap:13px;align-items:center;
+  border:1px solid transparent;border-radius:11px;
+  padding:13px;color:#a7b5c6;font-size:12px;
+  background:none;text-align:left;margin:2px 0
+}
+.nav-item:hover{background:rgba(255,255,255,.06);color:white}
+.nav-item.active{
+  background:rgba(214,180,119,.11);
+  color:var(--gold-light);
+  border-color:rgba(214,180,119,.15)
+}
+.nav-icon{font-size:17px;width:22px;text-align:center}
+.sidebar-bottom{margin-top:auto}
+.sidebar-info{
+  background:linear-gradient(140deg,#253750,#17263b);
+  border:1px solid rgba(214,180,119,.23);
+  border-radius:14px;padding:18px;margin-bottom:20px
+}
+.sidebar-info strong{font-size:12px}
+.sidebar-info p{font-size:11px;line-height:1.7;color:#a8b6c8}
+.sidebar-profile{display:flex;gap:10px;align-items:center;border-top:1px solid #27364a;padding-top:20px}
+.avatar{height:37px;width:37px;border-radius:11px;background:#e0cba6;color:#283548;display:grid;place-items:center;font-weight:800;font-size:12px}
+.sidebar-profile strong{display:block;font-size:12px}
+.sidebar-profile small{font-size:10px;color:#91a0b5}
+.main{margin-left:260px;width:calc(100% - 260px);min-width:0}
+.topbar{
+  background:rgba(255,255,255,.95);
+  border-bottom:1px solid var(--line);
+  height:78px;display:flex;justify-content:space-between;
+  align-items:center;padding:0 35px;gap:15px
+}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--ink)}
+.top-right{display:flex;gap:12px;align-items:center}
+.search{
+  width:235px;border:1px solid var(--line);background:#f9f9f8;
+  padding:11px 13px;border-radius:10px;font-size:12px
+}
+.icon-button{
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+  background:white;font-size:16px
+}
+.mobile-menu{display:none}
+.content{padding:36px;max-width:1800px;margin:auto}
+.eyebrow{color:#b38d54;letter-spacing:2px;font-size:10px;font-weight:800;text-transform:uppercase}
+h1,h2,h3,p{margin-top:0}
+h1{font:800 clamp(25px,3vw,35px) Manrope,sans-serif;letter-spacing:-1.5px;margin:9px 0}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:28px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 15px;border:1px solid var(--line);
+  border-radius:10px;background:white;font-size:12px;font-weight:700
+}
+.btn:hover{border-color:var(--gold)}
+.btn-dark{background:var(--navy);border-color:var(--navy);color:white}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.select{
+  padding:11px 14px;border:1px solid var(--line);
+  border-radius:10px;background:white;font-size:12px;color:var(--ink)
+}
+.demo-note{
+  background:#fff6e7;border:1px solid #efdfc3;border-radius:10px;
+  padding:12px 16px;margin-bottom:24px;
+  font-size:11px;color:#85643c;line-height:1.6
+}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin-bottom:23px}
+.metric{
+  background:white;border:1px solid #eeefed;border-radius:var(--radius);
+  padding:23px;box-shadow:var(--shadow);position:relative;overflow:hidden
+}
+.metric:before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent)
+}
+.metric-head{display:flex;align-items:center;justify-content:space-between}
+.metric-label{font-size:12px;color:var(--muted)}
+.metric-icon{
+  width:38px;height:38px;border-radius:11px;background:#f7f3ea;
+  display:grid;place-items:center;font-size:18px;color:#ac874f
+}
+.metric-value{font:800 30px Manrope,sans-serif;letter-spacing:-1.3px;margin:16px 0 7px}
+.metric-foot{font-size:11px;color:var(--muted)}
+.positive{color:var(--green);font-weight:800}
+.negative{color:var(--red);font-weight:800}
+.grid-2{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:20px;margin-bottom:22px}
+.grid-equal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-bottom:22px}
+.card{
+  background:white;border:1px solid #eeefed;
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  min-width:0;overflow:hidden
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:23px 24px 17px}
+.card-head h3{font-size:15px;letter-spacing:-.3px;margin:0 0 5px}
+.card-head p{font-size:11px;color:var(--muted);margin:0}
+.card-body{padding:15px 24px 25px}
+.card-link{border:0;background:none;color:#ac824b;font-size:11px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:17px;margin-top:15px;color:var(--muted);font-size:11px}
+.legend-item{display:flex;align-items:center;gap:7px}
+.legend-dot{width:9px;height:9px;border-radius:3px;background:var(--gold)}
+.legend-dot.secondary{background:#d9e0e6}
+.legend-dot.red{background:var(--red)}
+.legend-dot.green{background:var(--green)}
+.legend-dot.blue{background:var(--blue)}
+.chart-shell{height:250px;position:relative}
+.chart-shell svg{width:100%;height:100%;overflow:visible}
+.chart-grid{stroke:#edf0ef;stroke-width:1}
+.chart-label{fill:#8a96a3;font-size:11px}
+.chart-line{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-line-secondary{fill:none;stroke:#8ca5b8;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:6 6}
+.chart-area-fill{fill:url(#goldFill)}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:25px;flex-wrap:wrap;padding:15px 0}
+.donut{width:185px;height:185px;position:relative;flex-shrink:0}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-width:19}
+.donut-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.donut-center strong{font:800 30px Manrope,sans-serif}
+.donut-center span{font-size:11px;color:var(--muted)}
+.donut-legend{display:flex;flex-direction:column;gap:15px;min-width:130px}
+.donut-legend div{display:flex;align-items:center;gap:9px;font-size:12px}
+.donut-legend b{margin-left:auto}
+.progress-list{display:flex;flex-direction:column;gap:20px}
+.progress-head{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:9px}
+.progress-head span:last-child{font-weight:800}
+.progress-track{height:7px;background:#eff1f2;border-radius:20px;overflow:hidden}
+.progress-fill{height:100%;border-radius:20px;background:var(--gold);transition:width .4s}
+.progress-fill.green{background:var(--green)}
+.progress-fill.blue{background:var(--blue)}
+.progress-fill.red{background:var(--red)}
+.bar-chart{height:220px;display:flex;align-items:flex-end;gap:14px;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent 54px,#f1f2f1 55px)}
+.bar-group{height:100%;flex:1;display:flex;align-items:flex-end;justify-content:center;gap:5px}
+.bar{width:18px;max-width:43%;border-radius:5px 5px 0 0;background:linear-gradient(0deg,#bb955d,#e7d0a5);transition:height .4s}
+.bar.alt{background:#dbe2e6}
+.bar-labels{display:flex;justify-content:space-between;gap:10px;margin-top:12px}
+.bar-labels span{flex:1;text-align:center;color:var(--muted);font-size:10px}
+.table-wrap{overflow-x:auto;padding:0 20px 20px}
+table{width:100%;border-collapse:collapse;min-width:620px;text-align:left}
+th{padding:15px 12px;color:#8995a4;font-size:10px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--line)}
+td{padding:17px 12px;font-size:12px;border-bottom:1px solid #f0f1ef}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fcfbf8}
+.primary-text{font-weight:700;display:block}
+.secondary-text{font-size:10px;color:var(--muted);display:block;margin-top:5px}
+.pill{display:inline-block;padding:6px 9px;border-radius:7px;font-size:10px;font-weight:800}
+.pill-red{background:#fff0ee;color:#c15e55}
+.pill-green{background:#eaf6ef;color:#24846a}
+.pill-orange{background:#fff4e7;color:#b77c37}
+.pill-blue{background:#edf2fa;color:#5d7fb6}
+.insight{
+  padding:17px 0;border-top:1px solid #eff0ee;
+  display:flex;gap:13px;align-items:flex-start
+}
+.insight-icon{
+  width:37px;height:37px;flex-shrink:0;border-radius:11px;
+  background:#f7f2e8;color:#b08b50;display:grid;place-items:center;font-size:17px
+}
+.insight strong{display:block;font-size:12px}
+.insight p{font-size:11px;line-height:1.6;color:var(--muted);margin:6px 0 0}
+.footer{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:28px}
+.toast{
+  position:fixed;bottom:25px;right:25px;z-index:100;
+  background:var(--navy);color:white;padding:15px 20px;
+  border-radius:11px;font-size:12px;box-shadow:0 15px 40px #0002;
+  opacity:0;transform:translateY(100px);transition:.3s;
+  max-width:min(400px,calc(100vw - 40px))
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.overlay{display:none}
+@media(max-width:1250px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-equal{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:block}
+  .overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:40}
+}
+@media(max-width:650px){
+  .topbar{padding:0 17px;height:68px}
+  .search{display:none}
+  .content{padding:24px 16px}
+  .page-header{flex-direction:column;align-items:flex-start}
+  .metrics{gap:10px}
+  .metric{padding:16px}
+  .metric-value{font-size:24px}
+  .metric-label{font-size:10px}
+  .card-head{padding:19px}
+  .card-body{padding:14px 18px 20px}
+  .donut{width:160px;height:160px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="logo">
+    <span class="logo-mark">L</span>
+    <span><strong>Lexora<span style="color:var(--gold)">.</span></strong><small>INTELLIGENCE</small></span>
+  </a>
+
+    <div class="nav-title">WORKSPACE</div>
+  <a href="dashboard.html" class="nav-item"><span class="nav-icon">◫</span> Dashboard</a>
+  <a href="documents.html" class="nav-item"><span class="nav-icon">▤</span> Documents</a>
+  <a href="contracts.html" class="nav-item"><span class="nav-icon">▧</span> Contracts</a>
+  <a href="expiry-calendar.html" class="nav-item"><span class="nav-icon">◷</span> Expiry Calendar</a>
+  <a href="renewals.html" class="nav-item"><span class="nav-icon">↻</span> Renewals</a>
+  <a href="reviews.html" class="nav-item"><span class="nav-icon">☷</span> Review Queue</a>
+  
+  <div class="nav-title">AI & INTELLIGENCE</div>
+  <a href="legal-chat.html" class="nav-item"><span class="nav-icon">✧</span> Legal AI Copilot</a>
+  <a href="risk.html" class="nav-item"><span class="nav-icon">◇</span> Risk Intelligence</a>
+  <a href="analytics.html" class="nav-item active"><span class="nav-icon">▥</span> Analytics</a>
+  <a href="predictive-analytics.html" class="nav-item"><span class="nav-icon">◈</span> Predictive Analytics</a>
+  <a href="model-settings.html" class="nav-item"><span class="nav-icon">⚡</span> AI Model Settings</a>
+  
+  <div class="nav-title">INTEGRATIONS</div>
+  <a href="esignature.html" class="nav-item"><span class="nav-icon">✎</span> E-Signature</a>
+  <a href="collaboration.html" class="nav-item"><span class="nav-icon">◉</span> Collaboration</a>
+  <a href="notifications.html" class="nav-item"><span class="nav-icon">●</span> Notifications</a>
+  
+  <div class="nav-title">ADMINISTRATION</div>
+  <a href="admin.html" class="nav-item"><span class="nav-icon">♙</span> Administration</a>
+  <a href="audit.html" class="nav-item"><span class="nav-icon">📋</span> Audit Trail</a>
+  <a href="dlp-settings.html" class="nav-item"><span class="nav-icon">🔒</span> Data Security</a>
+  <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> Settings</a><div class="sidebar-bottom">
+    <div class="sidebar-info">
+      <strong style="color:var(--gold)">✧ Intelligence Insights</strong>
+      <p>Explore legal operations, AI performance, risk exposure and contract lifecycle analytics.</p>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">AD</div>
+      <div><strong>Admin Workspace</strong><small>Enterprise Analytics</small></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:13px">
+      <button class="icon-button mobile-menu" id="menuButton" aria-label="Open menu">☰</button>
+      <div class="breadcrumb">Workspace / <strong>Analytics</strong></div>
+    </div>
+    <div class="top-right">
+      <input class="search" type="search" placeholder="Search analytics..." id="searchInput" aria-label="Search analytics sections">
+      <button class="icon-button" id="helpButton" aria-label="Analytics information">ⓘ</button>
+      <div class="avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Enterprise intelligence / Reporting</div>
+        <h1>Analytics intelligence<span style="color:#c4a16a">.</span></h1>
+        <p class="subtitle">A comprehensive view of your legal AI ecosystem, from documents to decisions.</p>
+      </div>
+      <div class="actions">
+        <select class="select" id="dateRange" aria-label="Reporting period">
+          <option value="7">Last 7 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="90">Last 90 days</option>
+          <option value="365">Last 12 months</option>
+        </select>
+        <button class="btn btn-dark" id="exportButton">↓ Export Report</button>
+      </div>
+    </div>
+
+    <div class="demo-note">
+      <strong>Illustrative analytics:</strong> All metrics, trends, AI quality scores and insights on this page are sample data. Date filters update the demonstration dataset, not a live database.
+    </div>
+
+    <!-- KPIs -->
+    <div class="metrics" id="metrics">
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Documents Analyzed</span><span class="metric-icon">▤</span></div>
+        <div class="metric-value" id="metricDocuments">1,284</div>
+        <div class="metric-foot"><span class="positive">↗ 18.4%</span> sample period change</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">AI Analysis Requests</span><span class="metric-icon">✧</span></div>
+        <div class="metric-value" id="metricRequests">8,432</div>
+        <div class="metric-foot"><span class="positive">↗ 24.6%</span> sample period change</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Risk Findings</span><span class="metric-icon">◇</span></div>
+        <div class="metric-value" id="metricRisks">127</div>
+        <div class="metric-foot"><span class="negative">14 high / critical</span> sample findings</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Reviews Completed</span><span class="metric-icon">✓</span></div>
+        <div class="metric-value" id="metricReviews">326</div>
+        <div class="metric-foot"><span class="positive">↗ 11.2%</span> sample period change</div>
+      </div>
+    </div>
+
+    <!-- MAIN CHARTS -->
+    <div class="grid-2">
+      <section class="card" id="activitySection">
+        <div class="card-head">
+          <div><h3>Document intelligence trends</h3><p>AI analyses and human reviews over time</p></div>
+          <span class="pill pill-green">Sample data</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-shell">
+            <svg id="trendChart" viewBox="0 0 700 250" role="img" aria-label="Illustrative document intelligence trend chart">
+              <defs>
+                <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#d6b477" stop-opacity=".24"/>
+                  <stop offset="100%" stop-color="#d6b477" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g id="trendGrid"></g>
+              <path id="trendArea" class="chart-area-fill"></path>
+              <path id="trendPrimary" class="chart-line"></path>
+              <path id="trendSecondary" class="chart-line-secondary"></path>
+              <g id="trendLabels"></g>
+            </svg>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot"></span> AI Analyses</span>
+            <span class="legend-item"><span class="legend-dot secondary"></span> Human Reviews</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="riskSection">
+        <div class="card-head">
+          <div><h3>Legal risk distribution</h3><p>Illustrative severity breakdown</p></div>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <div class="donut">
+              <svg viewBox="0 0 200 200" aria-label="Risk distribution doughnut chart" role="img">
+                <circle cx="100" cy="100" r="75" stroke="#edf0f0"></circle>
+                <g id="donutSegments"></g>
+              </svg>
+              <div class="donut-center"><strong id="donutTotal">127</strong><span>Findings</span></div>
+            </div>
+            <div class="donut-legend" id="riskLegend"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECONDARY CHARTS -->
+    <div class="grid-equal">
+      <section class="card" id="performanceSection">
+        <div class="card-head">
+          <div><h3>AI evaluation overview</h3><p>Example quality metrics — not validated results</p></div>
+        </div>
+        <div class="card-body">
+          <div class="progress-list" id="qualityMetrics"></div>
+          <p class="subtitle" style="margin:20px 0 0;font-size:11px">Scores must come from versioned evaluation datasets and real backend evaluation jobs before production use.</p>
+        </div>
+      </section>
+
+      <section class="card" id="lifecycleSection">
+        <div class="card-head">
+          <div><h3>Contract lifecycle</h3><p>Contracts by stage across the reporting period</p></div>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="lifecycleChart"></div>
+          <div class="bar-labels">
+            <span>Draft</span><span>Review</span><span>Active</span><span>Renewal</span><span>Expired</span>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot"></span> Current</span>
+            <span class="legend-item"><span class="legend-dot secondary"></span> Previous</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- WORKFLOW -->
+    <div class="grid-equal">
+      <section class="card" id="productivitySection">
+        <div class="card-head">
+          <div><h3>Reviewer productivity</h3><p>Illustrative completed review counts</p></div>
+        </div>
+        <div class="card-body">
+          <div class="progress-list" id="reviewerProgress"></div>
+        </div>
+      </section>
+
+      <section class="card" id="insightsSection">
+        <div class="card-head">
+          <div><h3>Intelligence highlights</h3><p>Example operational observations</p></div>
+          <span class="pill pill-orange">Demo insights</span>
+        </div>
+        <div class="card-body" id="insightsList"></div>
+      </section>
+    </div>
+
+    <!-- TABLE -->
+    <section class="card" id="modelsSection">
+      <div class="card-head">
+        <div><h3>AI model performance</h3><p>Example model evaluation and latency data</p></div>
+        <span class="pill pill-blue">Illustrative</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model / Pipeline</th>
+              <th>Purpose</th>
+              <th>Evaluation Score</th>
+              <th>Avg. Latency</th>
+              <th>Operational Status</th>
+            </tr>
+          </thead>
+          <tbody id="modelsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>© 2026 Lexora Intelligence · Enterprise Legal AI</span>
+      <span>Analytics dashboard · Demonstration environment</span>
+    </div>
+  </div>
+</main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   ANALYTICS DASHBOARD — INTERACTIVE DEMO DATA
+   Replace demoData with authenticated FastAPI responses.
+===================================================== */
+
+const demoData = {
+  7: {
+    documents: 314, requests: 2035, risks: 32, reviews: 81,
+    trendA: [34,42,38,54,47,63,75,82],
+    trendB: [18,25,24,29,37,44,48,57],
+    risk: [2,5,9,16],
+    lifecycle: [32,49,85,25,12]
+  },
+  30: {
+    documents: 1284, requests: 8432, risks: 127, reviews: 326,
+    trendA: [28,36,33,49,55,62,73,88],
+    trendB: [16,23,29,32,40,44,52,64],
+    risk: [3,11,27,86],
+    lifecycle: [42,65,91,37,19]
+  },
+  90: {
+    documents: 3690, requests: 24160, risks: 378, reviews: 940,
+    trendA: [22,33,45,41,56,68,77,94],
+    trendB: [15,22,27,35,41,48,59,72],
+    risk: [9,34,81,254],
+    lifecycle: [48,67,89,46,25]
+  },
+  365: {
+    documents: 14820, requests: 102400, risks: 1520, reviews: 3860,
+    trendA: [18,25,36,43,52,62,78,98],
+    trendB: [12,18,25,33,41,49,61,76],
+    risk: [35,145,340,1000],
+    lifecycle: [55,68,95,51,29]
+  }
+};
+
+const models = [
+  { name:"Legal Clause Classifier", type:"Classification", score:"94.2%", latency:"182 ms", status:"Example" },
+  { name:"Legal Named Entity Recognition", type:"Entity Extraction", score:"91.8%", latency:"145 ms", status:"Example" },
+  { name:"Contract Risk Classifier", type:"Risk Classification", score:"89.6%", latency:"210 ms", status:"Example" },
+  { name:"Hybrid RAG Retrieval", type:"Information Retrieval", score:"92.4%", latency:"165 ms", status:"Example" },
+  { name:"Citation Verification", type:"Evidence Validation", score:"96.1%", latency:"128 ms", status:"Example" }
+];
+
+const quality = [
+  { name:"Retrieval Relevance", value:92, color:"" },
+  { name:"Answer Groundedness", value:94, color:"green" },
+  { name:"Citation Accuracy", value:96, color:"blue" },
+  { name:"Risk Classification F1", value:89, color:"" },
+  { name:"Review Consistency", value:91, color:"green" }
+];
+
+const reviewers = [
+  { name:"Sarah Mitchell", value:88 },
+  { name:"James Wilson", value:72 },
+  { name:"Emma Roberts", value:64 },
+  { name:"Olivia Chen", value:51 }
+];
+
+const insights = [
+  { icon:"✧", title:"Increasing analysis volume", text:"The sample trend shows growing AI-assisted document processing activity." },
+  { icon:"◇", title:"High-priority risk review", text:"Critical and high-risk sample findings should be prioritized for human legal assessment." },
+  { icon:"◷", title:"Renewal monitoring", text:"Contracts approaching renewal dates may require earlier notifications and review." },
+  { icon:"✓", title:"Evidence validation", text:"Citation verification and groundedness checks should be tracked on real evaluation datasets." }
+];
+
+const $ = selector => document.querySelector(selector);
+const formatNumber = number => Number(number).toLocaleString("en-US");
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function showToast(message) {
+  const el = $("#toast");
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => el.classList.remove("show"),3500);
+}
+
+/* Line chart with accessible SVG */
+function drawTrend(data) {
+  const width = 700, height = 250;
+  const left = 28, right = 15, top = 18, bottom = 28;
+  const chartW = width-left-right;
+  const chartH = height-top-bottom;
+  const max = 110;
+
+  const point = (value,index,length) => ({
+    x:left+(index/(length-1))*chartW,
+    y:top+chartH-(value/max)*chartH
+  });
+
+  const pathFor = values => values.map((v,i) => {
+    const p = point(v,i,values.length);
+    return `${i===0?"M":"L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
+  }).join(" ");
+
+  const a = pathFor(data.trendA);
+  const b = pathFor(data.trendB);
+  const first = point(data.trendA[0],0,data.trendA.length);
+  const last = point(data.trendA.at(-1),data.trendA.length-1,data.trendA.length);
+
+  $("#trendPrimary").setAttribute("d",a);
+  $("#trendSecondary").setAttribute("d",b);
+  $("#trendArea").setAttribute("d",`${a} L ${last.x} ${top+chartH} L ${first.x} ${top+chartH} Z`);
+
+  const grid = $("#trendGrid");
+  const labels = $("#trendLabels");
+  grid.replaceChildren();
+  labels.replaceChildren();
+
+  const ns = "http://www.w3.org/2000/svg";
+  for(let i=0;i<5;i++){
+    const y=top+(chartH/4)*i;
+    const line=document.createElementNS(ns,"line");
+    line.setAttribute("x1",left);
+    line.setAttribute("x2",width-right);
+    line.setAttribute("y1",y);
+    line.setAttribute("y2",y);
+    line.setAttribute("class","chart-grid");
+    grid.appendChild(line);
+  }
+
+  ["01","02","03","04","05","06","07","08"].forEach((label,i)=>{
+    const x=left+(i/7)*chartW;
+    const text=document.createElementNS(ns,"text");
+    text.setAttribute("x",x);
+    text.setAttribute("y",height-7);
+    text.setAttribute("text-anchor","middle");
+    text.setAttribute("class","chart-label");
+    text.textContent=label;
+    labels.appendChild(text);
+  });
+}
+
+/* Risk doughnut */
+function drawRisk(data) {
+  const values = data.risk;
+  const colors = ["#cc6865","#ca944d","#6488c3","#238669"];
+  const names = ["Critical","High","Medium","Low"];
+  const total = values.reduce((a,b)=>a+b,0);
+  const circumference = 2*Math.PI*75;
+  let offset=0;
+
+  $("#donutSegments").replaceChildren();
+  $("#riskLegend").replaceChildren();
+  $("#donutTotal").textContent=formatNumber(total);
+
+  const ns="http://www.w3.org/2000/svg";
+
+  values.forEach((value,i)=>{
+    const length=(value/total)*circumference;
+    const circle=document.createElementNS(ns,"circle");
+    circle.setAttribute("cx","100");
+    circle.setAttribute("cy","100");
+    circle.setAttribute("r","75");
+    circle.setAttribute("stroke",colors[i]);
+    circle.setAttribute("stroke-dasharray",`${Math.max(0,length-2)} ${circumference}`);
+    circle.setAttribute("stroke-dashoffset",String(-offset));
+    $("#donutSegments").appendChild(circle);
+    offset+=length;
+
+    const row=document.createElement("div");
+    row.innerHTML=`<span class="legend-dot" style="background:${colors[i]}"></span>
+      <span>${names[i]}</span><b>${formatNumber(value)}</b>`;
+    $("#riskLegend").appendChild(row);
+  });
+}
+
+/* Contract lifecycle */
+function drawLifecycle(data) {
+  const chart=$("#lifecycleChart");
+  chart.replaceChildren();
+  data.lifecycle.forEach(value=>{
+    const group=document.createElement("div");
+    group.className="bar-group";
+    const current=document.createElement("div");
+    current.className="bar";
+    current.style.height=`${value}%`;
+    current.title=`Current sample: ${value}`;
+    const previous=document.createElement("div");
+    previous.className="bar alt";
+    previous.style.height=`${Math.max(5,Math.round(value*.74))}%`;
+    previous.title="Previous sample";
+    group.append(current,previous);
+    chart.appendChild(group);
+  });
+}
+
+/* Progress cards */
+function drawProgress(container,items,showPercent=true) {
+  $(container).innerHTML=items.map(item=>`
+    <div>
+      <div class="progress-head">
+        <span>${escapeHTML(item.name)}</span>
+        <span>${item.value}${showPercent?"%":" reviews"}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill ${escapeHTML(item.color||"")}"
+             style="width:${Math.max(0,Math.min(100,item.value))}%"></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderModels() {
+  $("#modelsTable").innerHTML=models.map(model=>`
+    <tr>
+      <td><span class="primary-text">${escapeHTML(model.name)}</span><span class="secondary-text">Demo evaluation record</span></td>
+      <td>${escapeHTML(model.type)}</td>
+      <td><strong>${escapeHTML(model.score)}</strong></td>
+      <td>${escapeHTML(model.latency)}</td>
+      <td><span class="pill pill-blue">${escapeHTML(model.status)}</span></td>
+    </tr>
+  `).join("");
+}
+
+function renderInsights() {
+  $("#insightsList").innerHTML=insights.map(item=>`
+    <div class="insight">
+      <div class="insight-icon">${escapeHTML(item.icon)}</div>
+      <div><strong>${escapeHTML(item.title)}</strong><p>${escapeHTML(item.text)}</p></div>
+    </div>
+  `).join("");
+}
+
+function renderDashboard(period) {
+  const data=demoData[period] || demoData[30];
+  $("#metricDocuments").textContent=formatNumber(data.documents);
+  $("#metricRequests").textContent=formatNumber(data.requests);
+  $("#metricRisks").textContent=formatNumber(data.risks);
+  $("#metricReviews").textContent=formatNumber(data.reviews);
+  drawTrend(data);
+  drawRisk(data);
+  drawLifecycle(data);
+  drawProgress("#qualityMetrics",quality);
+  drawProgress("#reviewerProgress",reviewers.map(r=>({
+    ...r,
+    value:r.value,
+    color:"green"
+  })));
+}
+
+/* CSV export of visible sample period */
+function exportReport() {
+  const period=$("#dateRange").value;
+  const data=demoData[period];
+  const rows=[
+    ["Metric","Value","Period Days"],
+    ["Documents Analyzed",data.documents,period],
+    ["AI Analysis Requests",data.requests,period],
+    ["Risk Findings",data.risks,period],
+    ["Reviews Completed",data.reviews,period],
+    ["Critical Risks",data.risk[0],period],
+    ["High Risks",data.risk[1],period],
+    ["Medium Risks",data.risk[2],period],
+    ["Low Risks",data.risk[3],period]
+  ];
+  const csv=rows.map(row=>row.map(value=>{
+    const safe=String(value).replace(/^\s*[=+\-@]/,"'$&");
+    return `"${safe.replace(/"/g,'""')}"`;
+  }).join(",")).join("\r\n");
+
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download=`lexora_sample_analytics_${period}d.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  showToast("Sample analytics CSV exported.");
+}
+
+/* Search dashboard sections */
+const searchableSections=[
+  {id:"activitySection",terms:"documents trends activity ai analyses"},
+  {id:"riskSection",terms:"risk severity distribution critical high medium low"},
+  {id:"performanceSection",terms:"ai evaluation quality metrics groundedness citations"},
+  {id:"lifecycleSection",terms:"contracts lifecycle renewal expiry"},
+  {id:"productivitySection",terms:"reviewer productivity reviews"},
+  {id:"insightsSection",terms:"insights highlights intelligence"},
+  {id:"modelsSection",terms:"models performance latency classification retrieval"}
+];
+
+$("#searchInput").addEventListener("keydown",event=>{
+  if(event.key!=="Enter")return;
+  const query=event.target.value.trim().toLowerCase();
+  if(!query)return;
+  const match=searchableSections.find(section=>section.terms.includes(query));
+  if(match){
+    document.getElementById(match.id).scrollIntoView({behavior:"smooth",block:"center"});
+    showToast("Showing matching analytics section.");
+  }else{
+    showToast("No matching analytics section found.");
+  }
+});
+
+$("#dateRange").addEventListener("change",event=>{
+  renderDashboard(event.target.value);
+  showToast("Sample reporting period updated.");
+});
+$("#exportButton").addEventListener("click",exportReport);
+$("#helpButton").addEventListener("click",()=>{
+  showToast("This is a frontend preview. Connect the analytics API for real data.");
+});
+
+/* Responsive navigation */
+$("#menuButton").addEventListener("click",()=>{
+  $("#sidebar").classList.toggle("open");
+  $("#overlay").classList.toggle("show");
+});
+$("#overlay").addEventListener("click",()=>{
+  $("#sidebar").classList.remove("open");
+  $("#overlay").classList.remove("show");
+});
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){
+    $("#sidebar").classList.remove("open");
+    $("#overlay").classList.remove("show");
+  }
+});
+
+/* Initialize */
+renderDashboard("30");
+renderModels();
+renderInsights();
+</script>
+</body>
+</html>

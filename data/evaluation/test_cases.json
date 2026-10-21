@@ -1,0 +1,66 @@
+[
+  {
+    "test_id": "TEST-MSA-001",
+    "question": "When does MSA-001 expire?",
+    "expected_answer": "2027-01-01",
+    "expected_document_id": "MSA-001",
+    "expected_citation": "contracts/master_service_agreement.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-SVC-001",
+    "question": "When does SVC-001 expire?",
+    "expected_answer": "2027-02-01",
+    "expected_document_id": "SVC-001",
+    "expected_citation": "contracts/service_agreement.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-EMP-001",
+    "question": "When does EMP-001 expire?",
+    "expected_answer": "2027-03-01",
+    "expected_document_id": "EMP-001",
+    "expected_citation": "contracts/employment_contract.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-NDA-001",
+    "question": "When does NDA-001 expire?",
+    "expected_answer": "2028-01-15",
+    "expected_document_id": "NDA-001",
+    "expected_citation": "ndas/mutual_nda.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-NDA-002",
+    "question": "When does NDA-002 expire?",
+    "expected_answer": "2027-04-01",
+    "expected_document_id": "NDA-002",
+    "expected_citation": "ndas/unilateral_nda.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-VEN-001",
+    "question": "When does VEN-001 expire?",
+    "expected_answer": "2027-05-01",
+    "expected_document_id": "VEN-001",
+    "expected_citation": "vendor_agreements/supplier_agreement.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-LEA-001",
+    "question": "When does LEA-001 expire?",
+    "expected_answer": "2029-06-01",
+    "expected_document_id": "LEA-001",
+    "expected_citation": "leases/commercial_lease.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  },
+  {
+    "test_id": "TEST-LIC-001",
+    "question": "When does LIC-001 expire?",
+    "expected_answer": "2027-07-01",
+    "expected_document_id": "LIC-001",
+    "expected_citation": "licenses/software_license.pdf",
+    "evaluation_type": "retrieval_and_grounded_answer"
+  }
+]

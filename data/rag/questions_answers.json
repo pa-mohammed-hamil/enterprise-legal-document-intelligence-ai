@@ -1,0 +1,58 @@
+[
+  {
+    "question": "When does MSA-001 expire?",
+    "answer": "2027-01-01",
+    "document_id": "MSA-001",
+    "citation": "contracts/master_service_agreement.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does SVC-001 expire?",
+    "answer": "2027-02-01",
+    "document_id": "SVC-001",
+    "citation": "contracts/service_agreement.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does EMP-001 expire?",
+    "answer": "2027-03-01",
+    "document_id": "EMP-001",
+    "citation": "contracts/employment_contract.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does NDA-001 expire?",
+    "answer": "2028-01-15",
+    "document_id": "NDA-001",
+    "citation": "ndas/mutual_nda.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does NDA-002 expire?",
+    "answer": "2027-04-01",
+    "document_id": "NDA-002",
+    "citation": "ndas/unilateral_nda.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does VEN-001 expire?",
+    "answer": "2027-05-01",
+    "document_id": "VEN-001",
+    "citation": "vendor_agreements/supplier_agreement.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does LEA-001 expire?",
+    "answer": "2029-06-01",
+    "document_id": "LEA-001",
+    "citation": "leases/commercial_lease.pdf",
+    "synthetic": true
+  },
+  {
+    "question": "When does LIC-001 expire?",
+    "answer": "2027-07-01",
+    "document_id": "LIC-001",
+    "citation": "licenses/software_license.pdf",
+    "synthetic": true
+  }
+]

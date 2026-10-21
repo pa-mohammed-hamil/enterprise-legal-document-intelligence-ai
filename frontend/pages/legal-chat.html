@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1422">
+<title>Legal AI Copilot | Lexora Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b1422;--navy2:#142338;--navy3:#1d3049;
+  --gold:#d6b477;--cream:#f6f4ee;--ink:#182334;
+  --muted:#8390a0;--line:#e8e9e7;--white:#fff;
+  --green:#238669;--red:#cc6865;--blue:#6488c3;
+  --shadow:0 12px 40px rgba(15,28,45,.045)
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:3px solid var(--gold);outline-offset:3px
+}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:250px;position:fixed;inset:0 auto 0 0;
+  background:var(--navy);color:white;padding:25px 15px;
+  display:flex;flex-direction:column;z-index:50;
+  transition:transform .3s
+}
+.logo{display:flex;gap:12px;align-items:center;padding:0 12px 30px}
+.logo-mark{
+  width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid rgba(214,180,119,.5);border-radius:12px;
+  background:rgba(214,180,119,.08);
+  font:25px Georgia,serif;color:var(--gold)
+}
+.logo strong{font:800 19px Manrope,sans-serif;letter-spacing:-.7px}
+.logo small{display:block;color:#90a0b5;font-size:10px;letter-spacing:2px;margin-top:4px}
+.nav-title{font-size:10px;color:#778aa1;letter-spacing:2px;font-weight:800;padding:17px 13px 9px}
+.nav-item{
+  display:flex;gap:12px;align-items:center;border:1px solid transparent;
+  border-radius:11px;padding:12px;color:#a7b5c6;
+  font-size:12px;margin:2px 0
+}
+.nav-item:hover{background:#ffffff10;color:white}
+.nav-item.active{
+  background:rgba(214,180,119,.11);color:#f3e4c5;
+  border-color:rgba(214,180,119,.15)
+}
+.nav-icon{font-size:17px;width:22px;text-align:center}
+.sidebar-bottom{margin-top:auto}
+.sidebar-profile{
+  display:flex;gap:10px;align-items:center;
+  border-top:1px solid #27364a;padding-top:20px
+}
+.avatar{
+  height:37px;width:37px;border-radius:11px;background:#e0cba6;
+  color:#283548;display:grid;place-items:center;font-weight:800;font-size:12px
+}
+.sidebar-profile strong{display:block;font-size:12px}
+.sidebar-profile small{font-size:10px;color:#91a0b5}
+.main{margin-left:250px;width:calc(100% - 250px);min-width:0}
+.topbar{
+  height:76px;background:white;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;gap:12px
+}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--ink)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.icon-button{
+  width:37px;height:37px;border:1px solid var(--line);
+  background:white;border-radius:10px;font-size:15px
+}
+.mobile-menu{display:none}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:8px;padding:10px 14px;border:1px solid var(--line);
+  border-radius:10px;background:white;font-size:11px;font-weight:800
+}
+.btn:hover{border-color:var(--gold)}
+.btn-dark{background:var(--navy);color:white;border-color:var(--navy)}
+.btn-gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.workspace{
+  display:grid;grid-template-columns:245px minmax(0,1fr) 305px;
+  min-height:calc(100vh - 76px)
+}
+.chat-history{
+  background:#faf9f6;border-right:1px solid var(--line);
+  padding:20px 13px;min-width:0
+}
+.history-head{padding:0 7px 18px}
+.history-head h3{font-size:13px;margin:0 0 13px}
+.new-chat{
+  width:100%;padding:12px;border:1px solid #dfd5c3;
+  border-radius:10px;background:#f6eddf;color:#9d7946;
+  font-size:11px;font-weight:800
+}
+.history-label{
+  font-size:10px;letter-spacing:1.4px;color:#a0a9b4;
+  font-weight:800;margin:20px 9px 10px
+}
+.history-item{
+  display:block;width:100%;border:1px solid transparent;
+  background:transparent;border-radius:10px;padding:12px;
+  text-align:left;margin:3px 0
+}
+.history-item:hover{background:#f1eee7}
+.history-item.active{background:white;border-color:#e8e2d7}
+.history-item strong{
+  display:block;font-size:11px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis
+}
+.history-item small{display:block;color:var(--muted);font-size:10px;margin-top:7px}
+.chat-main{
+  display:flex;flex-direction:column;
+  min-width:0;height:calc(100vh - 76px);min-height:620px
+}
+.chat-header{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:20px 24px;border-bottom:1px solid var(--line);
+  background:white
+}
+.chat-header h2{font:800 16px Manrope,sans-serif;margin:0 0 5px}
+.chat-header p{font-size:10px;color:var(--muted);margin:0}
+.chat-modes{display:flex;gap:7px;flex-wrap:wrap}
+.mode{
+  padding:8px 10px;border:1px solid var(--line);
+  background:white;border-radius:8px;font-size:10px;font-weight:800;color:#7e8b9c
+}
+.mode.active{background:#f7efdf;border-color:#e8d6b7;color:#9b7540}
+.messages{
+  flex:1;overflow-y:auto;padding:30px 25px;
+  display:flex;flex-direction:column;gap:25px;
+  overscroll-behavior:contain
+}
+.welcome{max-width:650px;margin:auto;text-align:center;padding:20px}
+.welcome-icon{
+  width:70px;height:70px;border-radius:22px;
+  display:grid;place-items:center;background:var(--navy);
+  color:var(--gold);font:40px Georgia,serif;margin:0 auto 22px
+}
+.welcome h1{font:800 27px Manrope,sans-serif;letter-spacing:-1px;margin:0 0 12px}
+.welcome p{font-size:12px;color:var(--muted);line-height:1.9}
+.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:26px}
+.suggestion{
+  text-align:left;background:white;border:1px solid var(--line);
+  padding:16px;border-radius:13px;font-size:11px;
+  line-height:1.7;color:#596779
+}
+.suggestion:hover{border-color:var(--gold);background:#fffcf7}
+.message{display:flex;gap:12px;max-width:820px;width:100%;margin:0 auto}
+.message.user{flex-direction:row-reverse}
+.message-avatar{
+  width:34px;height:34px;flex-shrink:0;border-radius:10px;
+  background:var(--navy);color:var(--gold);
+  display:grid;place-items:center;font-weight:800;font-size:13px
+}
+.message.user .message-avatar{background:#e0cba6;color:var(--navy)}
+.message-content{max-width:85%;min-width:0}
+.message-bubble{
+  background:white;border:1px solid var(--line);
+  border-radius:15px;padding:17px 19px;
+  font-size:12px;line-height:1.9;white-space:pre-wrap;
+  overflow-wrap:anywhere
+}
+.message.user .message-bubble{background:#e9edf2;border-color:#e9edf2}
+.message-meta{
+  display:flex;align-items:center;gap:12px;
+  color:var(--muted);font-size:10px;margin-top:9px
+}
+.message.user .message-meta{justify-content:flex-end}
+.message-meta button{
+  background:none;border:0;color:#a67d43;
+  font-size:10px;font-weight:800;padding:0
+}
+.source-badge{
+  display:inline-flex;padding:5px 8px;border-radius:6px;
+  background:#f6eddf;color:#a17d48;font-size:10px;font-weight:800
+}
+.composer-wrap{
+  padding:17px 25px 22px;background:#fff;
+  border-top:1px solid var(--line)
+}
+.composer{
+  max-width:850px;margin:auto;border:1px solid #e3e4e4;
+  border-radius:15px;background:#fafaf9;padding:12px
+}
+.composer textarea{
+  width:100%;min-height:54px;max-height:160px;
+  border:0;outline:0;background:transparent;resize:vertical;
+  font-size:12px;line-height:1.7;padding:6px
+}
+.composer-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.composer-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.composer-tools select{
+  padding:9px;border:1px solid var(--line);border-radius:8px;
+  background:white;font-size:10px
+}
+.send-button{
+  width:38px;height:38px;border:0;border-radius:10px;
+  background:var(--navy);color:white;font-size:19px
+}
+.send-button:disabled{opacity:.45;cursor:not-allowed}
+.composer-disclaimer{
+  max-width:850px;margin:10px auto 0;text-align:center;
+  color:#9aa3ae;font-size:10px;line-height:1.6
+}
+.context-panel{
+  background:white;border-left:1px solid var(--line);
+  min-width:0;overflow-y:auto;max-height:calc(100vh - 76px)
+}
+.panel-head{
+  padding:24px 20px 17px;border-bottom:1px solid var(--line)
+}
+.panel-head h3{font-size:14px;margin:0 0 7px}
+.panel-head p{font-size:11px;color:var(--muted);margin:0}
+.panel-section{padding:20px;border-bottom:1px solid var(--line)}
+.section-label{
+  font-size:10px;font-weight:800;color:#9eabb9;
+  letter-spacing:1.3px;margin-bottom:13px
+}
+.context-card{
+  border:1px solid var(--line);border-radius:12px;
+  padding:14px;margin-bottom:10px;background:#fdfdfc
+}
+.context-card strong{display:block;font-size:11px;margin-bottom:6px}
+.context-card p{font-size:10px;color:var(--muted);line-height:1.7;margin:0}
+.context-card button{
+  border:0;background:none;color:#a67d43;
+  padding:9px 0 0;font-size:10px;font-weight:800
+}
+.context-card.selected{border-color:#d9bf90;background:#fffaf0}
+.toggle-row{
+  display:flex;justify-content:space-between;gap:10px;
+  align-items:center;font-size:11px;padding:11px 0
+}
+.toggle-row input{accent-color:#b7955c}
+.citation-item{
+  border:1px solid var(--line);border-radius:10px;
+  padding:13px;margin-bottom:10px
+}
+.citation-item strong{font-size:11px;display:block;margin-bottom:7px}
+.citation-item p{font-size:10px;color:var(--muted);line-height:1.7;margin:0}
+.citation-item a{font-size:10px;color:#a67d43;font-weight:800}
+.status-dot{
+  width:7px;height:7px;display:inline-block;
+  border-radius:50%;background:var(--orange);margin-right:6px
+}
+.notice{
+  background:#fff6e7;border:1px solid #efdfc3;
+  border-radius:10px;padding:13px;font-size:10px;
+  color:#85643c;line-height:1.7;margin-top:15px
+}
+.toast{
+  position:fixed;bottom:25px;right:25px;z-index:120;
+  background:var(--navy);color:white;padding:15px 20px;
+  border-radius:11px;font-size:12px;box-shadow:0 15px 40px #0002;
+  opacity:0;transform:translateY(100px);transition:.3s
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.overlay{display:none}
+@media(max-width:1450px){
+  .workspace{grid-template-columns:205px minmax(0,1fr) 270px}
+}
+@media(max-width:1200px){
+  .workspace{grid-template-columns:200px minmax(0,1fr)}
+  .context-panel{display:none}
+}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:block}
+  .overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:40}
+}
+@media(max-width:650px){
+  .topbar{height:66px;padding:0 14px}
+  .workspace{grid-template-columns:1fr;min-height:calc(100vh - 66px)}
+  .chat-history{display:none}
+  .chat-main{height:calc(100vh - 66px);min-height:0}
+  .chat-header{padding:15px}
+  .chat-modes{gap:5px}
+  .mode{font-size:9px;padding:7px}
+  .messages{padding:18px 12px}
+  .message-content{max-width:90%}
+  .message-bubble{padding:13px;font-size:11px}
+  .welcome h1{font-size:22px}
+  .suggestions{grid-template-columns:1fr}
+  .composer-wrap{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="logo">
+    <span class="logo-mark">L</span>
+    <span><strong>Lexora<span style="color:var(--gold)">.</span></strong><small>INTELLIGENCE</small></span>
+  </a>
+
+    <div class="nav-title">WORKSPACE</div>
+  <a href="dashboard.html" class="nav-item"><span class="nav-icon">◫</span> Dashboard</a>
+  <a href="documents.html" class="nav-item"><span class="nav-icon">▤</span> Documents</a>
+  <a href="contracts.html" class="nav-item"><span class="nav-icon">▧</span> Contracts</a>
+  <a href="expiry-calendar.html" class="nav-item"><span class="nav-icon">◷</span> Expiry Calendar</a>
+  <a href="renewals.html" class="nav-item"><span class="nav-icon">↻</span> Renewals</a>
+  <a href="reviews.html" class="nav-item"><span class="nav-icon">☷</span> Review Queue</a>
+  
+  <div class="nav-title">AI & INTELLIGENCE</div>
+  <a href="legal-chat.html" class="nav-item active"><span class="nav-icon">✧</span> Legal AI Copilot</a>
+  <a href="risk.html" class="nav-item"><span class="nav-icon">◇</span> Risk Intelligence</a>
+  <a href="analytics.html" class="nav-item"><span class="nav-icon">▥</span> Analytics</a>
+  <a href="predictive-analytics.html" class="nav-item"><span class="nav-icon">◈</span> Predictive Analytics</a>
+  <a href="model-settings.html" class="nav-item"><span class="nav-icon">⚡</span> AI Model Settings</a>
+  
+  <div class="nav-title">INTEGRATIONS</div>
+  <a href="esignature.html" class="nav-item"><span class="nav-icon">✎</span> E-Signature</a>
+  <a href="collaboration.html" class="nav-item"><span class="nav-icon">◉</span> Collaboration</a>
+  <a href="notifications.html" class="nav-item"><span class="nav-icon">●</span> Notifications</a>
+  
+  <div class="nav-title">ADMINISTRATION</div>
+  <a href="admin.html" class="nav-item"><span class="nav-icon">♙</span> Administration</a>
+  <a href="audit.html" class="nav-item"><span class="nav-icon">📋</span> Audit Trail</a>
+  <a href="dlp-settings.html" class="nav-item"><span class="nav-icon">🔒</span> Data Security</a>
+  <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> Settings</a><div class="sidebar-bottom">
+    <div class="sidebar-profile">
+      <div class="avatar">AD</div>
+      <div><strong>Admin Workspace</strong><small>Legal Operations</small></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="icon-button mobile-menu" id="menuButton" aria-label="Open menu">☰</button>
+    <div class="breadcrumb">Workspace / <strong>Legal AI Copilot</strong></div>
+  </div>
+  <div class="top-actions">
+    <button class="btn" id="exportChat">↓ Export Chat</button>
+    <button class="btn btn-dark" id="topNewChat">＋ New Chat</button>
+    <div class="avatar">AD</div>
+  </div>
+</header>
+
+<div class="workspace">
+
+  <!-- HISTORY -->
+  <aside class="chat-history">
+    <div class="history-head">
+      <h3>Conversations</h3>
+      <button class="new-chat" id="newChatButton">＋ Start New Conversation</button>
+    </div>
+    <div class="history-label">THIS SESSION</div>
+    <div id="historyList"></div>
+    <div class="notice">
+      Conversations are kept in browser memory for this demonstration and disappear on reload.
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <section class="chat-main" aria-label="Legal AI chat">
+    <div class="chat-header">
+      <div>
+        <h2>Lexora Legal Copilot <span style="color:#b58b50">✧</span></h2>
+        <p><span class="status-dot" style="background:#238669"></span>Connected to backend API · RAG-powered analysis</p>
+      </div>
+      <div class="chat-modes">
+        <button class="mode active" data-mode="standard">Standard</button>
+        <button class="mode" data-mode="deep">Deep Analysis</button>
+        <button class="mode" data-mode="compare">Compare</button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages" aria-live="polite">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">L</div>
+        <h1>Legal intelligence, thoughtfully delivered.</h1>
+        <p>Ask questions about contracts, analyze legal clauses, investigate obligations, or compare documents using an evidence-grounded AI workflow.</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Summarize the key obligations in my selected agreement.">✧ Summarize key contractual obligations</button>
+          <button class="suggestion" data-prompt="Identify potential indemnification and liability risks.">◇ Identify indemnification risks</button>
+          <button class="suggestion" data-prompt="Compare termination clauses across selected contracts.">▧ Compare termination clauses</button>
+          <button class="suggestion" data-prompt="Find renewal and notice deadlines in the selected documents.">◷ Find renewal and notice deadlines</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer-wrap">
+      <form class="composer" id="chatForm">
+        <textarea id="messageInput" rows="2" maxlength="8000" placeholder="Ask about contracts, clauses, obligations, risks..." aria-label="Legal question"></textarea>
+        <div class="composer-bottom">
+          <div class="composer-tools">
+            <select id="modelSelect" aria-label="AI model selection" style="min-width:200px">
+              <optgroup label="🎯 QUICK SELECT">
+                <option value="auto">⚡ Auto (Best for task)</option>
+                <option value="fast">🚀 Fast (GPT-4o-mini)</option>
+                <option value="reasoning">🧠 Reasoning (O1)</option>
+                <option value="long-context">📚 Long Context (Gemini-1.5-Pro)</option>
+              </optgroup>
+              <optgroup label="🟢 OPENAI">
+                <option value="gpt-4o">GPT-4o (Latest, Multimodal)</option>
+                <option value="gpt-4o-mini">GPT-4o-mini (Fast, Affordable)</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo (Advanced)</option>
+                <option value="gpt-4">GPT-4 (Reliable)</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Legacy)</option>
+                <option value="o1">O1 (Reasoning)</option>
+                <option value="o1-mini">O1-mini (Fast Reasoning)</option>
+                <option value="o3-mini">O3-mini (Latest Reasoning)</option>
+              </optgroup>
+              <optgroup label="🔵 AZURE OPENAI">
+                <option value="azure-gpt-4">Azure GPT-4</option>
+                <option value="azure-gpt-4-32k">Azure GPT-4 (32k)</option>
+                <option value="azure-gpt-4-turbo">Azure GPT-4 Turbo</option>
+                <option value="azure-gpt-35-turbo">Azure GPT-3.5 Turbo</option>
+              </optgroup>
+              <optgroup label="🟣 ANTHROPIC CLAUDE">
+                <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (Latest)</option>
+                <option value="claude-3-opus-20240229">Claude 3 Opus (Most Capable)</option>
+                <option value="claude-3-sonnet-20240229">Claude 3 Sonnet (Balanced)</option>
+                <option value="claude-3-haiku-20240307">Claude 3 Haiku (Fast)</option>
+              </optgroup>
+              <optgroup label="🔴 GOOGLE GEMINI">
+                <option value="gemini-1.5-pro">Gemini 1.5 Pro (1M context)</option>
+                <option value="gemini-1.5-flash">Gemini 1.5 Flash (Fast)</option>
+                <option value="gemini-pro">Gemini Pro</option>
+                <option value="gemini-pro-vision">Gemini Pro Vision</option>
+                <option value="gemini-ultra">Gemini Ultra</option>
+              </optgroup>
+              <optgroup label="🟡 COHERE">
+                <option value="command-r-plus">Command R+ (RAG Optimized)</option>
+                <option value="command-r">Command R</option>
+                <option value="command">Command</option>
+                <option value="command-light">Command Light</option>
+              </optgroup>
+              <optgroup label="🟠 MISTRAL AI">
+                <option value="mistral-large-latest">Mistral Large (Latest)</option>
+                <option value="mistral-medium-latest">Mistral Medium (Latest)</option>
+                <option value="mistral-small-latest">Mistral Small (Latest)</option>
+                <option value="open-mixtral-8x7b">Mixtral 8x7B (Open)</option>
+                <option value="open-mixtral-8x22b">Mixtral 8x22B (Open)</option>
+                <option value="open-mistral-7b">Mistral 7B (Open)</option>
+              </optgroup>
+              <optgroup label="⚡ GROQ (ULTRA FAST)">
+                <option value="llama-3.1-405b-reasoning">Llama 3.1 405B (Reasoning)</option>
+                <option value="llama-3.1-70b-versatile">Llama 3.1 70B (Versatile)</option>
+                <option value="llama-3.1-8b-instant">Llama 3.1 8B (Instant)</option>
+                <option value="llama3-70b-8192">Llama 3 70B</option>
+                <option value="mixtral-8x7b-32768">Mixtral 8x7B (32k)</option>
+                <option value="gemma2-9b-it">Gemma 2 9B</option>
+              </optgroup>
+              <optgroup label="🤝 TOGETHER AI (OPEN SOURCE)">
+                <option value="meta-llama-3.1-70b-instruct-turbo">Llama 3.1 70B Turbo</option>
+                <option value="meta-llama-3.1-405b-instruct-turbo">Llama 3.1 405B Turbo</option>
+                <option value="meta-llama-3.1-8b-instruct-turbo">Llama 3.1 8B Turbo</option>
+                <option value="mixtral-8x22b-instruct">Mixtral 8x22B</option>
+                <option value="qwen2-72b-instruct">Qwen 2 72B</option>
+                <option value="deepseek-coder-33b">DeepSeek Coder 33B</option>
+              </optgroup>
+              <optgroup label="🔍 PERPLEXITY (WEB SEARCH)">
+                <option value="llama-3.1-sonar-huge-128k-online">Sonar Huge (128k, Online)</option>
+                <option value="llama-3.1-sonar-large-128k-online">Sonar Large (128k, Online)</option>
+                <option value="llama-3.1-sonar-small-128k-online">Sonar Small (128k, Online)</option>
+                <option value="pplx-70b-online">PPLX 70B (Online)</option>
+              </optgroup>
+              <optgroup label="🔁 REPLICATE">
+                <option value="llama-2-70b-chat">Llama 2 70B Chat</option>
+                <option value="llama-3-70b-instruct">Llama 3 70B Instruct</option>
+                <option value="mistral-7b-instruct-v0.2">Mistral 7B v0.2</option>
+              </optgroup>
+            </select>
+            <span style="font-size:10px;color:var(--muted)" id="selectedDocCount">0 documents selected</span>
+          </div>
+          <button type="submit" class="send-button" id="sendButton" aria-label="Send message">↑</button>
+        </div>
+      </form>
+      <p class="composer-disclaimer">AI-generated legal information requires source verification and qualified human review. Connected to backend RAG service for evidence-based analysis.</p>
+    </div>
+  </section>
+
+  <!-- DOCUMENT CONTEXT -->
+  <aside class="context-panel">
+    <div class="panel-head">
+      <h3>Document context</h3>
+      <p>Choose documents for a future permission-aware RAG search</p>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">AI MODEL SELECTION</div>
+      <div id="modelInfo" class="context-card">
+        <strong id="modelName">⚡ Auto Selection</strong>
+        <p id="modelDescription">Automatically selects the best model for your legal analysis task.</p>
+        <div style="margin-top:10px;font-size:9px;color:var(--muted)">
+          <div><strong>Provider:</strong> <span id="modelProvider">Smart Routing</span></div>
+          <div><strong>Context:</strong> <span id="modelContext">Variable</span></div>
+          <div><strong>Speed:</strong> <span id="modelSpeed">Optimized</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">AVAILABLE SAMPLE DOCUMENTS</div>
+      <div id="documentContext"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">RETRIEVAL OPTIONS</div>
+      <label class="toggle-row">Hybrid retrieval <input type="checkbox" id="hybridRetrieval" checked></label>
+      <label class="toggle-row">Reranking <input type="checkbox" id="reranking" checked></label>
+      <label class="toggle-row">Citation verification <input type="checkbox" id="citationVerification" checked></label>
+      <label class="toggle-row">GraphRAG <input type="checkbox" id="graphRag"></label>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">SOURCE EVIDENCE</div>
+      <div id="citationsPanel">
+        <div class="notice">No source citations yet. Verified document excerpts will appear here after backend integration.</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   LEXORA LEGAL AI COPILOT
+   Frontend demonstration: no fabricated AI responses.
+===================================================== */
+
+const sampleDocuments=[
+  {id:"DOC-2026-00128",name:"Master Services Agreement",type:"Contract",pages:1},
+  {id:"DOC-2026-00129",name:"Data Processing Agreement",type:"Agreement",pages:18},
+  {id:"DOC-2026-00130",name:"Vendor Supply Agreement",type:"Contract",pages:24},
+  {id:"DOC-2026-00131",name:"Employee Confidentiality NDA",type:"NDA",pages:8}
+];
+
+const $=selector=>document.querySelector(selector);
+const $$=selector=>Array.from(document.querySelectorAll(selector));
+
+const state={
+  chats:[],
+  activeChatId:null,
+  mode:"standard",
+  selectedDocuments:new Set(),
+  nextChatId:1
+};
+
+function escapeHTML(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function toast(message){
+  const el=$("#toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>el.classList.remove("show"),3500);
+}
+
+function currentChat(){
+  return state.chats.find(chat=>chat.id===state.activeChatId);
+}
+
+function createChat(){
+  const chat={
+    id:state.nextChatId++,
+    title:"New legal conversation",
+    createdAt:new Date(),
+    messages:[]
+  };
+  state.chats.unshift(chat);
+  state.activeChatId=chat.id;
+  renderHistory();
+  renderMessages();
+  $("#messageInput").focus();
+}
+
+function renderHistory(){
+  $("#historyList").innerHTML=state.chats.map(chat=>`
+    <button class="history-item ${chat.id===state.activeChatId?"active":""}" data-chat-id="${chat.id}">
+      <strong>${escapeHTML(chat.title)}</strong>
+      <small>${chat.messages.length} message(s) · Session demo</small>
+    </button>
+  `).join("");
+}
+
+function renderMessages(){
+  const chat=currentChat();
+  const container=$("#messages");
+
+  if(!chat||!chat.messages.length){
+    container.innerHTML=`
+      <div class="welcome">
+        <div class="welcome-icon">L</div>
+        <h1>Legal intelligence, thoughtfully delivered.</h1>
+        <p>Ask about contractual obligations, clauses, renewal terms and risks. Real answers require the Legal RAG backend.</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Summarize the key obligations in my selected agreement.">✧ Summarize key contractual obligations</button>
+          <button class="suggestion" data-prompt="Identify potential indemnification and liability risks.">◇ Identify indemnification risks</button>
+          <button class="suggestion" data-prompt="Compare termination clauses across selected contracts.">▧ Compare termination clauses</button>
+          <button class="suggestion" data-prompt="Find renewal and notice deadlines in the selected documents.">◷ Find renewal and notice deadlines</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML=chat.messages.map((message,index)=>`
+    <div class="message ${message.role==="user"?"user":"assistant"}">
+      <div class="message-avatar">${message.role==="user"?"U":"L"}</div>
+      <div class="message-content">
+        <div class="message-bubble">${escapeHTML(message.content)}</div>
+        <div class="message-meta">
+          <span>${message.role==="user"?"You":"Lexora Demo"} · ${escapeHTML(message.time)}</span>
+          ${message.role==="assistant"?"<span class='source-badge'>No citations</span>":""}
+          <button class="copy-message" data-index="${index}">Copy</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  container.scrollTop=container.scrollHeight;
+}
+
+function addMessage(role,content){
+  const chat=currentChat();
+  if(!chat)return;
+
+  chat.messages.push({
+    role,
+    content,
+    time:new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})
+  });
+
+  if(role==="user"&&chat.title==="New legal conversation"){
+    chat.title=content.length>34?content.slice(0,34)+"…":content;
+  }
+
+  renderHistory();
+  renderMessages();
+}
+
+async function submitMessage(text){
+  const content=text.trim();
+  if(!content)return;
+
+  if(!currentChat())createChat();
+
+  addMessage("user",content);
+
+  // Show typing indicator
+  const chat=currentChat();
+  const typingMessage={
+    role:"assistant",
+    content:"⋯ Analyzing legal documents with AI...",
+    time:new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})
+  };
+  chat.messages.push(typingMessage);
+  renderMessages();
+
+  try{
+    const selected=sampleDocuments
+      .filter(doc=>state.selectedDocuments.has(doc.id))
+      .map(doc=>doc.id);
+
+    const requestBody={
+      message:content,
+      conversation_id:chat.id.toString(),
+      document_ids:selected,
+      mode:state.mode==="standard"?"legal_qa":state.mode,
+      model:$("#modelSelect").value==="auto"?null:$("#modelSelect").value,
+      use_rag:true,
+      use_agents:true,
+      include_citations:$("#citationVerification")?.checked??true,
+      max_sources:10,
+      metadata:{
+        use_hybrid:$("#hybridRetrieval")?.checked??true,
+        use_reranking:$("#reranking")?.checked??true,
+        use_graph_rag:$("#graphRag")?.checked??false
+      }
+    };
+
+    const response=await fetch("http://localhost:8000/api/v1/chat",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify(requestBody)
+    });
+
+    // Remove typing indicator
+    chat.messages.pop();
+
+    if(!response.ok){
+      const errorText=await response.text();
+      let errorMessage="Backend error: "+response.status;
+      try{
+        const errorData=JSON.parse(errorText);
+        errorMessage=errorData.detail||errorMessage;
+      }catch(e){}
+      
+      addMessage("assistant","❌ Backend API error: "+errorMessage+"\n\nTroubleshooting:\n• Verify backend is running: http://localhost:8000/health\n• Check browser console for CORS errors\n• Ensure proper authentication headers if required");
+      return;
+    }
+
+    const data=await response.json();
+
+    let responseText=data.answer||data.response||data.message||"No response received from backend.";
+
+    // Add citations if present
+    if(data.citations&&data.citations.length>0){
+      responseText+="\n\n📚 Citations:\n"+data.citations.map((cit,i)=>
+        `${i+1}. ${cit.document_name||"Document"} (page ${cit.page_number||"?"}, confidence: ${(cit.relevance_score*100).toFixed(0)}%)\n   "${cit.text?.substring(0,120)||"No excerpt"}..."`
+      ).join("\n");
+    }
+
+    // Add metadata if present
+    if(data.model_used){
+      responseText+="\n\n🤖 Model: "+data.model_used;
+    }
+    if(data.response_time){
+      responseText+=" · ⏱️ "+data.response_time.toFixed(2)+"s";
+    }
+
+    addMessage("assistant",responseText);
+
+    // Update citations panel if citations exist
+    if(data.citations&&data.citations.length>0){
+      $("#citationsPanel").innerHTML=data.citations.map(cit=>`
+        <div class="citation-item">
+          <strong>📄 ${escapeHTML(cit.document_name||"Unknown Document")}</strong>
+          <p>${escapeHTML(cit.text||"No excerpt available")}</p>
+          <a href="#">Page ${cit.page_number||"?"} · Confidence ${(cit.relevance_score*100).toFixed(0)}%</a>
+        </div>
+      `).join("");
+    }
+
+  }catch(error){
+    // Remove typing indicator if still present
+    if(chat.messages[chat.messages.length-1]===typingMessage){
+      chat.messages.pop();
+    }
+    
+    addMessage("assistant","❌ Connection failed: "+error.message+"\n\nTroubleshooting:\n• Check if backend is running: http://localhost:8000\n• Verify network connectivity\n• Check browser console for detailed errors\n• CORS may need configuration in backend");
+    console.error("Chat API error:",error);
+  }
+}
+
+$("#chatForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const input=$("#messageInput");
+  const content=input.value.trim();
+  if(!content)return;
+  input.value="";
+  submitMessage(content);
+});
+
+$("#messageInput").addEventListener("keydown",event=>{
+  if(event.key==="Enter"&&!event.shiftKey&&!event.isComposing){
+    event.preventDefault();
+    $("#chatForm").requestSubmit();
+  }
+});
+
+$("#messages").addEventListener("click",event=>{
+  const suggestion=event.target.closest(".suggestion");
+  if(suggestion){
+    $("#messageInput").value=suggestion.dataset.prompt;
+    $("#messageInput").focus();
+    return;
+  }
+
+  const copyButton=event.target.closest(".copy-message");
+  if(copyButton){
+    const chat=currentChat();
+    const message=chat?.messages[Number(copyButton.dataset.index)];
+    if(message){
+      navigator.clipboard.writeText(message.content)
+        .then(()=>toast("Message copied."))
+        .catch(()=>toast("Clipboard access unavailable."));
+    }
+  }
+});
+
+$("#historyList").addEventListener("click",event=>{
+  const button=event.target.closest("[data-chat-id]");
+  if(!button)return;
+  state.activeChatId=Number(button.dataset.chatId);
+  renderHistory();
+  renderMessages();
+});
+
+$("#newChatButton").addEventListener("click",createChat);
+$("#topNewChat").addEventListener("click",createChat);
+
+/* Modes */
+$$("[data-mode]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    state.mode=button.dataset.mode;
+    $$("[data-mode]").forEach(item=>item.classList.toggle("active",item===button));
+    toast("Mode set to "+button.textContent+". Backend execution is not connected.");
+  });
+});
+
+/* Model Selection Info */
+const modelInfo={
+  "auto":{name:"⚡ Auto Selection",provider:"Smart Routing",context:"Variable",speed:"Optimized",desc:"Automatically selects the best model for your legal analysis task."},
+  "fast":{name:"🚀 Fast (GPT-4o-mini)",provider:"OpenAI",context:"128k tokens",speed:"Ultra Fast",desc:"Optimized for speed. Best for quick questions and simple analysis."},
+  "reasoning":{name:"🧠 Reasoning (O1)",provider:"OpenAI",context:"200k tokens",speed:"Slower",desc:"Advanced reasoning model. Best for complex legal analysis and multi-step logic."},
+  "long-context":{name:"📚 Long Context (Gemini 1.5 Pro)",provider:"Google",context:"1M tokens",speed:"Medium",desc:"Handles extremely long documents. Best for analyzing multiple contracts simultaneously."},
+  "gpt-4o":{name:"GPT-4o",provider:"OpenAI",context:"128k tokens",speed:"Fast",desc:"Latest multimodal model. Excellent for general legal analysis with vision capabilities."},
+  "gpt-4o-mini":{name:"GPT-4o-mini",provider:"OpenAI",context:"128k tokens",speed:"Ultra Fast",desc:"Smaller, faster version of GPT-4o. Cost-effective for routine tasks."},
+  "gpt-4-turbo":{name:"GPT-4 Turbo",provider:"OpenAI",context:"128k tokens",speed:"Fast",desc:"Advanced reasoning and analysis. Reliable for complex legal documents."},
+  "gpt-4":{name:"GPT-4",provider:"OpenAI",context:"8k tokens",speed:"Medium",desc:"Reliable and accurate. Best for standard legal document analysis."},
+  "o1":{name:"O1",provider:"OpenAI",context:"200k tokens",speed:"Slower",desc:"Deep reasoning model. Excels at complex legal logic and edge cases."},
+  "claude-3-5-sonnet-20241022":{name:"Claude 3.5 Sonnet",provider:"Anthropic",context:"200k tokens",speed:"Fast",desc:"Latest Claude model. Excellent for nuanced legal interpretation and long documents."},
+  "claude-3-opus-20240229":{name:"Claude 3 Opus",provider:"Anthropic",context:"200k tokens",speed:"Medium",desc:"Most capable Claude model. Best for sophisticated legal analysis."},
+  "gemini-1.5-pro":{name:"Gemini 1.5 Pro",provider:"Google",context:"1M tokens",speed:"Medium",desc:"Massive context window. Analyzes entire contract portfolios at once."},
+  "command-r-plus":{name:"Command R+",provider:"Cohere",context:"128k tokens",speed:"Fast",desc:"Optimized for RAG. Excellent citation and retrieval grounding."},
+  "mistral-large-latest":{name:"Mistral Large",provider:"Mistral AI",context:"32k tokens",speed:"Fast",desc:"European AI model. Strong legal reasoning and multilingual support."},
+  "llama-3.1-405b-reasoning":{name:"Llama 3.1 405B",provider:"Groq",context:"131k tokens",speed:"Ultra Fast",desc:"Massive open-source model with ultra-fast inference via Groq."},
+  "llama-3.1-70b-versatile":{name:"Llama 3.1 70B",provider:"Groq",context:"131k tokens",speed:"Ultra Fast",desc:"Versatile open model. Fast inference for general legal tasks."},
+  "llama-3.1-sonar-huge-128k-online":{name:"Sonar Huge",provider:"Perplexity",context:"128k tokens",speed:"Medium",desc:"Real-time web search. Can research current legal precedents and regulations."}
+};
+
+$("#modelSelect").addEventListener("change",event=>{
+  const selectedModel=event.target.value;
+  const info=modelInfo[selectedModel]||{
+    name:selectedModel,
+    provider:"Unknown",
+    context:"Variable",
+    speed:"Unknown",
+    desc:"Model information not available."
+  };
+  
+  $("#modelName").textContent=info.name;
+  $("#modelDescription").textContent=info.desc;
+  $("#modelProvider").textContent=info.provider;
+  $("#modelContext").textContent=info.context;
+  $("#modelSpeed").textContent=info.speed;
+  
+  toast("Model changed to "+info.name);
+});
+
+/* Document context */
+function renderDocuments(){
+  $("#documentContext").innerHTML=sampleDocuments.map(doc=>`
+    <div class="context-card ${state.selectedDocuments.has(doc.id)?"selected":""}">
+      <strong>▤ ${escapeHTML(doc.name)}</strong>
+      <p>${escapeHTML(doc.type)} · ${doc.pages} sample page(s)</p>
+      <button class="toggle-document" data-id="${escapeHTML(doc.id)}">
+        ${state.selectedDocuments.has(doc.id)?"✓ Selected":"＋ Add to Context"}
+      </button>
+    </div>
+  `).join("");
+
+  $("#selectedDocCount").textContent=
+    state.selectedDocuments.size+" document(s) selected";
+}
+
+$("#documentContext").addEventListener("click",event=>{
+  const button=event.target.closest(".toggle-document");
+  if(!button)return;
+
+  const id=button.dataset.id;
+  if(state.selectedDocuments.has(id))state.selectedDocuments.delete(id);
+  else state.selectedDocuments.add(id);
+
+  renderDocuments();
+});
+
+/* Export local conversation as plain text */
+$("#exportChat").addEventListener("click",()=>{
+  const chat=currentChat();
+  if(!chat||!chat.messages.length){
+    toast("No messages to export.");
+    return;
+  }
+
+  const content=[
+    "LEXORA LEGAL COPILOT — DEMO CONVERSATION",
+    "No verified legal analysis or citations.",
+    "",
+    ...chat.messages.map(message=>
+      `${message.role.toUpperCase()} [${message.time}]\n${message.content}\n`
+    )
+  ].join("\n");
+
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="lexora_demo_conversation.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Demo conversation exported.");
+});
+
+/* Mobile navigation */
+$("#menuButton").addEventListener("click",()=>{
+  $("#sidebar").classList.toggle("open");
+  $("#overlay").classList.toggle("show");
+});
+
+$("#overlay").addEventListener("click",()=>{
+  $("#sidebar").classList.remove("open");
+  $("#overlay").classList.remove("show");
+});
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){
+    $("#sidebar").classList.remove("open");
+    $("#overlay").classList.remove("show");
+  }
+});
+
+renderDocuments();
+renderHistory();
+</script>
+</body>
+</html>

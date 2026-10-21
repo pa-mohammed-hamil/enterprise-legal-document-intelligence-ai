@@ -1,0 +1,2830 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101b29">
+<meta name="description" content="Lexora AI — enterprise legal intelligence for contracts, risk, renewals and evidence-grounded AI review.">
+<title>Lexora AI — Legal Intelligence, Elevated</title>
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --ink:#132032;
+    --navy:#101c2a;
+    --navy2:#1b2c3c;
+    --cream:#f6f5f0;
+    --paper:#fffefa;
+    --muted:#68717a;
+    --gold:#c7a16b;
+    --gold2:#e2c597;
+    --line:#e7e6e0;
+    --green:#3d866f;
+    --red:#bb665c;
+    --radius:18px;
+    --shadow:0 24px 70px rgba(12,26,40,.11);
+}
+
+* { box-sizing:border-box; }
+
+html { scroll-behavior:smooth; }
+
+body {
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'DM Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+}
+
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+a { text-decoration:none; color:inherit; }
+svg { display:block; }
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline:3px solid var(--gold);
+    outline-offset:3px;
+}
+
+.wrap {
+    max-width:1220px;
+    margin:auto;
+    padding:0 28px;
+}
+
+/* =====================================
+   HEADER AND COMPLETE NAVIGATION
+===================================== */
+
+header {
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(15,27,40,.97);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,.09);
+}
+
+.nav {
+    min-height:78px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    position:relative;
+}
+
+.brand {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#fff;
+    font:700 23px Manrope,sans-serif;
+    letter-spacing:-1px;
+    flex-shrink:0;
+}
+
+.brandmark {
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border:1px solid #c9ab7c;
+    border-radius:11px;
+    color:#e6c58f;
+    font-family:'Playfair Display',serif;
+    font-size:25px;
+}
+
+.brand small {
+    color:var(--gold2);
+    font-size:10px;
+    letter-spacing:2px;
+    display:block;
+    margin-top:-2px;
+    font-family:Manrope,sans-serif;
+}
+
+.links {
+    display:flex;
+    align-items:center;
+    gap:20px;
+    color:#c7ced5;
+    font-size:13px;
+}
+
+.links > a {
+    white-space:nowrap;
+    transition:color .2s;
+}
+
+.links > a:hover,
+.links > a[aria-current="page"] {
+    color:var(--gold2);
+}
+
+.nav-actions {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+}
+
+.btn {
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    border-radius:10px;
+    padding:13px 19px;
+    font-weight:700;
+    font-size:13px;
+    border:1px solid transparent;
+    transition:transform .2s,background .2s,border-color .2s;
+}
+
+.btn:hover { transform:translateY(-2px); }
+
+.btn-gold {
+    background:var(--gold2);
+    color:#1c2935;
+}
+
+.btn-gold:hover { background:#f2d5a5; }
+
+.btn-outline {
+    color:#fff;
+    border-color:#566270;
+    background:transparent;
+}
+
+.btn-outline:hover { border-color:var(--gold); }
+
+.btn-light {
+    background:#fff;
+    color:var(--ink);
+    border-color:#deddd5;
+}
+
+.menu-btn {
+    display:none;
+    background:transparent;
+    border:0;
+    color:white;
+    font-size:25px;
+    padding:6px;
+}
+
+/* Dropdown menus */
+
+.nav-dropdown {
+    position:relative;
+}
+
+.nav-dropdown-trigger {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    border:0;
+    padding:15px 0;
+    background:transparent;
+    color:#c7ced5;
+    font-size:13px;
+    white-space:nowrap;
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown-trigger[aria-expanded="true"] {
+    color:var(--gold2);
+}
+
+.dropdown-arrow {
+    font-size:10px;
+    transition:transform .2s;
+}
+
+.nav-dropdown-trigger[aria-expanded="true"] .dropdown-arrow {
+    transform:rotate(180deg);
+}
+
+.dropdown-menu {
+    display:none;
+    position:absolute;
+    top:calc(100% + 9px);
+    left:-18px;
+    min-width:265px;
+    padding:10px;
+    background:#fffefa;
+    border:1px solid #e7e6e0;
+    border-radius:14px;
+    box-shadow:0 24px 60px rgba(8,19,32,.22);
+    z-index:80;
+}
+
+.dropdown-menu.open {
+    display:grid;
+}
+
+.dropdown-heading {
+    padding:10px 12px 7px;
+    font-size:10px;
+    font-weight:800;
+    color:#939ba1;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+}
+
+.dropdown-menu a {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:12px;
+    border-radius:8px;
+    color:#233247;
+    font-size:12px;
+    font-weight:600;
+    transition:background .2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a[aria-current="page"] {
+    background:#f4efe6;
+    color:#8c693c;
+}
+
+.dropdown-menu a span {
+    width:22px;
+    text-align:center;
+    font-size:16px;
+    color:#a68454;
+}
+
+.dropdown-divider {
+    height:1px;
+    background:#e9e7e1;
+    margin:7px 4px;
+}
+
+/* =====================================
+   HERO
+===================================== */
+
+.hero {
+    background:
+        radial-gradient(
+            ellipse at 82% 26%,
+            #2b3d4c 0,
+            transparent 40%
+        ),
+        linear-gradient(130deg,#0d1926,#172838 75%);
+    color:#fff;
+    overflow:hidden;
+    position:relative;
+}
+
+.hero::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:.15;
+    background-image:
+        linear-gradient(#ffffff12 1px,transparent 1px),
+        linear-gradient(90deg,#ffffff12 1px,transparent 1px);
+    background-size:72px 72px;
+    mask-image:linear-gradient(90deg,transparent,#000);
+    pointer-events:none;
+}
+
+.hero-inner {
+    display:grid;
+    grid-template-columns:.88fr 1.12fr;
+    align-items:center;
+    gap:55px;
+    padding-top:93px;
+    padding-bottom:110px;
+    position:relative;
+}
+
+.eyebrow {
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    color:#e1c493;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:700;
+    font-size:10px;
+}
+
+.eyebrow::before {
+    content:"";
+    width:24px;
+    height:1px;
+    background:currentColor;
+}
+
+.hero h1 {
+    font:500 clamp(48px,5vw,75px)/1.09
+        'Playfair Display',serif;
+    letter-spacing:-2px;
+    margin:24px 0;
+}
+
+.hero h1 em {
+    font-style:normal;
+    color:var(--gold2);
+}
+
+.hero-copy {
+    color:#b9c4cd;
+    line-height:1.85;
+    font-size:15px;
+    max-width:480px;
+}
+
+.hero-buttons {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin:29px 0 39px;
+}
+
+.proof {
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.proof span {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#c8d0d6;
+    font-size:12px;
+}
+
+.proof b { color:var(--gold2); }
+
+/* =====================================
+   DASHBOARD PREVIEW
+===================================== */
+
+.workspace {
+    background:#f9f9f7;
+    border:1px solid #aeb6bb66;
+    box-shadow:0 32px 90px #0006;
+    border-radius:17px;
+    overflow:hidden;
+    transform:perspective(1200px)
+        rotateY(-3deg) rotateX(2deg);
+    color:var(--ink);
+}
+
+.window-top {
+    background:#fff;
+    height:51px;
+    border-bottom:1px solid #e9e9e6;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 17px;
+}
+
+.dots { display:flex; gap:5px; }
+
+.dots i {
+    height:8px;
+    width:8px;
+    background:#e6e5e1;
+    border-radius:50%;
+}
+
+.dots i:first-child { background:#dcae9f; }
+.dots i:nth-child(2) { background:#e4cb9a; }
+.dots i:last-child { background:#a7cdb9; }
+
+.window-title {
+    margin:auto;
+    font-size:11px;
+    color:#79838b;
+    font-weight:700;
+    letter-spacing:.5px;
+}
+
+.live-tag {
+    font-size:9px;
+    color:#3c8469;
+    background:#e8f5ed;
+    padding:6px 8px;
+    border-radius:20px;
+    font-weight:800;
+}
+
+.app {
+    display:grid;
+    grid-template-columns:165px 1fr;
+    min-height:418px;
+}
+
+.side {
+    background:#172738;
+    color:#a8b5c0;
+    padding:20px 10px;
+}
+
+.side-head {
+    color:#fff;
+    font-size:10px;
+    letter-spacing:1.2px;
+    font-weight:800;
+    padding:0 12px 13px;
+}
+
+.side-item {
+    padding:11px 12px;
+    display:flex;
+    gap:9px;
+    align-items:center;
+    font-size:11px;
+    border-radius:8px;
+    margin-bottom:4px;
+    transition:background .2s,color .2s;
+}
+
+.side-item:hover,
+.side-item.active {
+    background:#2d4051;
+    color:#f1d3a1;
+}
+
+.side-bottom {
+    border-top:1px solid #ffffff17;
+    margin-top:55px;
+    padding:15px 10px;
+    color:#d7e0e6;
+    font-size:10px;
+    display:block;
+}
+
+.side-bottom:hover { color:var(--gold2); }
+
+.app-main { padding:23px; }
+
+.app-heading {
+    display:flex;
+    align-items:start;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.app-heading h3 {
+    font:800 17px Manrope,sans-serif;
+    margin:0 0 5px;
+}
+
+.app-heading p {
+    font-size:10px;
+    color:#89939b;
+    margin:0;
+}
+
+.date {
+    border:1px solid #e2e5e5;
+    border-radius:7px;
+    padding:7px;
+    font-size:9px;
+    color:#697681;
+}
+
+.stats {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin:20px 0;
+}
+
+.stat {
+    background:#fff;
+    border:1px solid #ecece8;
+    border-radius:10px;
+    padding:13px;
+}
+
+.stat small {
+    font-size:9px;
+    color:#889099;
+}
+
+.stat strong {
+    display:block;
+    font:800 23px Manrope,sans-serif;
+    margin:8px 0 2px;
+}
+
+.stat span {
+    font-size:9px;
+    color:#368b71;
+}
+
+.dashboard-lower {
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:10px;
+}
+
+.panel {
+    background:#fff;
+    border:1px solid #ecece8;
+    border-radius:10px;
+    padding:14px;
+}
+
+.panel-title {
+    font-size:11px;
+    font-weight:800;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.panel-title a {
+    font-size:9px;
+    color:#aa8a5e;
+}
+
+.bars {
+    display:flex;
+    align-items:end;
+    justify-content:space-around;
+    height:112px;
+    border-bottom:1px solid #eaeae8;
+    gap:8px;
+}
+
+.bar {
+    width:20px;
+    background:linear-gradient(#e5c694,#b58d56);
+    border-radius:4px 4px 0 0;
+}
+
+.bar:nth-child(even) { background:#cbd6d6; }
+
+.axis {
+    display:flex;
+    justify-content:space-around;
+    color:#9ba3a8;
+    font-size:8px;
+    margin-top:8px;
+}
+
+.risk-item {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+    border-bottom:1px solid #f0f0ee;
+    padding:9px 0;
+    font-size:10px;
+}
+
+.risk-item:last-child { border:0; }
+
+.risk-item small {
+    color:#9aa3a8;
+    display:block;
+    margin-top:3px;
+}
+
+.risk-item a:hover { color:#a9895a; }
+
+.pill {
+    padding:5px 7px;
+    border-radius:5px;
+    font-size:8px;
+    font-weight:800;
+}
+
+.high { background:#fff0eb; color:#b56c53; }
+.med { background:#fff4db; color:#a57d35; }
+.low { background:#eaf6ee; color:#49876c; }
+
+.mock-caption {
+    text-align:right;
+    font-size:10px;
+    color:#aeb9c2;
+    margin-top:15px;
+}
+
+/* =====================================
+   TRUST
+===================================== */
+
+.trust {
+    background:#fff;
+    border-bottom:1px solid var(--line);
+}
+
+.trust-inner {
+    padding-top:29px;
+    padding-bottom:29px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.trust-label {
+    font-size:11px;
+    color:#8a9195;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-weight:800;
+}
+
+.trust-names {
+    display:flex;
+    gap:42px;
+    flex-wrap:wrap;
+    color:#8b959c;
+    font:700 15px Manrope,sans-serif;
+}
+
+/* =====================================
+   SECTIONS
+===================================== */
+
+.section { padding:100px 0; }
+
+.section-top {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:45px;
+}
+
+.section-kicker {
+    color:#ae8753;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.section h2 {
+    font:500 clamp(34px,3.7vw,50px)/1.2
+        'Playfair Display',serif;
+    letter-spacing:-1px;
+    margin:15px 0;
+}
+
+.section-intro {
+    color:#6e7780;
+    font-size:14px;
+    line-height:1.8;
+    max-width:430px;
+}
+
+.features {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.feature {
+    background:#fff;
+    border:1px solid #e7e5df;
+    border-radius:15px;
+    padding:30px;
+    min-height:244px;
+    transition:transform .2s,box-shadow .2s;
+}
+
+.feature:hover {
+    transform:translateY(-5px);
+    box-shadow:var(--shadow);
+}
+
+.feature-icon {
+    height:46px;
+    width:46px;
+    border-radius:12px;
+    background:#f2ede3;
+    color:#987443;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+    margin-bottom:26px;
+}
+
+.feature h3 {
+    font:800 17px Manrope,sans-serif;
+    margin:0 0 10px;
+}
+
+.feature p {
+    font-size:13px;
+    line-height:1.8;
+    color:#747c83;
+    margin:0;
+}
+
+.feature .arrow {
+    display:inline-block;
+    margin-top:22px;
+    color:#a9895a;
+    font-size:12px;
+    font-weight:800;
+}
+
+.feature .arrow:hover { color:#74512c; }
+
+/* =====================================
+   SPOTLIGHT
+===================================== */
+
+.spotlight { background:#eaece8; }
+
+.spot-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+    align-items:center;
+}
+
+.doc-card {
+    background:#fff;
+    border:1px solid #e2e3dd;
+    border-radius:18px;
+    padding:23px;
+    box-shadow:var(--shadow);
+}
+
+.doc-top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #e9e9e4;
+    padding-bottom:17px;
+}
+
+.doc-top strong { font-size:13px; }
+
+.doc-top small {
+    display:block;
+    color:#9b9f9e;
+    font-size:10px;
+    margin-top:5px;
+}
+
+.doc-body {
+    font:13px/1.95 Georgia,serif;
+    color:#5b6267;
+    padding:24px 8px;
+}
+
+.highlight {
+    background:#fff1d4;
+    padding:3px 5px;
+    border-radius:4px;
+    color:#88602a;
+}
+
+.doc-alert {
+    display:flex;
+    gap:12px;
+    background:#fff8eb;
+    border:1px solid #f3e3c6;
+    border-radius:11px;
+    padding:14px;
+    font-size:11px;
+    line-height:1.7;
+}
+
+.doc-alert b {
+    display:block;
+    color:#916b34;
+}
+
+.check-list {
+    display:grid;
+    gap:18px;
+    margin-top:28px;
+}
+
+.check {
+    display:flex;
+    align-items:start;
+    gap:13px;
+    font-size:13px;
+    color:#59646b;
+    line-height:1.6;
+}
+
+.check b { color:#213243; }
+
+.check i {
+    font-style:normal;
+    color:#43826e;
+    background:#e5f2e9;
+    border-radius:50%;
+    height:24px;
+    width:24px;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+}
+
+/* =====================================
+   WORKFLOW
+===================================== */
+
+.process {
+    background:#142333;
+    color:#fff;
+}
+
+.process .section-intro { color:#b5c0c9; }
+
+.steps {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.step {
+    border-top:1px solid #5a6671;
+    padding:24px 0;
+}
+
+.step-num {
+    font:500 32px 'Playfair Display',serif;
+    color:#e3c18b;
+}
+
+.step h3 {
+    font:700 16px Manrope,sans-serif;
+    margin:25px 0 10px;
+}
+
+.step p {
+    font-size:12px;
+    line-height:1.8;
+    color:#aebbc5;
+}
+
+/* =====================================
+   QUICK ACCESS
+===================================== */
+
+.quick-access {
+    background:#fff;
+    border-top:1px solid var(--line);
+}
+
+.quick-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+}
+
+.quick-link {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:18px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fffefa;
+    font-size:12px;
+    font-weight:700;
+    transition:background .2s,transform .2s;
+}
+
+.quick-link:hover {
+    background:#f4efe6;
+    transform:translateY(-3px);
+}
+
+.quick-link span {
+    color:#a9895a;
+}
+
+/* =====================================
+   CTA AND FOOTER
+===================================== */
+
+.cta {
+    padding:85px 0;
+    background:linear-gradient(135deg,#ece2d0,#f7f5ef);
+}
+
+.cta-card {
+    text-align:center;
+    max-width:780px;
+    margin:auto;
+}
+
+.cta h2 {
+    font:500 clamp(35px,4vw,54px)/1.2
+        'Playfair Display',serif;
+    margin:15px 0;
+}
+
+.cta p {
+    color:#6d7578;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.cta .btn {
+    margin-top:16px;
+    background:#182b3b;
+    color:#fff;
+}
+
+footer {
+    background:#101c2a;
+    color:#b3bdc7;
+    padding:43px 0;
+}
+
+.footer-inner {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    font-size:12px;
+}
+
+.footer-links {
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+}
+
+.footer-links a:hover { color:#fff; }
+
+/* =====================================
+   DEMO MODAL
+===================================== */
+
+.modal-backdrop {
+    position:fixed;
+    inset:0;
+    background:#07111bd9;
+    display:none;
+    place-items:center;
+    z-index:100;
+    padding:20px;
+}
+
+.modal-backdrop.open { display:grid; }
+
+.modal {
+    background:#fff;
+    border-radius:18px;
+    max-width:540px;
+    width:100%;
+    padding:30px;
+    box-shadow:0 30px 90px #0007;
+    max-height:90vh;
+    overflow:auto;
+}
+
+.modal-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:start;
+}
+
+.modal h2 {
+    font:500 30px 'Playfair Display',serif;
+    margin:5px 0 10px;
+}
+
+.modal p {
+    font-size:13px;
+    color:#6b747c;
+    line-height:1.7;
+}
+
+.close {
+    background:#f2f2ef;
+    border:0;
+    border-radius:8px;
+    font-size:22px;
+    width:34px;
+    height:34px;
+}
+
+.field {
+    display:grid;
+    gap:8px;
+    margin:18px 0;
+    font-size:12px;
+    font-weight:700;
+}
+
+.field input,
+.field select {
+    border:1px solid #dadeda;
+    border-radius:9px;
+    padding:13px;
+    background:#fff;
+    width:100%;
+}
+
+.modal .btn { width:100%; }
+
+.status-msg {
+    margin-top:14px;
+    font-size:12px;
+    line-height:1.6;
+    color:#8c6239;
+    min-height:18px;
+}
+
+.demo-badge {
+    display:inline-block;
+    background:#f5e8d0;
+    color:#8b6838;
+    border-radius:30px;
+    font-size:10px;
+    font-weight:800;
+    padding:6px 10px;
+    margin:8px 0;
+}
+
+/* =====================================
+   SCROLL ANIMATIONS
+===================================== */
+
+.reveal {
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .65s,transform .65s;
+}
+
+.reveal.visible {
+    opacity:1;
+    transform:none;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media(max-width:1100px) {
+    .links { gap:12px; }
+
+    .nav-actions > .btn {
+        padding:11px 12px;
+    }
+}
+
+@media(max-width:1000px) {
+    .hero-inner {
+        grid-template-columns:1fr;
+        padding-top:65px;
+    }
+
+    .hero-copy { max-width:650px; }
+
+    .workspace {
+        max-width:760px;
+        transform:none;
+    }
+
+    .spot-grid { gap:35px; }
+
+    .features {
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .quick-grid {
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(max-width:900px) {
+    .nav { min-height:78px; }
+
+    .links {
+        display:none;
+        position:absolute;
+        top:78px;
+        left:0;
+        right:0;
+        background:#132333;
+        padding:20px;
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        max-height:calc(100dvh - 78px);
+        overflow-y:auto;
+        box-shadow:0 20px 35px #0004;
+    }
+
+    .links.open { display:flex; }
+
+    .links > a,
+    .nav-dropdown-trigger {
+        display:flex;
+        width:100%;
+        padding:13px 12px;
+        border-radius:8px;
+        text-align:left;
+    }
+
+    .nav-dropdown-trigger {
+        justify-content:space-between;
+    }
+
+    .dropdown-menu {
+        position:static;
+        min-width:0;
+        margin:4px 0 12px;
+        box-shadow:none;
+    }
+
+    .menu-btn { display:block; }
+}
+
+@media(max-width:720px) {
+    .wrap { padding:0 19px; }
+
+    .nav { min-height:66px; }
+
+    .links {
+        top:66px;
+        max-height:calc(100dvh - 66px);
+    }
+
+    .nav-actions > .btn { display:none; }
+
+    .hero-inner {
+        padding:55px 0 65px;
+    }
+
+    .hero h1 { font-size:48px; }
+
+    .app { grid-template-columns:1fr; }
+
+    .side { display:none; }
+
+    .app-main { padding:15px; }
+
+    .workspace { border-radius:12px; }
+
+    .section { padding:70px 0; }
+
+    .section-top { display:block; }
+
+    .features,
+    .spot-grid,
+    .steps {
+        grid-template-columns:1fr;
+    }
+
+    .feature { min-height:auto; }
+
+    .steps { gap:4px; }
+
+    .trust-names { gap:15px; }
+
+    .trust-label { width:100%; }
+
+    .dashboard-lower {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .panel { padding:10px; }
+
+    .risk-item { font-size:9px; }
+
+    .quick-grid {
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .footer-inner {
+        align-items:start;
+        flex-direction:column;
+    }
+
+    .hero-buttons { align-items:stretch; }
+
+    .hero-buttons .btn { flex:1; }
+
+    .proof { gap:13px; }
+}
+
+@media(max-width:400px) {
+    .dashboard-lower {
+        grid-template-columns:1fr;
+    }
+
+    .hero h1 { font-size:42px; }
+
+    .stats { gap:5px; }
+
+    .stat { padding:9px; }
+
+    .stat strong { font-size:19px; }
+
+    .quick-grid {
+        grid-template-columns:1fr;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    html { scroll-behavior:auto; }
+
+    .reveal {
+        opacity:1;
+        transform:none;
+        transition:none;
+    }
+
+    * {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================
+     HEADER
+===================================== -->
+
+<header>
+<div class="wrap nav">
+
+    <a href="index.html" class="brand" aria-label="Lexora AI home">
+        <span class="brandmark">L</span>
+        <span>
+            lexora
+            <small>LEGAL INTELLIGENCE</small>
+        </span>
+    </a>
+
+    <nav class="links" id="navLinks" aria-label="Primary navigation">
+
+        <a href="index.html">Home</a>
+
+        <a href="pages/dashboard.html">Dashboard</a>
+
+        <!-- DOCUMENTS -->
+
+        <div class="nav-dropdown">
+            <button
+                type="button"
+                class="nav-dropdown-trigger"
+                aria-expanded="false"
+                aria-controls="documentsMenu"
+            >
+                Documents
+                <span class="dropdown-arrow">▾</span>
+            </button>
+
+            <div class="dropdown-menu" id="documentsMenu">
+
+                <div class="dropdown-heading">
+                    Document intelligence
+                </div>
+
+                <a href="pages/documents.html">
+                    <span>▤</span> All Documents
+                </a>
+
+                <a href="pages/document-details.html">
+                    <span>▧</span> Document Details
+                </a>
+
+                <a href="pages/contracts.html">
+                    <span>◇</span> Contract Management
+                </a>
+
+                <a href="pages/contract-details.html">
+                    <span>◈</span> Contract Details
+                </a>
+
+            </div>
+        </div>
+
+        <!-- AI INTELLIGENCE -->
+
+        <div class="nav-dropdown">
+            <button
+                type="button"
+                class="nav-dropdown-trigger"
+                aria-expanded="false"
+                aria-controls="intelligenceMenu"
+            >
+                AI Intelligence
+                <span class="dropdown-arrow">▾</span>
+            </button>
+
+            <div class="dropdown-menu" id="intelligenceMenu">
+
+                <div class="dropdown-heading">
+                    AI-powered workflows
+                </div>
+
+                <a href="pages/legal-chat.html">
+                    <span>✧</span> Legal AI Copilot
+                </a>
+
+                <a href="pages/risk.html">
+                    <span>⚑</span> Risk Intelligence
+                </a>
+
+                <a href="pages/expiry-calendar.html">
+                    <span>◷</span> Expiry & Renewals
+                </a>
+
+                <a href="pages/reviews.html">
+                    <span>✓</span> Review Management
+                </a>
+
+                <a href="pages/analytics.html">
+                    <span>▥</span> Analytics Dashboard
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-heading">
+                    New Features
+                </div>
+
+                <a href="pages/predictive-analytics.html">
+                    <span>📊</span> Predictive Analytics
+                </a>
+
+                <a href="pages/esignature.html">
+                    <span>✍️</span> E-Signature
+                </a>
+
+            </div>
+        </div>
+
+        <!-- WORKSPACE -->
+
+        <div class="nav-dropdown">
+            <button
+                type="button"
+                class="nav-dropdown-trigger"
+                aria-expanded="false"
+                aria-controls="workspaceMenu"
+            >
+                Workspace
+                <span class="dropdown-arrow">▾</span>
+            </button>
+
+            <div class="dropdown-menu" id="workspaceMenu">
+
+                <div class="dropdown-heading">
+                    Operations
+                </div>
+
+                <a href="pages/notifications.html">
+                    <span>♧</span> Notifications
+                </a>
+
+                <a href="pages/audit.html">
+                    <span>▣</span> Audit Logs
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-heading">
+                    Administration
+                </div>
+
+                <a href="pages/admin.html">
+                    <span>⚙</span> Admin Console
+                </a>
+
+                <a href="pages/users.html">
+                    <span>♙</span> User Management
+                </a>
+
+                <a href="pages/settings.html">
+                    <span>◉</span> General Settings
+                </a>
+
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+
+        <div class="nav-dropdown">
+            <button
+                type="button"
+                class="nav-dropdown-trigger"
+                aria-expanded="false"
+                aria-controls="settingsMenu"
+            >
+                Settings
+                <span class="dropdown-arrow">▾</span>
+            </button>
+
+            <div class="dropdown-menu" id="settingsMenu">
+
+                <div class="dropdown-heading">
+                    Configuration
+                </div>
+
+                <a href="pages/model-settings.html">
+                    <span>🤖</span> AI Models
+                </a>
+
+                <a href="pages/dlp-settings.html">
+                    <span>🛡️</span> Data Security
+                </a>
+
+                <a href="pages/collaboration.html">
+                    <span>👥</span> Collaboration
+                </a>
+
+            </div>
+        </div>
+
+        <a href="#platform">Platform</a>
+        <a href="#security">Security</a>
+
+    </nav>
+
+    <div class="nav-actions">
+
+        <a href="pages/dashboard.html" class="btn btn-outline">
+            Launch Dashboard →
+        </a>
+
+        <a href="pages/dashboard.html" class="btn btn-gold">
+            Open Workspace ↗
+        </a>
+
+        <button
+            type="button"
+            class="menu-btn"
+            id="menuToggle"
+            aria-label="Toggle navigation"
+            aria-controls="navLinks"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+    </div>
+
+</div>
+</header>
+
+<main>
+
+<!-- =====================================
+     HERO
+===================================== -->
+
+<section class="hero" id="home">
+<div class="wrap hero-inner">
+
+    <div>
+
+        <div class="eyebrow">
+            The future of legal operations
+        </div>
+
+        <h1>
+            Clarity in every
+            <em>clause.</em>
+            <br>
+            Confidence in every decision.
+        </h1>
+
+        <p class="hero-copy">
+            Transform complex legal documents into clear,
+            actionable intelligence. Analyze contracts,
+            uncover risks, track obligations, and make
+            decisions with evidence you can trust.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="dashboard.html" class="btn btn-gold">
+                Explore Workspace ↗
+            </a>
+
+            <button
+                type="button"
+                class="btn btn-outline"
+                data-open="demo"
+            >
+                View interactive demo ▷
+            </button>
+
+        </div>
+
+        <div class="proof">
+            <span><b>✦</b> Evidence-grounded AI</span>
+            <span><b>✦</b> Human-led decisions</span>
+            <span><b>✦</b> Tenant-aware access</span>
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD PREVIEW -->
+
+    <div>
+
+        <div
+            class="workspace"
+            aria-label="Illustrative legal intelligence dashboard"
+        >
+
+            <div class="window-top">
+                <span class="dots">
+                    <i></i><i></i><i></i>
+                </span>
+
+                <span class="window-title">
+                    Lexora / Intelligence Overview
+                </span>
+
+                <span class="live-tag">
+                    ● DEMO
+                </span>
+            </div>
+
+            <div class="app">
+
+                <aside class="side">
+
+                    <div class="side-head">
+                        WORKSPACE
+                    </div>
+
+                    <a href="dashboard.html" class="side-item active">
+                        ◫ &nbsp; Overview
+                    </a>
+
+                    <a href="documents.html" class="side-item">
+                        ▤ &nbsp; Documents
+                    </a>
+
+                    <a href="contracts.html" class="side-item">
+                        ◇ &nbsp; Contracts
+                    </a>
+
+                    <a href="risk.html" class="side-item">
+                        ⚑ &nbsp; Risk analysis
+                    </a>
+
+                    <a href="expiry-calendar.html" class="side-item">
+                        ◷ &nbsp; Renewals
+                    </a>
+
+                    <a href="reviews.html" class="side-item">
+                        ✓ &nbsp; Reviews
+                    </a>
+
+                    <a href="legal-chat.html" class="side-bottom">
+                        ✧ &nbsp; Lexora AI Assistant
+                    </a>
+
+                </aside>
+
+                <div class="app-main">
+
+                    <div class="app-heading">
+
+                        <div>
+                            <h3>Intelligence overview</h3>
+                            <p>
+                                A clearer view of your legal landscape.
+                            </p>
+                        </div>
+
+                        <span class="date">
+                            Sample workspace ▾
+                        </span>
+
+                    </div>
+
+                    <div class="stats">
+
+                        <div class="stat">
+                            <small>Documents analyzed</small>
+                            <strong>1,284</strong>
+                            <span>↗ Illustrative data</span>
+                        </div>
+
+                        <div class="stat">
+                            <small>Active contracts</small>
+                            <strong>386</strong>
+                            <span>↗ Illustrative data</span>
+                        </div>
+
+                        <div class="stat">
+                            <small>Open risk findings</small>
+                            <strong>24</strong>
+                            <span>● Needs review</span>
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-lower">
+
+                        <div class="panel">
+
+                            <div class="panel-title">
+                                Review activity
+                                <a href="analytics.html">
+                                    Last 7 months ↗
+                                </a>
+                            </div>
+
+                            <div class="bars">
+                                <div class="bar" style="height:42%"></div>
+                                <div class="bar" style="height:60%"></div>
+                                <div class="bar" style="height:51%"></div>
+                                <div class="bar" style="height:79%"></div>
+                                <div class="bar" style="height:65%"></div>
+                                <div class="bar" style="height:91%"></div>
+                                <div class="bar" style="height:76%"></div>
+                            </div>
+
+                            <div class="axis">
+                                <span>Apr</span>
+                                <span>May</span>
+                                <span>Jun</span>
+                                <span>Jul</span>
+                                <span>Aug</span>
+                                <span>Sep</span>
+                                <span>Oct</span>
+                            </div>
+
+                        </div>
+
+                        <div class="panel">
+
+                            <div class="panel-title">
+                                Priority findings
+                                <a href="risk.html">
+                                    View all ↗
+                                </a>
+                            </div>
+
+                            <div class="risk-item">
+                                <div>
+                                    <a href="risk.html">
+                                        <b>Liability exposure</b>
+                                    </a>
+                                    <small>
+                                        Master Services Agreement
+                                    </small>
+                                </div>
+                                <span class="pill high">HIGH</span>
+                            </div>
+
+                            <div class="risk-item">
+                                <div>
+                                    <a href="expiry-calendar.html">
+                                        <b>Renewal deadline</b>
+                                    </a>
+                                    <small>Vendor Agreement</small>
+                                </div>
+                                <span class="pill med">MEDIUM</span>
+                            </div>
+
+                            <div class="risk-item">
+                                <div>
+                                    <a href="risk.html">
+                                        <b>Privacy clause</b>
+                                    </a>
+                                    <small>
+                                        Data Processing Addendum
+                                    </small>
+                                </div>
+                                <span class="pill low">LOW</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mock-caption">
+            Illustrative interface · not connected to live data
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     TRUST
+===================================== -->
+
+<div class="trust">
+<div class="wrap trust-inner">
+
+    <span class="trust-label">
+        Built for demanding legal workflows
+    </span>
+
+    <div class="trust-names">
+        <span>◇ Legal teams</span>
+        <span>▣ Compliance</span>
+        <span>◈ Enterprise ops</span>
+        <span>✧ Risk management</span>
+    </div>
+
+</div>
+</div>
+
+<!-- =====================================
+     PLATFORM FEATURES
+===================================== -->
+
+<section class="section" id="platform">
+<div class="wrap">
+
+    <div class="section-top reveal">
+
+        <div>
+            <div class="section-kicker">
+                One intelligent workspace
+            </div>
+
+            <h2>
+                Everything your legal team
+                <br>
+                needs to see clearly.
+            </h2>
+        </div>
+
+        <p class="section-intro">
+            Bring fragmented documents, deadlines and
+            decisions into one thoughtfully designed
+            workspace, with AI assistance and accountable
+            human review.
+        </p>
+
+    </div>
+
+    <div class="features">
+
+        <article class="feature reveal">
+            <div class="feature-icon">▤</div>
+            <h3>Document intelligence</h3>
+            <p>
+                Extract structure, clauses, entities and
+                tables from uploaded contracts and
+                scanned documents.
+            </p>
+            <a href="documents.html" class="arrow">
+                PDF · DOCX · OCR ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">◇</div>
+            <h3>Contract lifecycle</h3>
+            <p>
+                Organize agreements, versions,
+                counterparties and milestones from
+                intake through renewal.
+            </p>
+            <a href="contracts.html" class="arrow">
+                Centralized visibility ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">⚑</div>
+            <h3>Risk discovery</h3>
+            <p>
+                Surface potentially unfavorable language,
+                exposure and compliance concerns for
+                legal review.
+            </p>
+            <a href="risk.html" class="arrow">
+                Evidence-linked findings ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">◷</div>
+            <h3>Expiry & renewals</h3>
+            <p>
+                Track key dates, notice windows,
+                obligations and upcoming decisions
+                before deadlines pass.
+            </p>
+            <a href="expiry-calendar.html" class="arrow">
+                Proactive workflows ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">✧</div>
+            <h3>Ask your documents</h3>
+            <p>
+                Explore authorized content with hybrid
+                retrieval, contextual answers and
+                source citations.
+            </p>
+            <a href="legal-chat.html" class="arrow">
+                Permission-aware RAG ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">✓</div>
+            <h3>Review & approval</h3>
+            <p>
+                Route findings to the right people,
+                capture decisions and maintain a
+                traceable review history.
+            </p>
+            <a href="reviews.html" class="arrow">
+                Human-in-the-loop ↗
+            </a>
+        </article>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     INTELLIGENCE SPOTLIGHT
+===================================== -->
+
+<section class="section spotlight" id="intelligence">
+<div class="wrap spot-grid">
+
+    <div class="doc-card reveal">
+
+        <div class="doc-top">
+            <div>
+                <strong>
+                    Master Services Agreement.pdf
+                </strong>
+                <small>
+                    Clause intelligence · illustrative example
+                </small>
+            </div>
+            <span class="pill med">AI PREVIEW</span>
+        </div>
+
+        <div class="doc-body">
+
+            <b>Section 8. Limitation of Liability</b>
+
+            <p>
+                Except for excluded claims, the aggregate
+                liability of either party under this
+                Agreement shall not exceed the fees paid
+                during the preceding twelve months.
+            </p>
+
+            <p>
+                <span class="highlight">
+                    The foregoing limitation shall not
+                    apply to indemnification obligations
+                    or breaches of confidentiality.
+                </span>
+            </p>
+
+            <p>
+                Each party acknowledges that these
+                limitations are an essential basis
+                of the agreement.
+            </p>
+
+        </div>
+
+        <div class="doc-alert">
+            <span style="font-size:19px">⚑</span>
+            <div>
+                <b>Potential exposure identified</b>
+                Broad carve-outs may increase liability
+                beyond the stated cap. Confirm scope and
+                commercial intent with legal counsel.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="reveal">
+
+        <div class="section-kicker">
+            From documents to decisions
+        </div>
+
+        <h2>
+            See beyond the words.
+            <br>
+            Understand the implications.
+        </h2>
+
+        <p class="section-intro">
+            AI-assisted analysis connects the clause,
+            the potential risk, and the underlying source
+            so reviewers can move from discovery to
+            informed action.
+        </p>
+
+        <div class="check-list">
+
+            <div class="check">
+                <i>✓</i>
+                <div>
+                    <b>Context, not just keywords.</b>
+                    <br>
+                    Retrieve relevant sections and
+                    surrounding contractual language.
+                </div>
+            </div>
+
+            <div class="check">
+                <i>✓</i>
+                <div>
+                    <b>Traceable by design.</b>
+                    <br>
+                    Link findings to document versions,
+                    pages and source chunks.
+                </div>
+            </div>
+
+            <div class="check">
+                <i>✓</i>
+                <div>
+                    <b>Humans stay in control.</b>
+                    <br>
+                    Escalate uncertain or material
+                    findings for qualified review.
+                </div>
+            </div>
+
+        </div>
+
+        <a
+            href="risk.html"
+            class="btn btn-light"
+            style="margin-top:30px"
+        >
+            Explore Risk Intelligence ↗
+        </a>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     WORKFLOW
+===================================== -->
+
+<section class="section process" id="workflow">
+<div class="wrap">
+
+    <div class="section-top reveal">
+
+        <div>
+            <div class="section-kicker">
+                A smarter way to work
+            </div>
+
+            <h2>
+                From upload to insight.
+                <br>
+                Without the complexity.
+            </h2>
+        </div>
+
+        <p class="section-intro">
+            A connected workflow that preserves security,
+            source context and review accountability
+            at every stage.
+        </p>
+
+    </div>
+
+    <div class="steps">
+
+        <div class="step reveal">
+            <div class="step-num">01</div>
+            <h3>Ingest securely</h3>
+            <p>
+                Upload authorized documents,
+                extract text and metadata,
+                and prepare searchable versions.
+            </p>
+            <a href="documents.html" class="arrow">
+                Open Documents ↗
+            </a>
+        </div>
+
+        <div class="step reveal">
+            <div class="step-num">02</div>
+            <h3>Analyze intelligently</h3>
+            <p>
+                Identify clauses, obligations,
+                renewal terms and potential risks
+                using AI-assisted workflows.
+            </p>
+            <a href="legal-chat.html" class="arrow">
+                Open Legal AI ↗
+            </a>
+        </div>
+
+        <div class="step reveal">
+            <div class="step-num">03</div>
+            <h3>Verify the evidence</h3>
+            <p>
+                Validate source citations,
+                assess uncertainty and enforce
+                document-level access controls.
+            </p>
+            <a href="risk.html" class="arrow">
+                Review Risks ↗
+            </a>
+        </div>
+
+        <div class="step reveal">
+            <div class="step-num">04</div>
+            <h3>Act with confidence</h3>
+            <p>
+                Assign reviews, record decisions,
+                track mitigation and keep an
+                auditable history.
+            </p>
+            <a href="reviews.html" class="arrow">
+                Manage Reviews ↗
+            </a>
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     SECURITY
+===================================== -->
+
+<section class="section" id="security">
+<div class="wrap">
+
+    <div class="section-top reveal">
+
+        <div>
+            <div class="section-kicker">
+                Designed with accountability
+            </div>
+
+            <h2>
+                Powerful intelligence.
+                <br>
+                Careful controls.
+            </h2>
+        </div>
+
+        <p class="section-intro">
+            Security and governance are foundational
+            design requirements, not optional extras.
+            Production enforcement depends on backend
+            configuration and deployment.
+        </p>
+
+    </div>
+
+    <div class="features">
+
+        <article class="feature reveal">
+            <div class="feature-icon">♙</div>
+            <h3>Tenant-aware permissions</h3>
+            <p>
+                Role-based access, organization
+                boundaries and document-level
+                authorization before retrieval.
+            </p>
+            <a href="users.html" class="arrow">
+                User Management ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">◎</div>
+            <h3>Grounded AI outputs</h3>
+            <p>
+                Source verification, uncertainty
+                handling and structured findings
+                designed for human validation.
+            </p>
+            <a href="legal-chat.html" class="arrow">
+                Legal AI Copilot ↗
+            </a>
+        </article>
+
+        <article class="feature reveal">
+            <div class="feature-icon">▧</div>
+            <h3>Traceable decisions</h3>
+            <p>
+                Review records, audit events,
+                model provenance and monitoring
+                hooks for oversight.
+            </p>
+            <a href="audit.html" class="arrow">
+                Audit Logs ↗
+            </a>
+        </article>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     ALL WORKSPACE PAGES
+===================================== -->
+
+<section class="section quick-access" id="workspace">
+<div class="wrap">
+
+    <div class="section-top reveal">
+        <div>
+            <div class="section-kicker">
+                Complete workspace
+            </div>
+            <h2>
+                Every tool.
+                <br>
+                One connected experience.
+            </h2>
+        </div>
+
+        <p class="section-intro">
+            Jump directly into any area of the
+            Lexora legal intelligence workspace.
+        </p>
+    </div>
+
+    <div class="quick-grid reveal">
+
+        <a class="quick-link" href="dashboard.html">
+            Dashboard <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="documents.html">
+            Documents <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="document-details.html">
+            Document Details <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="contracts.html">
+            Contracts <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="contract-details.html">
+            Contract Details <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="legal-chat.html">
+            Legal AI Copilot <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="risk.html">
+            Risk Analysis <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="expiry-calendar.html">
+            Expiry Calendar <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="reviews.html">
+            Review Workflow <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="analytics.html">
+            Analytics <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="notifications.html">
+            Notifications <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="audit.html">
+            Audit Logs <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="admin.html">
+            Admin Console <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="users.html">
+            User Management <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="settings.html">
+            Settings <span>↗</span>
+        </a>
+
+        <a class="quick-link" href="login.html">
+            Sign In <span>↗</span>
+        </a>
+
+    </div>
+
+</div>
+</section>
+
+<!-- =====================================
+     CTA
+===================================== -->
+
+<section class="cta">
+<div class="wrap cta-card reveal">
+
+    <div class="section-kicker">
+        Legal intelligence, reimagined
+    </div>
+
+    <h2>
+        Make room for better decisions.
+    </h2>
+
+    <p>
+        Less time navigating documents.
+        More time understanding what matters.
+        Explore the next generation of
+        enterprise legal workflows.
+    </p>
+
+    <a href="dashboard.html" class="btn">
+        Launch Lexora Workspace ↗
+    </a>
+
+</div>
+</section>
+
+</main>
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+<div class="wrap footer-inner">
+
+    <a href="index.html" class="brand">
+        <span class="brandmark">L</span>
+        <span>
+            lexora
+            <small>LEGAL INTELLIGENCE</small>
+        </span>
+    </a>
+
+    <span>
+        © <span id="year"></span> Lexora AI
+        · Portfolio concept interface
+    </span>
+
+    <div class="footer-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="documents.html">Documents</a>
+        <a href="contracts.html">Contracts</a>
+        <a href="legal-chat.html">Legal AI</a>
+        <a href="risk.html">Risk</a>
+        <a href="analytics.html">Analytics</a>
+        <a href="settings.html">Settings</a>
+        <a href="#home">↑ Top</a>
+    </div>
+
+</div>
+</footer>
+
+<!-- =====================================
+     INTERACTIVE DEMO MODAL
+===================================== -->
+
+<div
+    class="modal-backdrop"
+    id="modalBackdrop"
+    role="presentation"
+>
+    <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
+
+        <div class="modal-top">
+
+            <div>
+                <div class="section-kicker">
+                    Lexora workspace
+                </div>
+
+                <h2 id="modalTitle">
+                    Interactive preview
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                class="close"
+                id="closeModal"
+                aria-label="Close dialog"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <span class="demo-badge" id="modalBadge">
+            DEMONSTRATION MODE
+        </span>
+
+        <p id="modalDescription">
+            Explore how an evidence-based review might
+            be configured. No document is uploaded
+            or analyzed in this static preview.
+        </p>
+
+        <form id="previewForm">
+
+            <label class="field">
+                Analysis focus
+
+                <select id="analysisType">
+                    <option value="risk">
+                        Contract risk analysis
+                    </option>
+                    <option value="clauses">
+                        Clause extraction
+                    </option>
+                    <option value="renewals">
+                        Renewal & expiry review
+                    </option>
+                    <option value="obligations">
+                        Obligation intelligence
+                    </option>
+                </select>
+            </label>
+
+            <label class="field">
+                Document label
+
+                <input
+                    id="documentName"
+                    placeholder="e.g. Master Services Agreement"
+                    maxlength="100"
+                    required
+                >
+            </label>
+
+            <button
+                class="btn btn-gold"
+                type="submit"
+            >
+                Show sample workflow →
+            </button>
+
+        </form>
+
+        <div
+            class="status-msg"
+            id="modalStatus"
+            aria-live="polite"
+        ></div>
+
+    </div>
+</div>
+
+<!-- =====================================
+     JAVASCRIPT
+===================================== -->
+
+<script>
+"use strict";
+
+/* -------------------------------------
+   ELEMENTS
+------------------------------------- */
+
+const navLinks = document.getElementById("navLinks");
+const menuToggle = document.getElementById("menuToggle");
+
+const dropdowns = document.querySelectorAll(
+    ".nav-dropdown"
+);
+
+const backdrop = document.getElementById(
+    "modalBackdrop"
+);
+
+const modalTitle = document.getElementById(
+    "modalTitle"
+);
+
+const modalDescription = document.getElementById(
+    "modalDescription"
+);
+
+const modalBadge = document.getElementById(
+    "modalBadge"
+);
+
+const previewForm = document.getElementById(
+    "previewForm"
+);
+
+const modalStatus = document.getElementById(
+    "modalStatus"
+);
+
+const closeModalButton = document.getElementById(
+    "closeModal"
+);
+
+let previousFocus = null;
+
+/* -------------------------------------
+   MOBILE NAVIGATION
+------------------------------------- */
+
+function closeDropdowns(except = null) {
+    dropdowns.forEach(dropdown => {
+        if (dropdown === except) return;
+
+        const button = dropdown.querySelector(
+            ".nav-dropdown-trigger"
+        );
+
+        const menu = dropdown.querySelector(
+            ".dropdown-menu"
+        );
+
+        menu.classList.remove("open");
+
+        button.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+    });
+}
+
+function closeMobileMenu() {
+    navLinks.classList.remove("open");
+
+    menuToggle.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+    menuToggle.textContent = "☰";
+
+    closeDropdowns();
+}
+
+menuToggle.addEventListener("click", () => {
+    const open = navLinks.classList.toggle(
+        "open"
+    );
+
+    menuToggle.setAttribute(
+        "aria-expanded",
+        String(open)
+    );
+
+    menuToggle.textContent = open ? "×" : "☰";
+
+    if (!open) {
+        closeDropdowns();
+    }
+});
+
+/* -------------------------------------
+   DROPDOWN NAVIGATION
+------------------------------------- */
+
+dropdowns.forEach(dropdown => {
+    const trigger = dropdown.querySelector(
+        ".nav-dropdown-trigger"
+    );
+
+    const menu = dropdown.querySelector(
+        ".dropdown-menu"
+    );
+
+    trigger.addEventListener("click", event => {
+        event.stopPropagation();
+
+        const wasOpen = menu.classList.contains(
+            "open"
+        );
+
+        closeDropdowns();
+
+        if (!wasOpen) {
+            menu.classList.add("open");
+
+            trigger.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+    });
+});
+
+/* -------------------------------------
+   NAVIGATION LINK EVENTS
+------------------------------------- */
+
+navLinks.querySelectorAll("a").forEach(link => {
+    link.addEventListener(
+        "click",
+        closeMobileMenu
+    );
+});
+
+/* -------------------------------------
+   OUTSIDE CLICK
+------------------------------------- */
+
+document.addEventListener("click", event => {
+    if (!event.target.closest(".nav-dropdown")) {
+        closeDropdowns();
+    }
+
+    if (
+        window.innerWidth <= 900 &&
+        !event.target.closest(".nav")
+    ) {
+        closeMobileMenu();
+    }
+});
+
+/* -------------------------------------
+   ACTIVE PAGE HIGHLIGHT
+------------------------------------- */
+
+const currentPage =
+    window.location.pathname.split("/").pop()
+    || "index.html";
+
+navLinks.querySelectorAll("a[href]").forEach(link => {
+    const href = link.getAttribute("href");
+
+    if (href === currentPage) {
+        link.setAttribute(
+            "aria-current",
+            "page"
+        );
+    }
+});
+
+/* -------------------------------------
+   RESIZE HANDLING
+------------------------------------- */
+
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+        closeMobileMenu();
+    }
+});
+
+/* -------------------------------------
+   FOOTER YEAR
+------------------------------------- */
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+/* -------------------------------------
+   MODAL
+------------------------------------- */
+
+function openModal(mode = "demo") {
+    previousFocus = document.activeElement;
+
+    backdrop.classList.add("open");
+
+    document.body.style.overflow = "hidden";
+
+    modalStatus.textContent = "";
+
+    if (mode === "signin") {
+        modalTitle.textContent = "Workspace access";
+
+        modalBadge.textContent =
+            "BACKEND CONNECTION REQUIRED";
+
+        modalDescription.textContent =
+            "Authentication must be connected to the " +
+            "FastAPI backend. This static preview " +
+            "does not accept credentials.";
+
+        previewForm.hidden = true;
+    } else {
+        modalTitle.textContent = "Interactive preview";
+
+        modalBadge.textContent =
+            "DEMONSTRATION MODE";
+
+        modalDescription.textContent =
+            "Explore a sample legal AI workflow. " +
+            "This preview does not upload documents " +
+            "or call an AI model.";
+
+        previewForm.hidden = false;
+    }
+
+    closeModalButton.focus();
+}
+
+function closeModal() {
+    backdrop.classList.remove("open");
+
+    document.body.style.overflow = "";
+
+    if (previousFocus) {
+        previousFocus.focus();
+    }
+}
+
+document.querySelectorAll("[data-open]").forEach(
+    element => {
+        element.addEventListener("click", () => {
+            openModal(element.dataset.open);
+        });
+    }
+);
+
+closeModalButton.addEventListener(
+    "click",
+    closeModal
+);
+
+backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) {
+        closeModal();
+    }
+});
+
+/* -------------------------------------
+   KEYBOARD ACCESSIBILITY
+------------------------------------- */
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+        if (backdrop.classList.contains("open")) {
+            closeModal();
+        }
+
+        closeDropdowns();
+        closeMobileMenu();
+
+        return;
+    }
+
+    if (
+        event.key !== "Tab" ||
+        !backdrop.classList.contains("open")
+    ) {
+        return;
+    }
+
+    const focusable = [
+        ...backdrop.querySelectorAll(
+            "button:not([disabled])," +
+            "input:not([disabled])," +
+            "select:not([disabled])," +
+            "a[href]"
+        )
+    ].filter(element => {
+        return element.getClientRects().length > 0;
+    });
+
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (
+        event.shiftKey &&
+        document.activeElement === first
+    ) {
+        event.preventDefault();
+        last.focus();
+    } else if (
+        !event.shiftKey &&
+        document.activeElement === last
+    ) {
+        event.preventDefault();
+        first.focus();
+    }
+});
+
+/* -------------------------------------
+   SAMPLE WORKFLOW
+------------------------------------- */
+
+previewForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const documentName = document.getElementById(
+        "documentName"
+    ).value.trim();
+
+    const analysisType = document.getElementById(
+        "analysisType"
+    );
+
+    if (!documentName) return;
+
+    const selectedAnalysis =
+        analysisType.options[
+            analysisType.selectedIndex
+        ].text.toLowerCase();
+
+    modalStatus.textContent =
+        `Sample workflow for "${documentName}": ` +
+        "secure ingestion → permission-aware retrieval → " +
+        `${selectedAnalysis} → citation validation → ` +
+        "human review. This is a preview only; " +
+        "no analysis was performed.";
+});
+
+/* -------------------------------------
+   SCROLL REVEAL
+------------------------------------- */
+
+if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add(
+                        "visible"
+                    );
+
+                    observer.unobserve(
+                        entry.target
+                    );
+                }
+            });
+        },
+        {
+            threshold:0.1
+        }
+    );
+
+    document.querySelectorAll(".reveal").forEach(
+        element => observer.observe(element)
+    );
+} else {
+    document.querySelectorAll(".reveal").forEach(
+        element => element.classList.add("visible")
+    );
+}
+
+</script>
+
+<!-- =====================================
+     BACKEND API CONNECTION
+===================================== -->
+<script src="js/config.js"></script>
+
+</body>
+</html>

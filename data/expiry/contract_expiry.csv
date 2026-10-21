@@ -1,0 +1,9 @@
+document_id,document_type,effective_date,expiry_date,notice_period_days,source_file
+MSA-001,Master Service Agreement,2026-01-01,2027-01-01,60,contracts/master_service_agreement.pdf
+SVC-001,Service Agreement,2026-02-01,2027-02-01,30,contracts/service_agreement.pdf
+EMP-001,Employment Contract,2026-03-01,2027-03-01,30,contracts/employment_contract.pdf
+NDA-001,Mutual Non-Disclosure Agreement,2026-01-15,2028-01-15,30,ndas/mutual_nda.pdf
+NDA-002,Unilateral Non-Disclosure Agreement,2026-04-01,2027-04-01,30,ndas/unilateral_nda.pdf
+VEN-001,Supplier Agreement,2026-05-01,2027-05-01,45,vendor_agreements/supplier_agreement.pdf
+LEA-001,Commercial Lease Agreement,2026-06-01,2029-06-01,90,leases/commercial_lease.pdf
+LIC-001,Software License Agreement,2026-07-01,2027-07-01,60,licenses/software_license.pdf

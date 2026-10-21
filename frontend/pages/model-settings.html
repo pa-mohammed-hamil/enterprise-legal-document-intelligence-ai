@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1422" />
+  <title>AI Model Settings | Lexora Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0b1422;
+      --navy-soft: #142235;
+      --navy-light: #1c2d43;
+      --gold: #d6b477;
+      --gold-light: #f1dfb8;
+      --cream: #f6f4ee;
+      --surface: #ffffff;
+      --ink: #182334;
+      --muted: #788394;
+      --line: #e8e9e8;
+      --green: #25856b;
+      --red: #cb6262;
+      --orange: #c58c44;
+      --blue: #5478b7;
+      --shadow: 0 14px 45px rgba(16, 30, 50, .045);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      z-index: 50;
+      inset: 0 auto 0 0;
+      width: 270px;
+      background: var(--navy);
+      color: #f6f7f8;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 16px 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 30px;
+    }
+    .brand-icon {
+      width: 41px;
+      height: 41px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(214,180,119,.45);
+      border-radius: 12px;
+      color: var(--gold);
+      font-size: 22px;
+      font-family: Georgia, serif;
+      background: rgba(214,180,119,.08);
+    }
+    .brand strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+      letter-spacing: -.8px;
+    }
+    .brand small {
+      display: block;
+      color: #91a0b3;
+      font-size: 10px;
+      letter-spacing: 2.3px;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+    .nav-label {
+      padding: 17px 14px 9px;
+      color: #718299;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      margin: 3px 0;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: #a7b3c3;
+      background: transparent;
+      text-align: left;
+      font-size: 13px;
+      transition: .2s;
+    }
+    .nav-link:hover { color: white; background: rgba(255,255,255,.055); }
+    .nav-link.active {
+      color: var(--gold-light);
+      border-color: rgba(214,180,119,.13);
+      background: rgba(214,180,119,.11);
+    }
+    .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+
+    /* MAIN */
+    .main {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      min-width: 0;
+    }
+    .topbar {
+      height: 82px;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 38px;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .breadcrumb { font-size: 12px; color: var(--muted); }
+    .breadcrumb strong { color: var(--ink); }
+    .top-actions { display: flex; align-items: center; gap: 14px; }
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    .btn-primary:hover { background: #c7a563; }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-secondary:hover { background: #f9fafb; }
+
+    /* CONTENT */
+    .content {
+      padding: 38px;
+      max-width: 1400px;
+    }
+    .page-head {
+      margin-bottom: 32px;
+    }
+    .page-head h1 {
+      font-family: "Manrope", sans-serif;
+      font-size: 29px;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+    .page-head p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 32px;
+    }
+    .tab {
+      background: transparent;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      padding: 14px 22px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: .2s;
+    }
+    .tab:hover { color: var(--ink); }
+    .tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 20px;
+    }
+    .card-description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 22px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .form-help {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #dfe2e4;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      background: var(--surface);
+      transition: .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(214,180,119,.12);
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .switch input[type="checkbox"] {
+      width: 50px;
+      height: 28px;
+      appearance: none;
+      background: #d4d8dd;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: .3s;
+    }
+    .switch input[type="checkbox"]:checked {
+      background: var(--green);
+    }
+    .switch input[type="checkbox"]::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      top: 3px;
+      left: 3px;
+      transition: .3s;
+    }
+    .switch input[type="checkbox"]:checked::before {
+      left: 25px;
+    }
+
+    /* MODEL CARDS */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      transition: .2s;
+      cursor: pointer;
+    }
+    .model-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(16,30,50,.08);
+    }
+    .model-card.selected {
+      border-color: var(--gold);
+      background: #fffcf5;
+    }
+    .model-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .model-provider {
+      display: inline-block;
+      background: #f4f6f7;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .model-name {
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      margin: 8px 0 6px;
+    }
+    .model-description {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .model-specs {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .model-spec {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .badge-success { background: #e7f5f0; color: var(--green); }
+    .badge-warning { background: #fff4e6; color: var(--orange); }
+    .badge-info { background: #e8f0fb; color: var(--blue); }
+
+    /* PROVIDERS */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .provider-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: .2s;
+    }
+    .provider-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .provider-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: #f7f8f9;
+      font-size: 24px;
+    }
+    .provider-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .provider-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+      .content {
+        padding: 24px 18px;
+      }
+      .model-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">L</span>
+        <span>
+          <strong>lexora</strong>
+          <small>Legal AI</small>
+        </span>
+      </div>
+
+            <div class="nav-label">Workspace</div>
+      <a href="dashboard.html" class="nav-link">
+        <span class="nav-icon">◫</span> Dashboard
+      </a>
+      <a href="documents.html" class="nav-link">
+        <span class="nav-icon">▤</span> Documents
+      </a>
+      <a href="contracts.html" class="nav-link">
+        <span class="nav-icon">◇</span> Contracts
+      </a>
+      <a href="expiry-calendar.html" class="nav-link">
+        <span class="nav-icon">◷</span> Expiry Calendar
+      </a>
+      <a href="renewals.html" class="nav-link">
+        <span class="nav-icon">↻</span> Renewals
+      </a>
+
+      <div class="nav-label">AI Intelligence</div>
+      <a href="legal-chat.html" class="nav-link">
+        <span class="nav-icon">✧</span> Legal Copilot
+      </a>
+      <a href="risk.html" class="nav-link">
+        <span class="nav-icon">⚑</span> Risk Analysis
+      </a>
+      <a href="analytics.html" class="nav-link">
+        <span class="nav-icon">▥</span> Analytics
+      </a>
+      <a href="predictive-analytics.html" class="nav-link">
+        <span class="nav-icon">◈</span> Predictive Analytics
+      </a>
+
+      <div class="nav-label">Integrations</div>
+      <a href="esignature.html" class="nav-link">
+        <span class="nav-icon">✎</span> E-Signature
+      </a>
+      <a href="collaboration.html" class="nav-link">
+        <span class="nav-icon">◉</span> Collaboration
+      </a>
+      <a href="notifications.html" class="nav-link">
+        <span class="nav-icon">●</span> Notifications
+      </a>
+
+      <div class="nav-label">Settings</div>
+      <a href="model-settings.html" class="nav-link active">
+        <span class="nav-icon">⚙</span> AI Models
+      </a>
+      <a href="dlp-settings.html" class="nav-link">
+        <span class="nav-icon">🛡</span> Data Security
+      </a>
+      <a href="admin.html" class="nav-link">
+        <span class="nav-icon">♙</span> Administration
+      </a>
+      <a href="audit.html" class="nav-link">
+        <span class="nav-icon">📋</span> Audit Trail
+      </a></aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="breadcrumb">
+          Settings / <strong>AI Model Configuration</strong>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary">Import Config</button>
+          <button class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        
+        <!-- PAGE HEAD -->
+        <div class="page-head">
+          <h1>AI Model Settings</h1>
+          <p>Configure AI model providers, select models for different tasks, and manage API keys. The platform supports 12 providers with 100+ models.</p>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <button class="tab active">Model Selection</button>
+          <button class="tab">API Keys</button>
+          <button class="tab">Performance</button>
+          <button class="tab">Cost Management</button>
+        </div>
+
+        <!-- ACTIVE PROVIDERS -->
+        <div class="card">
+          <h2 class="card-title">Active AI Providers</h2>
+          <p class="card-description">12 AI providers configured with 100+ models available</p>
+          
+          <div class="provider-grid">
+            <div class="provider-card">
+              <div class="provider-icon">🤖</div>
+              <div class="provider-name">OpenAI</div>
+              <div class="provider-count">8 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🧠</div>
+              <div class="provider-name">Anthropic</div>
+              <div class="provider-count">6 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">✨</div>
+              <div class="provider-name">Google Gemini</div>
+              <div class="provider-count">4 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">⚡</div>
+              <div class="provider-name">Cohere</div>
+              <div class="provider-count">5 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🌀</div>
+              <div class="provider-name">Mistral AI</div>
+              <div class="provider-count">7 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🚀</div>
+              <div class="provider-name">Groq</div>
+              <div class="provider-count">6 models</div>
+              <span class="badge badge-success" style="margin-top: 8px;">Active</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🔮</div>
+              <div class="provider-name">Together AI</div>
+              <div class="provider-count">15+ models</div>
+              <span class="badge badge-info" style="margin-top: 8px;">Available</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🌊</div>
+              <div class="provider-name">Perplexity</div>
+              <div class="provider-count">3 models</div>
+              <span class="badge badge-info" style="margin-top: 8px;">Available</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🎯</div>
+              <div class="provider-name">Replicate</div>
+              <div class="provider-count">25+ models</div>
+              <span class="badge badge-info" style="margin-top: 8px;">Available</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">☁️</div>
+              <div class="provider-name">Azure OpenAI</div>
+              <div class="provider-count">8 models</div>
+              <span class="badge badge-warning" style="margin-top: 8px;">Configure</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🔶</div>
+              <div class="provider-name">AWS Bedrock</div>
+              <div class="provider-count">12 models</div>
+              <span class="badge badge-warning" style="margin-top: 8px;">Configure</span>
+            </div>
+            
+            <div class="provider-card">
+              <div class="provider-icon">🤗</div>
+              <div class="provider-name">Hugging Face</div>
+              <div class="provider-count">50+ models</div>
+              <span class="badge badge-warning" style="margin-top: 8px;">Configure</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODEL SELECTION FOR TASKS -->
+        <div class="card">
+          <h2 class="card-title">Model Selection by Task</h2>
+          <p class="card-description">Assign specific models to different AI tasks for optimal performance and cost</p>
+          
+          <div class="form-group">
+            <label class="form-label">Legal Q&A & Analysis</label>
+            <select>
+              <option>GPT-4 Turbo (OpenAI) - Recommended</option>
+              <option>Claude 3 Opus (Anthropic)</option>
+              <option>Claude 3.5 Sonnet (Anthropic)</option>
+              <option>Gemini Pro (Google)</option>
+              <option>Command R+ (Cohere)</option>
+            </select>
+            <span class="form-help">Best model for complex legal reasoning and analysis</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document Summarization</label>
+            <select>
+              <option>GPT-3.5 Turbo (OpenAI) - Recommended</option>
+              <option>Claude 3 Haiku (Anthropic)</option>
+              <option>Mixtral 8x7B (Mistral)</option>
+              <option>Command (Cohere)</option>
+            </select>
+            <span class="form-help">Fast and cost-effective for summaries</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clause & Entity Extraction</label>
+            <select>
+              <option>GPT-4 Turbo (OpenAI) - Recommended</option>
+              <option>Claude 3.5 Sonnet (Anthropic)</option>
+              <option>Gemini Pro (Google)</option>
+            </select>
+            <span class="form-help">Precise extraction of structured data from contracts</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Risk Assessment</label>
+            <select>
+              <option>GPT-4 Turbo (OpenAI) - Recommended</option>
+              <option>Claude 3 Opus (Anthropic)</option>
+              <option>Gemini Pro (Google)</option>
+            </select>
+            <span class="form-help">Deep analysis for risk identification</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Embeddings (Vector Search)</label>
+            <select>
+              <option>text-embedding-3-large (OpenAI) - Recommended</option>
+              <option>text-embedding-ada-002 (OpenAI)</option>
+              <option>embed-english-v3.0 (Cohere)</option>
+              <option>embed-multilingual-v3.0 (Cohere)</option>
+            </select>
+            <span class="form-help">Convert documents to vectors for semantic search</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Reranking</label>
+            <select>
+              <option>rerank-english-v3.0 (Cohere) - Recommended</option>
+              <option>rerank-multilingual-v3.0 (Cohere)</option>
+              <option>LLM-based reranking (GPT-4)</option>
+            </select>
+            <span class="form-help">Improve search result relevance</span>
+          </div>
+        </div>
+
+        <!-- AVAILABLE MODELS -->
+        <div class="card">
+          <h2 class="card-title">Available Models</h2>
+          <p class="card-description">Browse and select from 100+ AI models across 12 providers</p>
+          
+          <div class="model-grid">
+            
+            <!-- GPT-4 Turbo -->
+            <div class="model-card selected">
+              <div class="model-header">
+                <span class="model-provider">OpenAI</span>
+                <span class="badge badge-success">Active</span>
+              </div>
+              <div class="model-name">GPT-4 Turbo</div>
+              <div class="model-description">
+                Most capable model for complex legal reasoning and analysis
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 128K context</span>
+                <span class="model-spec">⚡ Fast</span>
+              </div>
+            </div>
+
+            <!-- Claude 3.5 Sonnet -->
+            <div class="model-card selected">
+              <div class="model-header">
+                <span class="model-provider">Anthropic</span>
+                <span class="badge badge-success">Active</span>
+              </div>
+              <div class="model-name">Claude 3.5 Sonnet</div>
+              <div class="model-description">
+                Excellent for nuanced legal interpretation and document analysis
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 200K context</span>
+                <span class="model-spec">✨ Premium</span>
+              </div>
+            </div>
+
+            <!-- Gemini Pro -->
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-provider">Google</span>
+                <span class="badge badge-info">Available</span>
+              </div>
+              <div class="model-name">Gemini Pro</div>
+              <div class="model-description">
+                Powerful multimodal model with strong reasoning capabilities
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 32K context</span>
+                <span class="model-spec">🎨 Multimodal</span>
+              </div>
+            </div>
+
+            <!-- Mixtral 8x7B -->
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-provider">Mistral AI</span>
+                <span class="badge badge-info">Available</span>
+              </div>
+              <div class="model-name">Mixtral 8x7B</div>
+              <div class="model-description">
+                Cost-effective open-source model with strong performance
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 32K context</span>
+                <span class="model-spec">💰 Low cost</span>
+              </div>
+            </div>
+
+            <!-- Command R+ -->
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-provider">Cohere</span>
+                <span class="badge badge-info">Available</span>
+              </div>
+              <div class="model-name">Command R+</div>
+              <div class="model-description">
+                RAG-optimized model with excellent retrieval performance
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 128K context</span>
+                <span class="model-spec">🔍 RAG</span>
+              </div>
+            </div>
+
+            <!-- Llama 3 70B -->
+            <div class="model-card">
+              <div class="model-header">
+                <span class="model-provider">Together AI</span>
+                <span class="badge badge-info">Available</span>
+              </div>
+              <div class="model-name">Llama 3 70B</div>
+              <div class="model-description">
+                Meta's powerful open-source model for general tasks
+              </div>
+              <div class="model-specs">
+                <span class="model-spec">📊 8K context</span>
+                <span class="model-spec">🆓 Open source</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ADVANCED SETTINGS -->
+        <div class="card">
+          <h2 class="card-title">Advanced Model Settings</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Default Temperature</label>
+            <input type="range" min="0" max="2" step="0.1" value="0.7" style="width: 100%;">
+            <span class="form-help">0.7 - Controls randomness. Lower = more focused, Higher = more creative</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Max Tokens per Request</label>
+            <input type="number" value="4000" min="100" max="128000">
+            <span class="form-help">Maximum tokens to generate in a single request</span>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="fallback" checked>
+              <label for="fallback">
+                <strong>Enable Model Fallback</strong>
+                <span class="form-help" style="display: block; margin: 0;">Automatically switch to backup model if primary fails</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="streaming" checked>
+              <label for="streaming">
+                <strong>Enable Streaming Responses</strong>
+                <span class="form-help" style="display: block; margin: 0;">Stream tokens as they're generated for better UX</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="caching" checked>
+              <label for="caching">
+                <strong>Enable Response Caching</strong>
+                <span class="form-help" style="display: block; margin: 0;">Cache repeated queries to reduce costs and latency</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Backend API Connection -->
+  <script src="../js/config.js"></script>
+
+  <script>
+    // Load model settings from API
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const models = await API.get('/api/v1/models');
+        console.log('Available models:', models);
+      } catch (error) {
+        console.error('Failed to load models:', error);
+      }
+    });
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Model card selection
+    document.querySelectorAll('.model-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('selected');
+      });
+    });
+  </script>
+
+</body>
+</html>

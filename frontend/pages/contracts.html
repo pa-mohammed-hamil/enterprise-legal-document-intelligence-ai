@@ -1,0 +1,1008 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1422">
+<title>Contract Details | Lexora Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0b1422;
+  --navy2:#142338;
+  --navy3:#1d3049;
+  --gold:#d6b477;
+  --gold-light:#f3e4c5;
+  --cream:#f6f4ee;
+  --white:#fff;
+  --ink:#182334;
+  --muted:#8390a0;
+  --line:#e8e9e7;
+  --green:#238669;
+  --red:#cc6865;
+  --orange:#ca944d;
+  --blue:#6488c3;
+  --radius:18px;
+  --shadow:0 12px 40px rgba(15,28,45,.045);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--gold);outline-offset:3px
+}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:260px;position:fixed;inset:0 auto 0 0;
+  background:var(--navy);color:white;padding:28px 17px;
+  display:flex;flex-direction:column;z-index:50;transition:transform .3s
+}
+.logo{display:flex;gap:12px;align-items:center;padding:0 12px 32px}
+.logo-mark{
+  width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid rgba(214,180,119,.5);
+  border-radius:12px;background:rgba(214,180,119,.08);
+  font:25px Georgia,serif;color:var(--gold)
+}
+.logo strong{font:800 19px Manrope,sans-serif;letter-spacing:-.7px}
+.logo small{display:block;color:#90a0b5;font-size:10px;letter-spacing:2px;margin-top:4px}
+.nav-title{font-size:10px;color:#778aa1;letter-spacing:2px;font-weight:800;padding:20px 13px 10px}
+.nav-item{
+  width:100%;display:flex;gap:13px;align-items:center;
+  border:1px solid transparent;border-radius:11px;
+  padding:13px;color:#a7b5c6;font-size:12px;
+  background:none;text-align:left;margin:2px 0
+}
+.nav-item:hover{background:rgba(255,255,255,.06);color:white}
+.nav-item.active{
+  background:rgba(214,180,119,.11);
+  color:var(--gold-light);border-color:rgba(214,180,119,.15)
+}
+.nav-icon{font-size:17px;width:22px;text-align:center}
+.sidebar-bottom{margin-top:auto}
+.sidebar-info{
+  background:linear-gradient(140deg,#253750,#17263b);
+  border:1px solid rgba(214,180,119,.23);
+  border-radius:14px;padding:18px;margin-bottom:20px
+}
+.sidebar-info strong{font-size:12px;color:var(--gold)}
+.sidebar-info p{font-size:11px;line-height:1.7;color:#a8b6c8}
+.sidebar-profile{display:flex;gap:10px;align-items:center;border-top:1px solid #27364a;padding-top:20px}
+.avatar{
+  height:37px;width:37px;border-radius:11px;background:#e0cba6;
+  color:#283548;display:grid;place-items:center;font-weight:800;font-size:12px
+}
+.sidebar-profile strong{display:block;font-size:12px}
+.sidebar-profile small{font-size:10px;color:#91a0b5}
+.main{margin-left:260px;width:calc(100% - 260px);min-width:0}
+.topbar{
+  background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);
+  height:78px;display:flex;justify-content:space-between;
+  align-items:center;padding:0 35px;gap:15px
+}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--ink)}
+.top-right{display:flex;gap:12px;align-items:center}
+.search{
+  width:230px;border:1px solid var(--line);background:#f9f9f8;
+  padding:11px 13px;border-radius:10px;font-size:12px
+}
+.icon-button{
+  width:38px;height:38px;border-radius:10px;
+  border:1px solid var(--line);background:white;font-size:16px
+}
+.mobile-menu{display:none}
+.content{padding:34px;max-width:1800px;margin:auto}
+.eyebrow{color:#b38d54;letter-spacing:2px;font-size:10px;font-weight:800;text-transform:uppercase}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font:800 clamp(25px,3vw,34px) Manrope,sans-serif;letter-spacing:-1.5px;margin:10px 0}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:26px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 15px;border:1px solid var(--line);
+  border-radius:10px;background:white;font-size:12px;font-weight:700
+}
+.btn:hover{border-color:var(--gold)}
+.btn-dark{background:var(--navy);border-color:var(--navy);color:white}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.btn-danger{color:var(--red);border-color:#f0d9d7}
+.pill{display:inline-block;padding:6px 10px;border-radius:7px;font-size:10px;font-weight:800;white-space:nowrap}
+.pill-green{background:#eaf6ef;color:#24846a}
+.pill-red{background:#fff0ee;color:#c15e55}
+.pill-orange{background:#fff4e7;color:#b77c37}
+.pill-blue{background:#edf2fa;color:#5d7fb6}
+.pill-gray{background:#eff1f3;color:#718093}
+.demo-note{
+  background:#fff6e7;border:1px solid #efdfc3;border-radius:10px;
+  padding:12px 16px;margin-bottom:24px;
+  font-size:11px;color:#85643c;line-height:1.6
+}
+.contract-hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(115deg,#0b1422,#192a40);
+  color:white;border-radius:22px;padding:31px 34px;margin-bottom:22px
+}
+.contract-hero:after{
+  content:"§";position:absolute;right:35px;top:-60px;
+  font:240px Georgia,serif;color:rgba(214,180,119,.06);pointer-events:none
+}
+.contract-hero-content{position:relative;z-index:1}
+.contract-hero-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.contract-hero h2{font:800 clamp(22px,2.7vw,30px) Manrope,sans-serif;letter-spacing:-1px;margin-bottom:10px}
+.contract-hero p{color:#acb9c8;font-size:12px;line-height:1.8;max-width:750px}
+.hero-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:25px}
+.hero-meta span{display:block;color:#8294aa;font-size:10px;margin-bottom:6px}
+.hero-meta strong{font-size:12px;font-weight:700}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin-bottom:23px}
+.metric{
+  background:white;border:1px solid #eeefed;border-radius:var(--radius);
+  padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden
+}
+.metric:before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent)
+}
+.metric-head{display:flex;align-items:center;justify-content:space-between}
+.metric-label{font-size:12px;color:var(--muted)}
+.metric-icon{
+  width:38px;height:38px;border-radius:11px;background:#f7f3ea;
+  display:grid;place-items:center;font-size:18px;color:#ac874f
+}
+.metric-value{font:800 28px Manrope,sans-serif;letter-spacing:-1.2px;margin:16px 0 7px}
+.metric-foot{font-size:11px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr);gap:20px;margin-bottom:22px}
+.grid-equal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-bottom:22px}
+.card{
+  background:white;border:1px solid #eeefed;
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  min-width:0;overflow:hidden
+}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;padding:23px 24px 17px
+}
+.card-head h3{font-size:15px;letter-spacing:-.3px;margin:0 0 5px}
+.card-head p{font-size:11px;color:var(--muted);margin:0}
+.card-body{padding:15px 24px 25px}
+.card-link{border:0;background:none;color:#ac824b;font-size:11px;font-weight:800}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 30px}
+.detail-label{display:block;font-size:10px;color:var(--muted);margin-bottom:7px}
+.detail-value{font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.tabs{
+  display:flex;gap:6px;padding:8px;background:#f0efeb;
+  border-radius:12px;overflow-x:auto;margin-bottom:22px
+}
+.tab{
+  padding:12px 17px;border:0;border-radius:9px;background:none;
+  color:#758292;font-size:12px;font-weight:700;white-space:nowrap
+}
+.tab.active{background:white;color:var(--ink);box-shadow:0 3px 12px #00000009}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.risk-item{display:flex;gap:13px;padding:17px 0;border-top:1px solid #f0f1ef}
+.risk-icon{
+  width:39px;height:39px;flex-shrink:0;border-radius:11px;
+  display:grid;place-items:center;font-size:18px
+}
+.risk-icon.red{background:#fff0ee;color:var(--red)}
+.risk-icon.orange{background:#fff4e7;color:var(--orange)}
+.risk-icon.green{background:#eaf6ef;color:var(--green)}
+.risk-info{flex:1;min-width:0}
+.risk-info strong{display:block;font-size:12px;margin-bottom:6px}
+.risk-info p{font-size:11px;color:var(--muted);line-height:1.7;margin:0 0 9px}
+.risk-score{text-align:right;font-size:11px;color:var(--muted)}
+.risk-score strong{display:block;font:800 18px Manrope,sans-serif;color:var(--ink)}
+.timeline{padding:0 0 0 7px}
+.timeline-item{position:relative;padding:0 0 25px 26px;border-left:1px solid #e7e3d9}
+.timeline-item:last-child{border-left-color:transparent;padding-bottom:0}
+.timeline-item:before{
+  content:"";position:absolute;left:-6px;top:0;
+  width:11px;height:11px;border-radius:50%;
+  background:var(--gold);border:3px solid #f8f0e1;box-sizing:content-box
+}
+.timeline-item.future:before{background:#d7dde1;border-color:#f1f3f4}
+.timeline-item strong{display:block;font-size:12px;margin-bottom:5px}
+.timeline-item p{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:5px}
+.timeline-item small{font-size:10px;color:#a3aab2}
+.table-wrap{overflow-x:auto;padding:0 20px 20px}
+table{width:100%;border-collapse:collapse;min-width:650px;text-align:left}
+th{padding:15px 12px;color:#8995a4;font-size:10px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--line)}
+td{padding:17px 12px;font-size:12px;border-bottom:1px solid #f0f1ef}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fcfbf8}
+.primary-text{font-weight:700;display:block}
+.secondary-text{font-size:10px;color:var(--muted);display:block;margin-top:5px}
+.action-link{background:none;border:0;color:#a67d43;font-size:11px;font-weight:800}
+.progress-track{height:7px;background:#eff1f2;border-radius:20px;overflow:hidden;margin-top:12px}
+.progress-fill{height:100%;border-radius:20px;background:var(--gold)}
+.document-preview{
+  background:#e9e9e5;padding:25px;border-radius:12px;
+  min-height:460px;display:flex;justify-content:center
+}
+.paper{
+  width:100%;max-width:620px;background:white;
+  padding:35px;box-shadow:0 12px 35px #00000012;
+  color:#303b48;font:13px/1.9 Georgia,serif
+}
+.paper h4{text-align:center;font-size:17px;margin-bottom:25px}
+.paper p{margin-bottom:18px}
+.paper mark{background:#fff0c8;padding:2px 3px}
+.paper .red-mark{background:#ffe3e0}
+.summary-box{
+  border:1px solid #e8e1d3;border-radius:12px;
+  background:#fcfaf5;padding:19px;margin-bottom:20px
+}
+.summary-box strong{display:block;font-size:12px;margin-bottom:9px}
+.summary-box p{font-size:12px;color:#657184;line-height:1.8;margin:0}
+.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.workflow-step{
+  padding:19px;border:1px solid var(--line);
+  border-radius:13px;background:#fff
+}
+.workflow-step .number{
+  display:grid;place-items:center;width:31px;height:31px;
+  border-radius:9px;background:#f5f0e6;color:#a9824b;
+  font-weight:800;font-size:12px;margin-bottom:13px
+}
+.workflow-step strong{display:block;font-size:12px;margin-bottom:7px}
+.workflow-step p{font-size:11px;color:var(--muted);line-height:1.6;margin:0}
+.modal-backdrop{
+  position:fixed;inset:0;background:#08101caa;z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  width:100%;max-width:520px;background:white;border-radius:20px;
+  padding:30px;box-shadow:0 30px 100px #0003
+}
+.modal h2{font-size:21px;letter-spacing:-.6px}
+.modal p{font-size:12px;color:var(--muted);line-height:1.7}
+.field{display:block;margin:18px 0}
+.field label{display:block;font-size:11px;font-weight:800;margin-bottom:8px}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--line);
+  border-radius:9px;padding:12px;background:white
+}
+.field textarea{min-height:110px;resize:vertical}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+.toast{
+  position:fixed;bottom:25px;right:25px;z-index:120;
+  background:var(--navy);color:white;padding:15px 20px;
+  border-radius:11px;font-size:12px;box-shadow:0 15px 40px #0002;
+  opacity:0;transform:translateY(100px);transition:.3s;
+  max-width:min(400px,calc(100vw - 40px))
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.footer{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:28px}
+.overlay{display:none}
+@media(max-width:1250px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-equal{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:block}
+  .overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:40}
+}
+@media(max-width:650px){
+  .topbar{padding:0 17px;height:68px}
+  .search{display:none}
+  .content{padding:22px 16px}
+  .page-header{flex-direction:column;align-items:flex-start}
+  .contract-hero{padding:25px 20px}
+  .hero-meta{gap:18px}
+  .metrics{gap:10px}
+  .metric{padding:16px}
+  .metric-value{font-size:23px}
+  .metric-label{font-size:10px}
+  .card-head{padding:19px}
+  .card-body{padding:14px 18px 20px}
+  .detail-grid{gap:20px 12px}
+  .workflow-steps{grid-template-columns:repeat(2,1fr)}
+  .paper{padding:22px}
+  .document-preview{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+<div class="overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="logo">
+    <span class="logo-mark">L</span>
+    <span><strong>Lexora<span style="color:var(--gold)">.</span></strong><small>INTELLIGENCE</small></span>
+  </a>
+    <div class="nav-title">WORKSPACE</div>
+  <a href="dashboard.html" class="nav-item"><span class="nav-icon">◫</span> Dashboard</a>
+  <a href="documents.html" class="nav-item"><span class="nav-icon">▤</span> Documents</a>
+  <a href="contracts.html" class="nav-item active"><span class="nav-icon">▧</span> Contracts</a>
+  <a href="expiry-calendar.html" class="nav-item"><span class="nav-icon">◷</span> Expiry Calendar</a>
+  <a href="renewals.html" class="nav-item"><span class="nav-icon">↻</span> Renewals</a>
+  <a href="reviews.html" class="nav-item"><span class="nav-icon">☷</span> Review Queue</a>
+  
+  <div class="nav-title">AI & INTELLIGENCE</div>
+  <a href="legal-chat.html" class="nav-item"><span class="nav-icon">✧</span> Legal AI Copilot</a>
+  <a href="risk.html" class="nav-item"><span class="nav-icon">◇</span> Risk Intelligence</a>
+  <a href="analytics.html" class="nav-item"><span class="nav-icon">▥</span> Analytics</a>
+  <a href="predictive-analytics.html" class="nav-item"><span class="nav-icon">◈</span> Predictive Analytics</a>
+  <a href="model-settings.html" class="nav-item"><span class="nav-icon">⚡</span> AI Model Settings</a>
+  
+  <div class="nav-title">INTEGRATIONS</div>
+  <a href="esignature.html" class="nav-item"><span class="nav-icon">✎</span> E-Signature</a>
+  <a href="collaboration.html" class="nav-item"><span class="nav-icon">◉</span> Collaboration</a>
+  <a href="notifications.html" class="nav-item"><span class="nav-icon">●</span> Notifications</a>
+  
+  <div class="nav-title">ADMINISTRATION</div>
+  <a href="admin.html" class="nav-item"><span class="nav-icon">♙</span> Administration</a>
+  <a href="audit.html" class="nav-item"><span class="nav-icon">📋</span> Audit Trail</a>
+  <a href="dlp-settings.html" class="nav-item"><span class="nav-icon">🔒</span> Data Security</a>
+  <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> Settings</a><div class="sidebar-bottom">
+    <div class="sidebar-info">
+      <strong>✧ Contract Intelligence</strong>
+      <p>AI-assisted contract analysis with evidence-grounded risk insights and human review.</p>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar">AD</div>
+      <div><strong>Admin Workspace</strong><small>Legal Operations</small></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:13px">
+      <button class="icon-button mobile-menu" id="menuButton" aria-label="Open menu">☰</button>
+      <div class="breadcrumb">
+        <a href="contracts.html">Contracts</a> / <strong>Contract Details</strong>
+      </div>
+    </div>
+    <div class="top-right">
+      <input class="search" type="search" id="contractSearch" placeholder="Search contract sections..." aria-label="Search contract sections">
+      <button class="icon-button" id="infoButton" aria-label="Page information">ⓘ</button>
+      <div class="avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Contract management / Intelligence</div>
+        <h1>Contract details<span style="color:#c4a16a">.</span></h1>
+        <p class="subtitle">Explore contractual terms, AI-assisted risk insights, obligations and lifecycle activity.</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="exportButton">↓ Export Summary</button>
+        <button class="btn btn-dark" id="requestReviewButton">＋ Request Review</button>
+      </div>
+    </div>
+
+    <div class="demo-note">
+      <strong>Demonstration record:</strong> The contract, clauses, findings, citations and workflow history below are fictional examples. No document has been uploaded or analyzed by a live AI model.
+    </div>
+
+    <!-- CONTRACT HERO -->
+    <section class="contract-hero">
+      <div class="contract-hero-content">
+        <div class="contract-hero-top">
+          <span class="pill" style="background:#204f43;color:#b7e6d4">● Active Contract</span>
+          <span class="pill" style="background:#60432f;color:#f0d0a6">High Risk · Sample</span>
+          <span style="color:#94a5b9;font-size:11px">CON-2026-00482</span>
+        </div>
+        <h2>Master Services Agreement</h2>
+        <p>Enterprise technology services agreement between Northstar Technologies Ltd. and Meridian Solutions Inc. with AI-assisted clause and obligation analysis.</p>
+        <div class="hero-meta">
+          <div><span>CONTRACT OWNER</span><strong>Sarah Mitchell</strong></div>
+          <div><span>COUNTERPARTY</span><strong>Meridian Solutions Inc.</strong></div>
+          <div><span>EFFECTIVE DATE</span><strong>Jan 15, 2026</strong></div>
+          <div><span>EXPIRATION DATE</span><strong>Jan 14, 2027</strong></div>
+          <div><span>CONTRACT VALUE</span><strong>$480,000 USD</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Identified Clauses</span><span class="metric-icon">§</span></div>
+        <div class="metric-value">24</div>
+        <div class="metric-foot">Illustrative extracted clauses</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Risk Findings</span><span class="metric-icon">◇</span></div>
+        <div class="metric-value">06</div>
+        <div class="metric-foot"><span style="color:var(--red);font-weight:800">2 high</span> priority findings</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Obligations</span><span class="metric-icon">☷</span></div>
+        <div class="metric-value">12</div>
+        <div class="metric-foot">Sample tracked obligations</div>
+      </div>
+      <div class="metric">
+        <div class="metric-head"><span class="metric-label">Days Until Expiry</span><span class="metric-icon">◷</span></div>
+        <div class="metric-value" id="daysToExpiry">—</div>
+        <div class="metric-foot">Calculated from example expiry date</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="tabs" aria-label="Contract details tabs">
+      <button class="tab active" data-tab="overview" aria-selected="true">Overview</button>
+      <button class="tab" data-tab="clauses" aria-selected="false">Clause Intelligence</button>
+      <button class="tab" data-tab="risks" aria-selected="false">Risk Analysis</button>
+      <button class="tab" data-tab="obligations" aria-selected="false">Obligations</button>
+      <button class="tab" data-tab="document" aria-selected="false">Document Preview</button>
+      <button class="tab" data-tab="activity" aria-selected="false">Activity & Reviews</button>
+    </nav>
+
+    <!-- OVERVIEW TAB -->
+    <section class="tab-panel active" id="tab-overview">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><h3>Contract information</h3><p>Core legal and commercial attributes</p></div>
+            <button class="card-link" id="editContractButton">Edit details ↗</button>
+          </div>
+          <div class="card-body">
+            <div class="detail-grid">
+              <div><span class="detail-label">Contract ID</span><span class="detail-value">CON-2026-00482</span></div>
+              <div><span class="detail-label">Contract Type</span><span class="detail-value">Master Services Agreement</span></div>
+              <div><span class="detail-label">Organization</span><span class="detail-value">Northstar Technologies Ltd.</span></div>
+              <div><span class="detail-label">Counterparty</span><span class="detail-value">Meridian Solutions Inc.</span></div>
+              <div><span class="detail-label">Governing Law</span><span class="detail-value">England & Wales (Sample)</span></div>
+              <div><span class="detail-label">Currency</span><span class="detail-value">USD</span></div>
+              <div><span class="detail-label">Renewal Type</span><span class="detail-value">Automatic Renewal</span></div>
+              <div><span class="detail-label">Notice Period</span><span class="detail-value">60 Days</span></div>
+              <div><span class="detail-label">Document Version</span><span class="detail-value">v2.1</span></div>
+              <div><span class="detail-label">Review Status</span><span class="pill pill-orange">Pending Validation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>AI contract summary</h3><p>Illustrative analysis preview</p></div><span class="pill pill-blue">Demo</span></div>
+          <div class="card-body">
+            <div class="summary-box">
+              <strong>✧ Executive summary</strong>
+              <p>This fictional agreement outlines managed technology services, payment terms, confidentiality requirements and annual renewal provisions. The sample analysis highlights liability exposure and automatic renewal obligations for further legal review.</p>
+            </div>
+            <div class="risk-item">
+              <div class="risk-icon red">!</div>
+              <div class="risk-info"><strong>Liability exposure</strong><p>Illustrative indemnification language may create uncapped exposure.</p></div>
+              <span class="pill pill-red">High</span>
+            </div>
+            <div class="risk-item">
+              <div class="risk-icon orange">◷</div>
+              <div class="risk-info"><strong>Automatic renewal</strong><p>Example contract requires advance termination notice.</p></div>
+              <span class="pill pill-orange">Medium</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-equal">
+        <div class="card">
+          <div class="card-head"><div><h3>Contract lifecycle</h3><p>Key contractual milestones</p></div></div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-item"><strong>Contract created</strong><p>Initial draft entered the contract workflow.</p><small>Jan 05, 2026</small></div>
+              <div class="timeline-item"><strong>Contract executed</strong><p>Agreement marked as signed in this sample record.</p><small>Jan 15, 2026</small></div>
+              <div class="timeline-item"><strong>Annual review scheduled</strong><p>Human legal review milestone.</p><small>Oct 15, 2026</small></div>
+              <div class="timeline-item future"><strong>Renewal notice deadline</strong><p>Example 60-day advance notice requirement.</p><small>Nov 15, 2026</small></div>
+              <div class="timeline-item future"><strong>Contract expiration</strong><p>Current contract term ends.</p><small>Jan 14, 2027</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Review workflow</h3><p>Human oversight checkpoints</p></div></div>
+          <div class="card-body">
+            <div class="workflow-steps">
+              <div class="workflow-step"><div class="number">01</div><strong>Ingest</strong><p>Document parsing and indexing</p></div>
+              <div class="workflow-step"><div class="number">02</div><strong>Analyze</strong><p>AI-assisted clause and risk extraction</p></div>
+              <div class="workflow-step"><div class="number">03</div><strong>Review</strong><p>Legal expert validation</p></div>
+              <div class="workflow-step"><div class="number">04</div><strong>Approve</strong><p>Authorized human decision</p></div>
+            </div>
+            <div class="summary-box" style="margin:23px 0 0">
+              <strong>Human approval required</strong>
+              <p>AI-generated risk findings and recommendations must be reviewed against original evidence before they can be accepted as final legal determinations.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLAUSES -->
+    <section class="tab-panel" id="tab-clauses">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Clause intelligence</h3><p>Sample extracted clauses with risk classifications</p></div>
+          <span class="pill pill-blue">24 clauses · Demo</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Clause</th><th>Category</th><th>Risk</th><th>Confidence</th><th>Action</th></tr></thead>
+            <tbody id="clausesTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section class="tab-panel" id="tab-risks">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div><h3>Contract risk register</h3><p>Illustrative findings requiring evidence validation</p></div></div>
+          <div class="card-body" id="riskList"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Risk assessment</h3><p>Sample prioritization score</p></div></div>
+          <div class="card-body">
+            <div style="text-align:center;padding:15px 0 25px">
+              <div style="font:800 52px Manrope,sans-serif;letter-spacing:-2px">76<span style="font-size:20px;color:var(--muted)">/100</span></div>
+              <span class="pill pill-red">High · Example</span>
+            </div>
+            <div class="detail-grid">
+              <div><span class="detail-label">Risk Level</span><span class="detail-value">High</span></div>
+              <div><span class="detail-label">Review Required</span><span class="detail-value">Yes</span></div>
+              <div><span class="detail-label">High Risk Findings</span><span class="detail-value">2</span></div>
+              <div><span class="detail-label">Medium Risk Findings</span><span class="detail-value">3</span></div>
+            </div>
+            <div class="summary-box" style="margin-top:25px">
+              <strong>Scoring notice</strong>
+              <p>This score is illustrative and is not a calibrated probability of legal loss. Production scoring should be deterministic and based on validated risk policies.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBLIGATIONS -->
+    <section class="tab-panel" id="tab-obligations">
+      <div class="card">
+        <div class="card-head"><div><h3>Contractual obligations</h3><p>Sample duties, deadlines and responsible parties</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Obligation</th><th>Responsible Party</th><th>Due Date</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody id="obligationsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENT -->
+    <section class="tab-panel" id="tab-document">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div><h3>Document preview</h3><p>Fictional excerpt — not the original contract</p></div></div>
+          <div class="card-body">
+            <div class="document-preview">
+              <div class="paper">
+                <h4>MASTER SERVICES AGREEMENT</h4>
+                <p>This Master Services Agreement ("Agreement") is entered into between Northstar Technologies Ltd. ("Client") and Meridian Solutions Inc. ("Provider").</p>
+                <p><strong>1. Services.</strong> The Provider shall deliver the technology services described in the applicable statements of work.</p>
+                <p><strong>2. Fees and Payment.</strong> The Client shall pay the agreed fees in accordance with the payment schedule.</p>
+                <p><strong>3. Indemnification.</strong> <mark class="red-mark">The Provider shall indemnify the Client against all losses arising from specified claims, without an express aggregate liability limit in this illustrative excerpt.</mark></p>
+                <p><strong>4. Renewal.</strong> <mark>The Agreement renews automatically unless written notice is provided at least sixty days before expiration.</mark></p>
+                <p><strong>5. Confidentiality.</strong> Each party shall protect confidential information received from the other party.</p>
+                <p style="font-size:10px;color:#8994a0;margin-top:40px">Illustrative contract text generated for interface demonstration only.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Evidence inspector</h3><p>Example clause-to-finding traceability</p></div></div>
+          <div class="card-body">
+            <div class="summary-box">
+              <strong>Finding: Liability exposure</strong>
+              <p>Sample clause 3 contains broad indemnification wording without an express aggregate cap in the displayed excerpt.</p>
+            </div>
+            <div class="detail-grid">
+              <div><span class="detail-label">Document</span><span class="detail-value">DOC-2401</span></div>
+              <div><span class="detail-label">Version</span><span class="detail-value">v2.1</span></div>
+              <div><span class="detail-label">Clause</span><span class="detail-value">3. Indemnification</span></div>
+              <div><span class="detail-label">Page</span><span class="detail-value">Example Page 4</span></div>
+            </div>
+            <div class="summary-box" style="margin-top:25px">
+              <strong>Evidence integrity</strong>
+              <p>Real citations must be checked against stored document versions, authorized source chunks and original text. The references here are placeholders for UI demonstration.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACTIVITY -->
+    <section class="tab-panel" id="tab-activity">
+      <div class="grid-equal">
+        <div class="card">
+          <div class="card-head"><div><h3>Activity history</h3><p>Sample contract workflow events</p></div></div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-item"><strong>Legal review requested</strong><p>Sample contract assigned for expert assessment.</p><small>Oct 08, 2026</small></div>
+              <div class="timeline-item"><strong>Risk analysis completed</strong><p>Illustrative risk findings generated.</p><small>Oct 07, 2026</small></div>
+              <div class="timeline-item"><strong>Document version updated</strong><p>Version 2.1 added to the contract record.</p><small>Oct 05, 2026</small></div>
+              <div class="timeline-item"><strong>Contract indexed</strong><p>Sample document entered the intelligence workspace.</p><small>Oct 04, 2026</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Review information</h3><p>Approval and governance details</p></div></div>
+          <div class="card-body">
+            <div class="detail-grid">
+              <div><span class="detail-label">Assigned Reviewer</span><span class="detail-value">Sarah Mitchell</span></div>
+              <div><span class="detail-label">Priority</span><span class="pill pill-red">High</span></div>
+              <div><span class="detail-label">Review Status</span><span class="pill pill-orange">In Review</span></div>
+              <div><span class="detail-label">Target Date</span><span class="detail-value">Oct 15, 2026</span></div>
+            </div>
+            <div class="summary-box" style="margin-top:25px">
+              <strong>Legal governance</strong>
+              <p>Final approvals, risk acceptance and contract modifications must be performed by authorized users and recorded in an immutable or appropriately protected audit trail.</p>
+            </div>
+            <button class="btn btn-dark" id="reviewFromActivity" style="margin-top:5px">Request Review</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>© 2026 Lexora Intelligence · Enterprise Legal AI</span>
+      <span>Contract intelligence · Demonstration environment</span>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Contract action</h2>
+    <p id="modalDescription"></p>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn" id="closeModal">Close</button>
+      <button class="btn btn-gold" id="modalConfirm">Understood</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   LEXORA CONTRACT DETAILS — INTERACTIVE FRONTEND DEMO
+   All records below are fictional examples.
+===================================================== */
+
+const contract = {
+  id:"CON-2026-00482",
+  title:"Master Services Agreement",
+  status:"Active",
+  owner:"Sarah Mitchell",
+  counterparty:"Meridian Solutions Inc.",
+  effectiveDate:"2026-01-15",
+  expiryDate:"2027-01-14",
+  currency:"USD",
+  value:480000
+};
+
+const clauses = [
+  { id:"CL-001",name:"Indemnification",category:"Liability",risk:"High",confidence:"94%" },
+  { id:"CL-002",name:"Limitation of Liability",category:"Liability",risk:"High",confidence:"91%" },
+  { id:"CL-003",name:"Automatic Renewal",category:"Lifecycle",risk:"Medium",confidence:"96%" },
+  { id:"CL-004",name:"Termination",category:"Contractual",risk:"Medium",confidence:"89%" },
+  { id:"CL-005",name:"Confidentiality",category:"Privacy",risk:"Low",confidence:"95%" },
+  { id:"CL-006",name:"Payment Terms",category:"Financial",risk:"Low",confidence:"93%" }
+];
+
+const risks = [
+  { id:"RSK-001",name:"Uncapped indemnification exposure",level:"High",score:0.86,
+    description:"Illustrative clause language does not state an express aggregate indemnification cap." },
+  { id:"RSK-002",name:"Limitation of liability ambiguity",level:"High",score:0.78,
+    description:"The example limitation provisions may require clarification and expert review." },
+  { id:"RSK-003",name:"Automatic renewal notice",level:"Medium",score:0.64,
+    description:"Advance notice is required to prevent renewal under the sample terms." },
+  { id:"RSK-004",name:"Termination notice uncertainty",level:"Medium",score:0.59,
+    description:"The sample termination provisions may benefit from clearer conditions." },
+  { id:"RSK-005",name:"Data protection obligations",level:"Medium",score:0.53,
+    description:"Specific privacy safeguards should be verified against the full agreement." },
+  { id:"RSK-006",name:"Payment schedule",level:"Low",score:0.28,
+    description:"The sample payment terms appear routine but require ordinary review." }
+];
+
+const obligations = [
+  { name:"Annual service review",party:"Provider",due:"2026-10-15",priority:"Medium",status:"Pending" },
+  { name:"Renewal termination notice",party:"Client",due:"2026-11-15",priority:"High",status:"Upcoming" },
+  { name:"Confidentiality compliance",party:"Both Parties",due:"Ongoing",priority:"Medium",status:"Active" },
+  { name:"Quarterly performance report",party:"Provider",due:"2026-12-31",priority:"Low",status:"Active" },
+  { name:"Annual contract renewal",party:"Both Parties",due:"2027-01-14",priority:"High",status:"Upcoming" }
+];
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => Array.from(document.querySelectorAll(selector));
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function pillClass(value){
+  const text=String(value).toLowerCase();
+  if(["high","critical"].includes(text))return "pill-red";
+  if(["medium","pending","upcoming","in review"].includes(text))return "pill-orange";
+  if(["low","active","approved"].includes(text))return "pill-green";
+  return "pill-blue";
+}
+
+function pill(value){
+  return `<span class="pill ${pillClass(value)}">${escapeHTML(value)}</span>`;
+}
+
+function renderClauses(){
+  $("#clausesTable").innerHTML=clauses.map(item=>`
+    <tr>
+      <td><span class="primary-text">${escapeHTML(item.name)}</span><span class="secondary-text">${escapeHTML(item.id)}</span></td>
+      <td>${escapeHTML(item.category)}</td>
+      <td>${pill(item.risk)}</td>
+      <td>${escapeHTML(item.confidence)}</td>
+      <td><button class="action-link" data-record="clause" data-id="${escapeHTML(item.id)}">Inspect ↗</button></td>
+    </tr>
+  `).join("");
+}
+
+function renderRisks(){
+  $("#riskList").innerHTML=risks.map(item=>`
+    <div class="risk-item">
+      <div class="risk-icon ${item.level==="High"?"red":item.level==="Medium"?"orange":"green"}">◇</div>
+      <div class="risk-info">
+        <strong>${escapeHTML(item.name)}</strong>
+        <p>${escapeHTML(item.description)}</p>
+        ${pill(item.level)}
+        <button class="action-link" style="margin-left:10px" data-record="risk" data-id="${escapeHTML(item.id)}">Details ↗</button>
+      </div>
+      <div class="risk-score"><strong>${Math.round(item.score*100)}</strong>/100</div>
+    </div>
+  `).join("");
+}
+
+function renderObligations(){
+  $("#obligationsTable").innerHTML=obligations.map(item=>`
+    <tr>
+      <td><span class="primary-text">${escapeHTML(item.name)}</span></td>
+      <td>${escapeHTML(item.party)}</td>
+      <td>${escapeHTML(item.due)}</td>
+      <td>${pill(item.priority)}</td>
+      <td>${pill(item.status)}</td>
+    </tr>
+  `).join("");
+}
+
+function showTab(tabName){
+  $$(".tab").forEach(button=>{
+    const active=button.dataset.tab===tabName;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-selected",String(active));
+  });
+  $$(".tab-panel").forEach(panel=>{
+    panel.classList.toggle("active",panel.id===`tab-${tabName}`);
+  });
+}
+
+$$(".tab").forEach(button=>{
+  button.addEventListener("click",()=>showTab(button.dataset.tab));
+});
+
+/* Dynamic expiry calculation */
+function updateExpiry(){
+  const [year,month,day]=contract.expiryDate.split("-").map(Number);
+  const expiry=Date.UTC(year,month-1,day);
+  const now=new Date();
+  const today=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+  const remaining=Math.ceil((expiry-today)/86400000);
+  $("#daysToExpiry").textContent=remaining>=0?remaining.toLocaleString():"Expired";
+}
+
+/* Modal and toast */
+let previousFocus=null;
+let confirmAction=null;
+
+function openModal(title,description,body="",callback=null){
+  previousFocus=document.activeElement;
+  $("#modalTitle").textContent=title;
+  $("#modalDescription").textContent=description;
+  $("#modalBody").innerHTML=body;
+  confirmAction=callback;
+  $("#modalBackdrop").classList.add("show");
+  $("#closeModal").focus();
+}
+
+function closeModal(){
+  $("#modalBackdrop").classList.remove("show");
+  $("#modalBody").replaceChildren();
+  confirmAction=null;
+  previousFocus?.focus?.();
+}
+
+function toast(message){
+  const el=$("#toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>el.classList.remove("show"),3500);
+}
+
+function openRecord(type,id){
+  const item=type==="clause"
+    ?clauses.find(c=>c.id===id)
+    :risks.find(r=>r.id===id);
+
+  if(!item)return;
+
+  const body=Object.entries(item).map(([key,value])=>`
+    <div style="display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line);font-size:12px">
+      <strong>${escapeHTML(key)}</strong>
+      <span style="text-align:right">${escapeHTML(value)}</span>
+    </div>
+  `).join("");
+
+  openModal(
+    type==="clause"?"Clause intelligence":"Risk finding",
+    "Read-only sample record. Production findings must link to verified evidence and authorized document versions.",
+    body
+  );
+}
+
+function requestReview(){
+  openModal(
+    "Request legal review",
+    "Preview workflow only. No review record will be created until the backend is connected.",
+    `<div class="field">
+      <label for="reviewPriority">Review priority</label>
+      <select id="reviewPriority">
+        <option>Medium</option><option>High</option><option>Critical</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="reviewNotes">Review instructions</label>
+      <textarea id="reviewNotes" placeholder="Describe the issues requiring legal review..."></textarea>
+    </div>`,
+    ()=>{
+      toast("Review request preview completed. No backend record was created.");
+      return true;
+    }
+  );
+}
+
+function exportSummary(){
+  const summary={
+    demo:true,
+    contract,
+    clauses,
+    risks,
+    obligations,
+    note:"Fictional contract intelligence demonstration; not legal advice."
+  };
+  const blob=new Blob([JSON.stringify(summary,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="sample_contract_summary.json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Sample contract summary exported.");
+}
+
+/* Events */
+document.addEventListener("click",event=>{
+  const record=event.target.closest("[data-record]");
+  if(record)openRecord(record.dataset.record,record.dataset.id);
+});
+
+$("#requestReviewButton").addEventListener("click",requestReview);
+$("#reviewFromActivity").addEventListener("click",requestReview);
+$("#exportButton").addEventListener("click",exportSummary);
+
+$("#editContractButton").addEventListener("click",()=>{
+  openModal(
+    "Edit contract details",
+    "This frontend preview is read-only. Connect an authorized FastAPI update endpoint with server-side validation and audit logging."
+  );
+});
+
+$("#infoButton").addEventListener("click",()=>{
+  openModal(
+    "About contract intelligence",
+    "This page demonstrates contract metadata, clause analysis, risk scoring, obligations, evidence inspection and human legal review workflows."
+  );
+});
+
+$("#closeModal").addEventListener("click",closeModal);
+$("#modalConfirm").addEventListener("click",()=>{
+  if(confirmAction && confirmAction()===false)return;
+  closeModal();
+});
+$("#modalBackdrop").addEventListener("click",event=>{
+  if(event.target===$("#modalBackdrop"))closeModal();
+});
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){
+    if($("#modalBackdrop").classList.contains("show"))closeModal();
+    $("#sidebar").classList.remove("open");
+    $("#overlay").classList.remove("show");
+  }
+  if(event.key==="Tab" && $("#modalBackdrop").classList.contains("show")){
+    const focusables=Array.from($("#modalBackdrop").querySelectorAll(
+      "button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled])"
+    )).filter(el=>el.getClientRects().length);
+    if(!focusables.length)return;
+    const first=focusables[0],last=focusables[focusables.length-1];
+    if(event.shiftKey && document.activeElement===first){
+      event.preventDefault();last.focus();
+    }else if(!event.shiftKey && document.activeElement===last){
+      event.preventDefault();first.focus();
+    }
+  }
+});
+
+/* Search contract tabs */
+const searchSections=[
+  {tab:"overview",terms:"overview information summary lifecycle"},
+  {tab:"clauses",terms:"clauses clause indemnification liability confidentiality"},
+  {tab:"risks",terms:"risk analysis exposure mitigation"},
+  {tab:"obligations",terms:"obligations deadline duties"},
+  {tab:"document",terms:"document preview evidence citations"},
+  {tab:"activity",terms:"activity review history approvals"}
+];
+
+$("#contractSearch").addEventListener("keydown",event=>{
+  if(event.key!=="Enter")return;
+  const query=event.target.value.trim().toLowerCase();
+  if(!query)return;
+  const match=searchSections.find(section=>section.terms.includes(query));
+  if(match){
+    showTab(match.tab);
+    $(".tabs").scrollIntoView({behavior:"smooth",block:"start"});
+    toast(`Showing ${match.tab} section.`);
+  }else{
+    toast("No matching contract section found.");
+  }
+});
+
+/* Mobile sidebar */
+$("#menuButton").addEventListener("click",()=>{
+  $("#sidebar").classList.toggle("open");
+  $("#overlay").classList.toggle("show");
+});
+$("#overlay").addEventListener("click",()=>{
+  $("#sidebar").classList.remove("open");
+  $("#overlay").classList.remove("show");
+});
+
+/* Initialize */
+renderClauses();
+renderRisks();
+renderObligations();
+updateExpiry();
+</script>
+</body>
+</html>

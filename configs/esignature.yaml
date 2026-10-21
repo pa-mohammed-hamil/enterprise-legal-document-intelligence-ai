@@ -1,0 +1,342 @@
+# ==============================================================================
+# E-Signature Integration Configuration
+# ==============================================================================
+
+esignature:
+  # Enable/disable e-signature integration
+  enabled: true
+
+  # Default provider to use
+  default_provider: "docusign"  # docusign, adobe_sign, hellosign
+
+  # Provider configurations
+  providers:
+
+    # DocuSign Configuration
+    docusign:
+      enabled: true
+
+      # Authentication (JWT)
+      integration_key: ${DOCUSIGN_INTEGRATION_KEY}
+      user_id: ${DOCUSIGN_USER_ID}
+      account_id: ${DOCUSIGN_ACCOUNT_ID}
+      private_key: ${DOCUSIGN_PRIVATE_KEY}  # Base64 encoded RSA private key
+
+      # API endpoint
+      base_path: ${DOCUSIGN_BASE_PATH:https://demo.docusign.net/restapi}
+
+      # OAuth settings
+      oauth_host_name: "account-d.docusign.com"
+      scopes:
+        - signature
+        - impersonation
+
+      # Test mode
+      test_mode: false
+
+      # Features
+      features:
+        embedded_signing: true
+        bulk_send: true
+        templates: true
+        advanced_fields: true
+        sms_authentication: true
+        id_verification: true
+        payment_collection: true
+
+    # Adobe Sign Configuration
+    adobe_sign:
+      enabled: true
+
+      # Authentication
+      api_key: ${ADOBE_SIGN_API_KEY}
+
+      # API endpoint
+      base_url: ${ADOBE_SIGN_BASE_URL:https://api.na1.adobesign.com/api/rest/v6}
+
+      # Features
+      features:
+        embedded_signing: true
+        bulk_send: true
+        templates: true
+        advanced_fields: true
+        sms_authentication: true
+        id_verification: true
+
+    # HelloSign Configuration
+    hellosign:
+      enabled: true
+
+      # Authentication
+      api_key: ${HELLOSIGN_API_KEY}
+      client_id: ${HELLOSIGN_CLIENT_ID}
+
+      # Test mode
+      test_mode: false
+
+      # Features
+      features:
+        embedded_signing: true
+        templates: true
+
+  # Webhook configuration
+  webhooks:
+    enabled: true
+
+    # Your webhook base URL
+    base_url: ${WEBHOOK_BASE_URL:https://your-domain.com}
+
+    # Webhook endpoints
+    endpoints:
+      docusign: "/api/esignature/webhooks/docusign"
+      adobe_sign: "/api/esignature/webhooks/adobe_sign"
+      hellosign: "/api/esignature/webhooks/hellosign"
+
+    # Security
+    verify_signature: true
+    secret: ${WEBHOOK_SECRET}
+
+    # Retry configuration
+    retry:
+      enabled: true
+      max_attempts: 3
+      backoff_seconds: 5
+
+  # Storage configuration
+  storage:
+    # Path for signed documents
+    signed_documents_path: "storage/signed_documents"
+
+    # Path for unsigned documents
+    unsigned_documents_path: "storage/unsigned_documents"
+
+    # Document retention (days)
+    retention_days: 2555  # 7 years (legal requirement)
+
+    # Storage backend
+    backend: "s3"  # s3, azure_blob, local
+
+    # S3 configuration
+    s3:
+      bucket: ${ESIGNATURE_S3_BUCKET}
+      prefix: "esignature/"
+      region: "us-east-1"
+
+  # Default settings for signature requests
+  defaults:
+    # Expiration (days)
+    expiration_days: 30
+
+    # Reminder frequency (days)
+    reminder_frequency: 7
+
+    # Allow signers to decline
+    allow_decline: true
+
+    # Require all signers to sign
+    require_all_signers: true
+
+    # Sequential signing
+    signing_order: false
+
+    # Notification settings
+    notifications:
+      completion_emails: true
+      in_flight_emails: true
+      declined_emails: true
+      voided_emails: true
+
+  # Security settings
+  security:
+    # Require authentication
+    require_authentication: false
+
+    # Authentication methods
+    authentication_methods:
+      - email  # Email verification
+      - sms    # SMS verification
+      - phone  # Phone call verification
+      - id     # ID verification
+      - kba    # Knowledge-based authentication
+
+    # Access control
+    access_codes: false
+
+    # IP restrictions
+    ip_restrictions:
+      enabled: false
+      allowed_ips: []
+
+    # Time-based restrictions
+    time_restrictions:
+      enabled: false
+      start_time: "09:00"
+      end_time: "17:00"
+      timezone: "America/New_York"
+
+  # Compliance settings
+  compliance:
+    # Require audit trail
+    require_audit_trail: true
+
+    # Verify signatures after completion
+    verify_signatures: true
+
+    # Generate certificate of completion
+    certificate_of_completion: true
+
+    # Legal disclaimers
+    disclaimers:
+      enabled: true
+      text: >
+        By signing this document, you agree that this electronic signature
+        has the same legal effect as a handwritten signature.
+
+    # Data retention
+    retention:
+      # Minimum retention period (days)
+      minimum_days: 2555  # 7 years
+
+      # Archive after retention period
+      archive: true
+
+      # Archive storage
+      archive_storage: "glacier"
+
+  # Monitoring and observability
+  monitoring:
+    enabled: true
+
+    # Metrics
+    metrics:
+      enabled: true
+      prefix: "esignature"
+
+      # Metrics to collect
+      collect:
+        - request_count
+        - success_rate
+        - failure_rate
+        - completion_rate
+        - average_completion_time
+        - signer_count
+        - declined_count
+        - voided_count
+
+    # Logging
+    logging:
+      enabled: true
+      level: "info"
+
+      # Log sensitive data
+      log_sensitive_data: false
+
+      # Audit logging
+      audit_log: true
+
+    # Alerts
+    alerts:
+      enabled: true
+
+      # Alert conditions
+      conditions:
+        - type: "failure_rate"
+          threshold: 10  # percent
+          window_minutes: 60
+
+        - type: "completion_time"
+          threshold: 168  # hours (1 week)
+
+        - type: "declined_rate"
+          threshold: 20  # percent
+
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+
+    # Requests per provider
+    docusign:
+      requests_per_hour: 1000
+      requests_per_day: 10000
+
+    adobe_sign:
+      requests_per_hour: 500
+      requests_per_day: 5000
+
+    hellosign:
+      requests_per_hour: 500
+      requests_per_day: 5000
+
+  # Caching
+  caching:
+    enabled: true
+
+    # Cache status requests
+    status_cache:
+      enabled: true
+      ttl_seconds: 300  # 5 minutes
+
+    # Cache audit trails
+    audit_trail_cache:
+      enabled: true
+      ttl_seconds: 3600  # 1 hour
+
+  # Integration with document management
+  document_management:
+    enabled: true
+
+    # Auto-link to contracts
+    auto_link_contracts: true
+
+    # Update contract status
+    update_contract_status: true
+
+    # Trigger workflows
+    trigger_workflows: true
+
+    # Status mappings
+    status_mappings:
+      sent: "pending_signature"
+      delivered: "pending_signature"
+      signed: "partially_signed"
+      completed: "fully_executed"
+      declined: "declined"
+      cancelled: "cancelled"
+      expired: "expired"
+
+  # Notifications
+  notifications:
+    enabled: true
+
+    # Email notifications
+    email:
+      enabled: true
+      from_address: "noreply@yourdomain.com"
+      from_name: "Legal Document Intelligence AI"
+
+      # Templates
+      templates:
+        signature_request_sent: "templates/email/signature_request_sent.html"
+        signature_completed: "templates/email/signature_completed.html"
+        signature_declined: "templates/email/signature_declined.html"
+        reminder: "templates/email/signature_reminder.html"
+
+    # In-app notifications
+    in_app:
+      enabled: true
+
+    # Slack notifications
+    slack:
+      enabled: false
+      webhook_url: ${SLACK_WEBHOOK_URL}
+
+  # Testing
+  testing:
+    # Enable test mode
+    test_mode: false
+
+    # Test email domain
+    test_email_domain: "example.com"
+
+    # Sandbox accounts
+    use_sandbox: true

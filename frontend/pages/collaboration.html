@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1422" />
+  <title>Collaboration | Lexora Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0b1422;
+      --navy-soft: #142235;
+      --navy-light: #1c2d43;
+      --gold: #d6b477;
+      --gold-light: #f1dfb8;
+      --cream: #f6f4ee;
+      --surface: #ffffff;
+      --ink: #182334;
+      --muted: #788394;
+      --line: #e8e9e8;
+      --green: #25856b;
+      --red: #cb6262;
+      --orange: #c58c44;
+      --blue: #5478b7;
+      --purple: #8b6bb7;
+      --shadow: 0 14px 45px rgba(16, 30, 50, .045);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      z-index: 50;
+      inset: 0 auto 0 0;
+      width: 270px;
+      background: var(--navy);
+      color: #f6f7f8;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 16px 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 30px;
+    }
+    .brand-icon {
+      width: 41px;
+      height: 41px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(214,180,119,.45);
+      border-radius: 12px;
+      color: var(--gold);
+      font-size: 22px;
+      font-family: Georgia, serif;
+      background: rgba(214,180,119,.08);
+    }
+    .brand strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+      letter-spacing: -.8px;
+    }
+    .brand small {
+      display: block;
+      color: #91a0b3;
+      font-size: 10px;
+      letter-spacing: 2.3px;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+    .nav-label {
+      padding: 17px 14px 9px;
+      color: #718299;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      margin: 3px 0;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: #a7b3c3;
+      background: transparent;
+      text-align: left;
+      font-size: 13px;
+      transition: .2s;
+    }
+    .nav-link:hover { color: white; background: rgba(255,255,255,.055); }
+    .nav-link.active {
+      color: var(--gold-light);
+      border-color: rgba(214,180,119,.13);
+      background: rgba(214,180,119,.11);
+    }
+    .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+    .online-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-left: auto;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      min-width: 0;
+    }
+    .topbar {
+      height: 82px;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 38px;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .breadcrumb { font-size: 12px; color: var(--muted); }
+    .breadcrumb strong { color: var(--ink); }
+    .top-actions { display: flex; align-items: center; gap: 14px; }
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    .btn-primary:hover { background: #c7a563; }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-secondary:hover { background: #f9fafb; }
+
+    /* CONTENT */
+    .content {
+      padding: 38px;
+      max-width: 1400px;
+    }
+    .page-head {
+      margin-bottom: 32px;
+    }
+    .page-head h1 {
+      font-family: "Manrope", sans-serif;
+      font-size: 29px;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+    .page-head p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* LAYOUT */
+    .collab-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ACTIVITY FEED */
+    .activity-item {
+      display: flex;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .activity-item:last-child { border: 0; }
+    .activity-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .activity-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .activity-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .activity-user {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .activity-time {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .activity-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .activity-mention {
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .activity-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+    .badge-comment { background: #e8f0fb; color: var(--blue); }
+    .badge-annotation { background: #fff4e6; color: var(--orange); }
+    .badge-edit { background: #f4e8fb; color: var(--purple); }
+    .badge-mention { background: #e7f5f0; color: var(--green); }
+
+    /* ONLINE USERS */
+    .user-list {
+      display: grid;
+      gap: 12px;
+    }
+    .user-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      transition: .2s;
+    }
+    .user-item:hover {
+      background: #f9fafb;
+    }
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .user-status {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .status-online { background: var(--green); }
+    .status-away { background: var(--orange); }
+    .status-offline { background: #c4c8cc; }
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .user-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .user-role {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* COMMENTS */
+    .comment-box {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .comment-input {
+      display: flex;
+      gap: 12px;
+      align-items: start;
+    }
+    .comment-input textarea {
+      flex: 1;
+      border: 1px solid #dfe2e4;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      min-height: 80px;
+      resize: vertical;
+    }
+    .comment-input textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(214,180,119,.12);
+    }
+
+    /* ANNOTATIONS */
+    .annotation-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .annotation {
+      background: #fffdf8;
+      border: 1px solid #f3ecd9;
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .annotation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .annotation-user {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .annotation-time {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .annotation-text {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #5a5f64;
+    }
+    .annotation-quote {
+      background: white;
+      border-left: 3px solid #e9ebec;
+      padding: 8px 12px;
+      margin: 10px 0;
+      font-size: 11px;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-value {
+      font-family: "Manrope", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .collab-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+      .content {
+        padding: 24px 18px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">L</span>
+        <span>
+          <strong>lexora</strong>
+          <small>Legal AI</small>
+        </span>
+      </div>
+
+            <div class="nav-label">Workspace</div>
+      <a href="dashboard.html" class="nav-link">
+        <span class="nav-icon">◫</span> Dashboard
+      </a>
+      <a href="documents.html" class="nav-link">
+        <span class="nav-icon">▤</span> Documents
+      </a>
+      <a href="contracts.html" class="nav-link">
+        <span class="nav-icon">◇</span> Contracts
+      </a>
+      <a href="expiry-calendar.html" class="nav-link">
+        <span class="nav-icon">◷</span> Expiry Calendar
+      </a>
+      <a href="renewals.html" class="nav-link">
+        <span class="nav-icon">↻</span> Renewals
+      </a>
+
+      <div class="nav-label">AI Intelligence</div>
+      <a href="legal-chat.html" class="nav-link">
+        <span class="nav-icon">✧</span> Legal Copilot
+      </a>
+      <a href="risk.html" class="nav-link">
+        <span class="nav-icon">⚑</span> Risk Analysis
+      </a>
+      <a href="analytics.html" class="nav-link">
+        <span class="nav-icon">▥</span> Analytics
+      </a>
+      <a href="predictive-analytics.html" class="nav-link">
+        <span class="nav-icon">◈</span> Predictive Analytics
+      </a>
+
+      <div class="nav-label">Integrations</div>
+      <a href="esignature.html" class="nav-link">
+        <span class="nav-icon">✎</span> E-Signature
+      </a>
+      <a href="collaboration.html" class="nav-link active">
+        <span class="nav-icon">◉</span> Collaboration
+      </a>
+      <a href="notifications.html" class="nav-link">
+        <span class="nav-icon">●</span> Notifications
+      </a>
+
+      <div class="nav-label">Settings</div>
+      <a href="model-settings.html" class="nav-link">
+        <span class="nav-icon">⚙</span> AI Models
+      </a>
+      <a href="dlp-settings.html" class="nav-link">
+        <span class="nav-icon">🛡</span> Data Security
+      </a>
+      <a href="admin.html" class="nav-link">
+        <span class="nav-icon">♙</span> Administration
+      </a>
+      <a href="audit.html" class="nav-link">
+        <span class="nav-icon">📋</span> Audit Trail
+      </a></aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="breadcrumb">
+          Workspace / <strong>Collaboration</strong>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary">Invite Team</button>
+          <button class="btn btn-primary">Share Document</button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        
+        <!-- PAGE HEAD -->
+        <div class="page-head">
+          <h1>Real-Time Collaboration</h1>
+          <p>Work together with your team on document review, comments, annotations, and approvals with live updates via WebSocket.</p>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Online Now</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">23</div>
+            <div class="stat-label">Active Comments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">47</div>
+            <div class="stat-label">Annotations</div>
+          </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="collab-layout">
+          
+          <!-- LEFT: ACTIVITY FEED -->
+          <div>
+            <div class="card">
+              <h2 class="card-title">
+                Recent Activity
+                <span class="badge-mention">Live</span>
+              </h2>
+              
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #e8f0fb; color: #5478b7;">
+                  SM
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">Sarah Mitchell</span>
+                    <span class="activity-time">2 min ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Added a comment on <strong>NDA-2024-001.pdf</strong>
+                  </div>
+                  <span class="activity-badge badge-comment">💬 Comment</span>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #fff4e6; color: #c58c44;">
+                  JC
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">John Cooper</span>
+                    <span class="activity-time">8 min ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Highlighted clause 3.2 with annotation about liability terms
+                  </div>
+                  <span class="activity-badge badge-annotation">📝 Annotation</span>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #e7f5f0; color: #25856b;">
+                  AR
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">Alex Rodriguez</span>
+                    <span class="activity-time">15 min ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Mentioned <span class="activity-mention">@Sarah Mitchell</span> in a review comment
+                  </div>
+                  <span class="activity-badge badge-mention">@ Mention</span>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #f4e8fb; color: #8b6bb7;">
+                  MK
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">Maria Kim</span>
+                    <span class="activity-time">22 min ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Updated termination clause in <strong>Service Agreement</strong>
+                  </div>
+                  <span class="activity-badge badge-edit">✏️ Edit</span>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #fff0f0; color: #cb6262;">
+                  DL
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">David Lee</span>
+                    <span class="activity-time">35 min ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Resolved 3 comments on payment terms section
+                  </div>
+                  <span class="activity-badge badge-comment">✓ Resolved</span>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar" style="background: #e8f0fb; color: #5478b7;">
+                  SM
+                </div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <span class="activity-user">Sarah Mitchell</span>
+                    <span class="activity-time">1 hour ago</span>
+                  </div>
+                  <div class="activity-text">
+                    Approved contract for signature
+                  </div>
+                  <span class="activity-badge badge-mention">✓ Approved</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RECENT ANNOTATIONS -->
+            <div class="card" style="margin-top: 24px;">
+              <h2 class="card-title">Recent Annotations</h2>
+              
+              <div class="annotation-list">
+                <div class="annotation">
+                  <div class="annotation-header">
+                    <span class="annotation-user">John Cooper</span>
+                    <span class="annotation-time">8 minutes ago</span>
+                  </div>
+                  <div class="annotation-quote">
+                    "The Company shall indemnify and hold harmless..."
+                  </div>
+                  <div class="annotation-text">
+                    The indemnification clause seems overly broad. We should limit it to direct damages only and exclude consequential losses.
+                  </div>
+                </div>
+
+                <div class="annotation">
+                  <div class="annotation-header">
+                    <span class="annotation-user">Maria Kim</span>
+                    <span class="annotation-time">1 hour ago</span>
+                  </div>
+                  <div class="annotation-quote">
+                    "Either party may terminate with 90 days notice..."
+                  </div>
+                  <div class="annotation-text">
+                    Consider reducing termination notice to 60 days to align with our standard terms. Also add exception for material breach.
+                  </div>
+                </div>
+
+                <div class="annotation">
+                  <div class="annotation-header">
+                    <span class="annotation-user">Sarah Mitchell</span>
+                    <span class="annotation-time">2 hours ago</span>
+                  </div>
+                  <div class="annotation-quote">
+                    "Renewal: Automatic renewal for successive one-year terms..."
+                  </div>
+                  <div class="annotation-text">
+                    ✅ Approved. Auto-renewal terms are acceptable. Make sure we track the opt-out deadline in our system.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: ONLINE USERS & COMMENTS -->
+          <div>
+            <!-- ONLINE USERS -->
+            <div class="card">
+              <h2 class="card-title">
+                Online Users
+                <span style="font-size: 12px; font-weight: 600; color: var(--green);">5 online</span>
+              </h2>
+              
+              <div class="user-list">
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #e8f0fb; color: #5478b7;">
+                    SM
+                    <span class="user-status status-online"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">Sarah Mitchell</div>
+                    <div class="user-role">Senior Legal Counsel</div>
+                  </div>
+                </div>
+
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #fff4e6; color: #c58c44;">
+                    JC
+                    <span class="user-status status-online"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">John Cooper</div>
+                    <div class="user-role">Contract Manager</div>
+                  </div>
+                </div>
+
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #e7f5f0; color: #25856b;">
+                    AR
+                    <span class="user-status status-online"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">Alex Rodriguez</div>
+                    <div class="user-role">Legal Analyst</div>
+                  </div>
+                </div>
+
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #f4e8fb; color: #8b6bb7;">
+                    MK
+                    <span class="user-status status-online"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">Maria Kim</div>
+                    <div class="user-role">Compliance Officer</div>
+                  </div>
+                </div>
+
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #fff0f0; color: #cb6262;">
+                    DL
+                    <span class="user-status status-online"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">David Lee</div>
+                    <div class="user-role">Legal Operations</div>
+                  </div>
+                </div>
+
+                <div class="user-item">
+                  <div class="user-avatar" style="background: #f0f1f3; color: #788394;">
+                    TS
+                    <span class="user-status status-offline"></span>
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">Tom Sanders</div>
+                    <div class="user-role">General Counsel</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ADD COMMENT -->
+            <div class="card" style="margin-top: 24px;">
+              <h2 class="card-title">Add Comment</h2>
+              
+              <div class="comment-box">
+                <div class="comment-input">
+                  <div class="user-avatar" style="background: #d6e8ff; color: #2d5a9e; width: 38px; height: 38px; font-size: 13px;">
+                    You
+                  </div>
+                  <textarea placeholder="Add a comment or mention someone with @..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px;">
+                  <button class="btn btn-secondary">Cancel</button>
+                  <button class="btn btn-primary">Post Comment</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FEATURES -->
+            <div class="card" style="margin-top: 24px;">
+              <h2 class="card-title">Collaboration Features</h2>
+              
+              <div style="display: grid; gap: 12px; font-size: 12px; line-height: 1.7;">
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">💬</span>
+                  <div>
+                    <strong>Comments</strong><br>
+                    <span style="color: var(--muted);">Add threaded comments on documents</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">📝</span>
+                  <div>
+                    <strong>Annotations</strong><br>
+                    <span style="color: var(--muted);">Highlight and annotate text</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">@</span>
+                  <div>
+                    <strong>Mentions</strong><br>
+                    <span style="color: var(--muted);">Tag team members for attention</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">🔄</span>
+                  <div>
+                    <strong>Real-time Sync</strong><br>
+                    <span style="color: var(--muted);">Live updates via WebSocket</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">✓</span>
+                  <div>
+                    <strong>Approvals</strong><br>
+                    <span style="color: var(--muted);">Multi-level approval workflows</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <span style="font-size: 16px;">📊</span>
+                  <div>
+                    <strong>Activity Feed</strong><br>
+                    <span style="color: var(--muted);">Track all team activity</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Backend API Connection -->
+  <script src="../js/config.js"></script>
+
+  <script>
+    // Simulate real-time updates
+    function addActivityItem(user, action, time) {
+      console.log(`[Collaboration] ${user} ${action} ${time}`);
+    }
+
+    // WebSocket connection for real-time collaboration
+    // In production, this would connect to: ws://localhost:8000/ws/collaboration
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🔄 Collaboration features initialized');
+      console.log('📡 WebSocket support ready for real-time updates');
+    });
+
+    // Comment posting
+    const postButton = document.querySelector('.btn-primary');
+    if (postButton) {
+      postButton.addEventListener('click', () => {
+        const textarea = document.querySelector('textarea');
+        if (textarea && textarea.value.trim()) {
+          console.log('Comment posted:', textarea.value);
+          textarea.value = '';
+          alert('Comment posted successfully!');
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

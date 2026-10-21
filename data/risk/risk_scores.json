@@ -1,0 +1,58 @@
+[
+  {
+    "document_id": "MSA-001",
+    "risk_level": "medium",
+    "score": 50,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "SVC-001",
+    "risk_level": "low",
+    "score": 20,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "EMP-001",
+    "risk_level": "medium",
+    "score": 50,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "NDA-001",
+    "risk_level": "low",
+    "score": 20,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "NDA-002",
+    "risk_level": "medium",
+    "score": 50,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "VEN-001",
+    "risk_level": "high",
+    "score": 80,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "LEA-001",
+    "risk_level": "medium",
+    "score": 50,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  },
+  {
+    "document_id": "LIC-001",
+    "risk_level": "medium",
+    "score": 50,
+    "reason": "Synthetic illustrative classification, not a legal assessment",
+    "synthetic": true
+  }
+]

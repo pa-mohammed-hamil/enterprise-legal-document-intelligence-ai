@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1422" />
+  <title>Data Security Settings | Lexora Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0b1422;
+      --navy-soft: #142235;
+      --navy-light: #1c2d43;
+      --gold: #d6b477;
+      --gold-light: #f1dfb8;
+      --cream: #f6f4ee;
+      --surface: #ffffff;
+      --ink: #182334;
+      --muted: #788394;
+      --line: #e8e9e8;
+      --green: #25856b;
+      --red: #cb6262;
+      --orange: #c58c44;
+      --blue: #5478b7;
+      --shadow: 0 14px 45px rgba(16, 30, 50, .045);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      z-index: 50;
+      inset: 0 auto 0 0;
+      width: 270px;
+      background: var(--navy);
+      color: #f6f7f8;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 16px 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 30px;
+    }
+    .brand-icon {
+      width: 41px;
+      height: 41px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(214,180,119,.45);
+      border-radius: 12px;
+      color: var(--gold);
+      font-size: 22px;
+      font-family: Georgia, serif;
+      background: rgba(214,180,119,.08);
+    }
+    .brand strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+      letter-spacing: -.8px;
+    }
+    .brand small {
+      display: block;
+      color: #91a0b3;
+      font-size: 10px;
+      letter-spacing: 2.3px;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+    .nav-label {
+      padding: 17px 14px 9px;
+      color: #718299;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      margin: 3px 0;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: #a7b3c3;
+      background: transparent;
+      text-align: left;
+      font-size: 13px;
+      transition: .2s;
+    }
+    .nav-link:hover { color: white; background: rgba(255,255,255,.055); }
+    .nav-link.active {
+      color: var(--gold-light);
+      border-color: rgba(214,180,119,.13);
+      background: rgba(214,180,119,.11);
+    }
+    .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+
+    /* MAIN */
+    .main {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      min-width: 0;
+    }
+    .topbar {
+      height: 82px;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 38px;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .breadcrumb { font-size: 12px; color: var(--muted); }
+    .breadcrumb strong { color: var(--ink); }
+    .top-actions { display: flex; align-items: center; gap: 14px; }
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+    .btn-primary:hover { background: #c7a563; }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-secondary:hover { background: #f9fafb; }
+
+    /* CONTENT */
+    .content {
+      padding: 38px;
+      max-width: 1400px;
+    }
+    .page-head {
+      margin-bottom: 32px;
+    }
+    .page-head h1 {
+      font-family: "Manrope", sans-serif;
+      font-size: 29px;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+    .page-head p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ALERT */
+    .alert {
+      background: #fff8eb;
+      border: 1px solid #f3e3c6;
+      border-left: 4px solid var(--orange);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 14px;
+    }
+    .alert-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .alert-content h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .alert-content p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #6b5839;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 20px;
+    }
+    .card-description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 22px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .form-help {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #dfe2e4;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      background: var(--surface);
+      transition: .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(214,180,119,.12);
+    }
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .switch input[type="checkbox"] {
+      width: 50px;
+      height: 28px;
+      appearance: none;
+      background: #d4d8dd;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: .3s;
+    }
+    .switch input[type="checkbox"]:checked {
+      background: var(--green);
+    }
+    .switch input[type="checkbox"]::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      top: 3px;
+      left: 3px;
+      transition: .3s;
+    }
+    .switch input[type="checkbox"]:checked::before {
+      left: 25px;
+    }
+
+    /* PII PATTERNS */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .pattern-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: .2s;
+    }
+    .pattern-card:hover {
+      border-color: var(--gold);
+    }
+    .pattern-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .pattern-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .pattern-example {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .pattern-toggle input[type="checkbox"] {
+      width: 42px;
+      height: 24px;
+    }
+    .pattern-toggle input[type="checkbox"]::before {
+      width: 18px;
+      height: 18px;
+    }
+    .pattern-toggle input[type="checkbox"]:checked::before {
+      left: 21px;
+    }
+
+    /* STATS */
+    .security-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .stat-box {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-value {
+      font-family: "Manrope", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .badge-success { background: #e7f5f0; color: var(--green); }
+    .badge-warning { background: #fff4e6; color: var(--orange); }
+    .badge-danger { background: #ffebeb; color: var(--red); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .security-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+      .content {
+        padding: 24px 18px;
+      }
+      .security-stats {
+        grid-template-columns: 1fr;
+      }
+      .pattern-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">L</span>
+        <span>
+          <strong>lexora</strong>
+          <small>Legal AI</small>
+        </span>
+      </div>
+
+            <div class="nav-label">Workspace</div>
+      <a href="dashboard.html" class="nav-link">
+        <span class="nav-icon">◫</span> Dashboard
+      </a>
+      <a href="documents.html" class="nav-link">
+        <span class="nav-icon">▤</span> Documents
+      </a>
+      <a href="contracts.html" class="nav-link">
+        <span class="nav-icon">◇</span> Contracts
+      </a>
+      <a href="expiry-calendar.html" class="nav-link">
+        <span class="nav-icon">◷</span> Expiry Calendar
+      </a>
+      <a href="renewals.html" class="nav-link">
+        <span class="nav-icon">↻</span> Renewals
+      </a>
+
+      <div class="nav-label">AI Intelligence</div>
+      <a href="legal-chat.html" class="nav-link">
+        <span class="nav-icon">✧</span> Legal Copilot
+      </a>
+      <a href="risk.html" class="nav-link">
+        <span class="nav-icon">⚑</span> Risk Analysis
+      </a>
+      <a href="analytics.html" class="nav-link">
+        <span class="nav-icon">▥</span> Analytics
+      </a>
+      <a href="predictive-analytics.html" class="nav-link">
+        <span class="nav-icon">◈</span> Predictive Analytics
+      </a>
+
+      <div class="nav-label">Integrations</div>
+      <a href="esignature.html" class="nav-link">
+        <span class="nav-icon">✎</span> E-Signature
+      </a>
+      <a href="collaboration.html" class="nav-link">
+        <span class="nav-icon">◉</span> Collaboration
+      </a>
+      <a href="notifications.html" class="nav-link">
+        <span class="nav-icon">●</span> Notifications
+      </a>
+
+      <div class="nav-label">Settings</div>
+      <a href="model-settings.html" class="nav-link">
+        <span class="nav-icon">⚙</span> AI Models
+      </a>
+      <a href="dlp-settings.html" class="nav-link active">
+        <span class="nav-icon">🛡</span> Data Security
+      </a>
+      <a href="admin.html" class="nav-link">
+        <span class="nav-icon">♙</span> Administration
+      </a>
+      <a href="audit.html" class="nav-link">
+        <span class="nav-icon">📋</span> Audit Trail
+      </a></aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="breadcrumb">
+          Settings / <strong>Data Leakage Prevention</strong>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary">Test DLP Rules</button>
+          <button class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        
+        <!-- PAGE HEAD -->
+        <div class="page-head">
+          <h1>Data Leakage Prevention (DLP)</h1>
+          <p>Protect sensitive information with advanced PII detection, smart redaction, and customizable data security policies. 15+ patterns actively monitored.</p>
+        </div>
+
+        <!-- ALERT -->
+        <div class="alert">
+          <span class="alert-icon">🛡️</span>
+          <div class="alert-content">
+            <h3>Enterprise Data Protection Active</h3>
+            <p>All documents and API requests are automatically scanned for sensitive information. Detected PII is redacted or flagged based on your security policies.</p>
+          </div>
+        </div>
+
+        <!-- SECURITY STATS -->
+        <div class="security-stats">
+          <div class="stat-box">
+            <div class="stat-value">15</div>
+            <div class="stat-label">Active Patterns</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: var(--green);">2,847</div>
+            <div class="stat-label">Items Protected</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: var(--orange);">43</div>
+            <div class="stat-label">Alerts This Week</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: var(--blue);">99.7%</div>
+            <div class="stat-label">Detection Rate</div>
+          </div>
+        </div>
+
+        <!-- PII DETECTION PATTERNS -->
+        <div class="card">
+          <h2 class="card-title">PII Detection Patterns</h2>
+          <p class="card-description">Configure which types of personally identifiable information (PII) to detect and how to handle them</p>
+          
+          <div class="pattern-grid">
+            
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Social Security Number</div>
+                <div class="pattern-example">e.g., XXX-XX-XXXX</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Credit Card Number</div>
+                <div class="pattern-example">e.g., XXXX-XXXX-XXXX-1234</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Email Address</div>
+                <div class="pattern-example">e.g., user@example.com</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Phone Number</div>
+                <div class="pattern-example">e.g., (123) 456-7890</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Street Address</div>
+                <div class="pattern-example">e.g., 123 Main St</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Date of Birth</div>
+                <div class="pattern-example">e.g., MM/DD/YYYY</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Driver's License</div>
+                <div class="pattern-example">e.g., state + number</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Passport Number</div>
+                <div class="pattern-example">e.g., country + ID</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Bank Account</div>
+                <div class="pattern-example">e.g., routing + account</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Tax ID (EIN/TIN)</div>
+                <div class="pattern-example">e.g., XX-XXXXXXX</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">IP Address</div>
+                <div class="pattern-example">e.g., 192.168.1.1</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox">
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">MAC Address</div>
+                <div class="pattern-example">e.g., 00:1B:44:11:3A:B7</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox">
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Medical Record Number</div>
+                <div class="pattern-example">e.g., MRN format</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Health Insurance Number</div>
+                <div class="pattern-example">e.g., policy number</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">National ID (Various)</div>
+                <div class="pattern-example">e.g., country-specific</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox" checked>
+              </div>
+            </div>
+
+            <div class="pattern-card">
+              <div class="pattern-info">
+                <div class="pattern-name">Custom Patterns</div>
+                <div class="pattern-example">Add your own rules</div>
+              </div>
+              <div class="pattern-toggle">
+                <input type="checkbox">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DLP POLICIES -->
+        <div class="card">
+          <h2 class="card-title">DLP Action Policies</h2>
+          <p class="card-description">Define what happens when PII is detected</p>
+          
+          <div class="form-group">
+            <label class="form-label">Default Action for Detected PII</label>
+            <select>
+              <option>Redact (Replace with [REDACTED])</option>
+              <option>Mask (Partially hide, e.g., XXX-XX-1234)</option>
+              <option>Flag Only (Alert without modification)</option>
+              <option>Block (Prevent upload/processing)</option>
+            </select>
+            <span class="form-help">Choose how to handle detected sensitive information</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">High-Risk PII Handling</label>
+            <select>
+              <option>Block and Alert Administrator</option>
+              <option>Redact and Alert User</option>
+              <option>Require Manual Review</option>
+              <option>Quarantine Document</option>
+            </select>
+            <span class="form-help">Special handling for SSN, credit cards, medical records</span>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="alert-admin" checked>
+              <label for="alert-admin">
+                <strong>Alert Administrators on Detection</strong>
+                <span class="form-help" style="display: block; margin: 0;">Send email alerts when sensitive data is detected</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="audit-log" checked>
+              <label for="audit-log">
+                <strong>Log All DLP Events</strong>
+                <span class="form-help" style="display: block; margin: 0;">Maintain audit trail of all PII detections</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="context-aware" checked>
+              <label for="context-aware">
+                <strong>Context-Aware Redaction</strong>
+                <span class="form-help" style="display: block; margin: 0;">Use AI to understand context before redacting</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- CUSTOM RULES -->
+        <div class="card">
+          <h2 class="card-title">Custom DLP Rules</h2>
+          <p class="card-description">Add organization-specific patterns and rules</p>
+          
+          <div class="form-group">
+            <label class="form-label">Rule Name</label>
+            <input type="text" placeholder="e.g., Internal Employee ID">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Regular Expression Pattern</label>
+            <input type="text" placeholder="e.g., EMP-[0-9]{6}">
+            <span class="form-help">Define regex pattern to match your custom data format</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Risk Level</label>
+            <select>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+              <option>Critical</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Action</label>
+            <select>
+              <option>Redact</option>
+              <option>Mask</option>
+              <option>Flag</option>
+              <option>Block</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary">Add Custom Rule</button>
+        </div>
+
+        <!-- ALLOWED DOMAINS -->
+        <div class="card">
+          <h2 class="card-title">Allowed Domains & Exceptions</h2>
+          <p class="card-description">Configure domains and patterns that should not be flagged</p>
+          
+          <div class="form-group">
+            <label class="form-label">Allowed Email Domains</label>
+            <textarea placeholder="@yourcompany.com&#10;@trusted-partner.com&#10;@client-domain.com" rows="4"></textarea>
+            <span class="form-help">Emails from these domains won't be flagged (one per line)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Excluded Phone Prefixes</label>
+            <input type="text" placeholder="e.g., +1-800, +1-888 (toll-free)">
+            <span class="form-help">Phone number prefixes to exclude from detection</span>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="exclude-examples">
+              <label for="exclude-examples">
+                <strong>Exclude Example/Test Data</strong>
+                <span class="form-help" style="display: block; margin: 0;">Don't flag obviously fake data (555-0100, test@example.com)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCANNING SCOPE -->
+        <div class="card">
+          <h2 class="card-title">Scanning Scope</h2>
+          <p class="card-description">Choose what content to scan for PII</p>
+          
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="scan-uploads" checked>
+              <label for="scan-uploads">
+                <strong>Scan Document Uploads</strong>
+                <span class="form-help" style="display: block; margin: 0;">Check all uploaded documents for PII</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="scan-api" checked>
+              <label for="scan-api">
+                <strong>Scan API Requests</strong>
+                <span class="form-help" style="display: block; margin: 0;">Monitor all API request bodies for sensitive data</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="scan-chat" checked>
+              <label for="scan-chat">
+                <strong>Scan AI Chat Messages</strong>
+                <span class="form-help" style="display: block; margin: 0;">Check chat queries and responses for PII</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="scan-exports" checked>
+              <label for="scan-exports">
+                <strong>Scan Exported Files</strong>
+                <span class="form-help" style="display: block; margin: 0;">Verify exports don't contain unredacted PII</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="switch">
+              <input type="checkbox" id="scan-email">
+              <label for="scan-email">
+                <strong>Scan Outbound Emails</strong>
+                <span class="form-help" style="display: block; margin: 0;">Monitor emails sent from the platform</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Backend API Connection -->
+  <script src="../js/config.js"></script>
+
+  <script>
+    // Initialize DLP settings
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🛡️ DLP Settings initialized');
+      console.log('📊 15+ PII patterns active');
+      console.log('✓ Real-time scanning enabled');
+    });
+
+    // Pattern toggle handling
+    document.querySelectorAll('.pattern-toggle input[type="checkbox"]').forEach(toggle => {
+      toggle.addEventListener('change', (e) => {
+        const patternName = e.target.closest('.pattern-card').querySelector('.pattern-name').textContent;
+        console.log(`${patternName}: ${e.target.checked ? 'Enabled' : 'Disabled'}`);
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1060 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1422">
+<title>Sign In | Lexora Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0b1422;
+  --navy2:#142338;
+  --navy3:#1d3049;
+  --gold:#d6b477;
+  --gold-light:#f3e4c5;
+  --cream:#f6f4ee;
+  --white:#ffffff;
+  --ink:#182334;
+  --muted:#8390a0;
+  --line:#e8e9e7;
+  --green:#238669;
+  --red:#cc6865;
+  --shadow:0 25px 75px rgba(11,20,34,.09);
+}
+*{box-sizing:border-box}
+html{min-height:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:"DM Sans",sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:3px;
+}
+.auth-layout{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns: minmax(0,1.03fr) minmax(0,.97fr);
+}
+
+/* LEFT BRAND PANEL */
+.brand-panel{
+  position:relative;
+  background:
+    radial-gradient(circle at 18% 15%,rgba(214,180,119,.12),transparent 33%),
+    radial-gradient(circle at 85% 78%,rgba(100,136,195,.12),transparent 37%),
+    linear-gradient(145deg,#0b1422,#17283d 70%,#1b3049);
+  color:white;
+  padding:48px clamp(32px,6vw,90px);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  overflow:hidden;
+  min-height:700px;
+}
+.brand-panel::after{
+  content:"";
+  position:absolute;
+  width:500px;height:500px;
+  border:1px solid rgba(214,180,119,.1);
+  border-radius:50%;
+  bottom:-260px;right:-210px;
+  box-shadow:
+    0 0 0 65px rgba(214,180,119,.025),
+    0 0 0 135px rgba(214,180,119,.018);
+  pointer-events:none;
+}
+.brand-logo{
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  position:relative;
+  z-index:1;
+  width:max-content;
+}
+.logo-mark{
+  width:48px;height:48px;
+  display:grid;place-items:center;
+  border:1px solid rgba(214,180,119,.55);
+  border-radius:13px;
+  color:var(--gold);
+  background:rgba(214,180,119,.07);
+  font:29px Georgia,serif;
+}
+.logo-name{
+  font:800 23px Manrope,sans-serif;
+  letter-spacing:-1px;
+}
+.logo-name span{color:var(--gold)}
+.logo-caption{
+  display:block;
+  color:#8f9fb3;
+  letter-spacing:2.4px;
+  font-size:10px;
+  margin-top:4px;
+}
+.brand-content{
+  position:relative;
+  z-index:1;
+  max-width:650px;
+  padding:60px 0;
+}
+.eyebrow{
+  color:var(--gold);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+}
+.brand-content h1{
+  font:800 clamp(36px,4vw,64px)/1.15 Manrope,sans-serif;
+  letter-spacing:-2.8px;
+  margin:24px 0;
+}
+.brand-content h1 em{
+  color:var(--gold);
+  font-style:normal;
+}
+.brand-description{
+  color:#aab7c7;
+  font-size:14px;
+  line-height:2;
+  max-width:480px;
+}
+.feature-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+  margin-top:40px;
+}
+.feature{
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.035);
+  border-radius:15px;
+  padding:19px;
+  backdrop-filter:blur(10px);
+}
+.feature-icon{
+  width:37px;height:37px;
+  display:grid;place-items:center;
+  background:rgba(214,180,119,.1);
+  color:var(--gold);
+  border-radius:10px;
+  font-size:20px;
+  margin-bottom:14px;
+}
+.feature strong{
+  display:block;
+  font-size:12px;
+  margin-bottom:8px;
+}
+.feature p{
+  font-size:11px;
+  line-height:1.8;
+  color:#92a2b7;
+  margin:0;
+}
+.brand-footer{
+  position:relative;
+  z-index:1;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:15px;
+  color:#8495a9;
+  font-size:11px;
+}
+.brand-footer span:last-child{color:#bca175}
+
+/* RIGHT LOGIN PANEL */
+.login-panel{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:55px 35px;
+  background:#fbfaf7;
+}
+.login-container{
+  width:100%;
+  max-width:440px;
+}
+.login-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:46px;
+}
+.login-top a{
+  color:#a37d47;
+  font-size:12px;
+  font-weight:800;
+}
+.secure-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:#8c9aab;
+  font-size:11px;
+}
+.secure-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--green);
+}
+.login-heading{
+  font:800 33px Manrope,sans-serif;
+  letter-spacing:-1.5px;
+  margin:0 0 13px;
+}
+.login-subtitle{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.9;
+  margin:0 0 35px;
+}
+.form-group{margin-bottom:22px}
+.form-label{
+  display:block;
+  color:#344256;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.input-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:white;
+  border:1px solid #e2e5e7;
+  border-radius:12px;
+  padding:0 15px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.input-wrap:focus-within{
+  border-color:#c9a76e;
+  box-shadow:0 0 0 4px rgba(214,180,119,.12);
+}
+.input-wrap.invalid{border-color:var(--red)}
+.input-icon{
+  font-size:17px;
+  color:#9ca8b6;
+  flex-shrink:0;
+}
+.input-wrap input{
+  flex:1;
+  min-width:0;
+  height:51px;
+  border:0;
+  background:transparent;
+  outline:0;
+  color:var(--ink);
+  font-size:13px;
+}
+.input-wrap input::placeholder{color:#aeb7c2}
+.password-toggle{
+  border:0;
+  background:none;
+  color:#9c8057;
+  font-size:11px;
+  font-weight:800;
+  padding:8px 0;
+}
+.field-error{
+  display:none;
+  color:#b64c4c;
+  font-size:11px;
+  margin-top:8px;
+}
+.field-error.show{display:block}
+.form-options{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin:4px 0 26px;
+}
+.remember{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#5b6878;
+  font-size:12px;
+}
+.remember input{
+  width:15px;height:15px;
+  accent-color:#b7955c;
+}
+.text-link{
+  color:#a37d47;
+  font-size:12px;
+  font-weight:800;
+  background:none;
+  border:0;
+  padding:0;
+}
+.primary-button{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  min-height:53px;
+  border:1px solid var(--navy);
+  border-radius:12px;
+  background:var(--navy);
+  color:white;
+  font-size:13px;
+  font-weight:800;
+  transition:background .2s,transform .2s;
+}
+.primary-button:hover{
+  background:var(--navy2);
+  transform:translateY(-1px);
+}
+.primary-button:disabled{
+  opacity:.65;
+  cursor:wait;
+  transform:none;
+}
+.form-message{
+  display:none;
+  margin:18px 0;
+  padding:13px 15px;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.7;
+}
+.form-message.show{display:block}
+.form-message.error{
+  background:#fff0ee;
+  color:#a94e49;
+  border:1px solid #f2d4d1;
+}
+.form-message.success{
+  background:#edf7f1;
+  color:#23795d;
+  border:1px solid #d5eadf;
+}
+.divider{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin:29px 0;
+  color:#a0aab6;
+  font-size:10px;
+  letter-spacing:1px;
+  font-weight:800;
+}
+.divider::before,.divider::after{
+  content:"";
+  height:1px;
+  background:#e5e6e5;
+  flex:1;
+}
+.sso-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sso-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:49px;
+  border:1px solid #e2e5e7;
+  border-radius:11px;
+  background:white;
+  color:#39475a;
+  font-size:12px;
+  font-weight:800;
+}
+.sso-button:hover{border-color:var(--gold)}
+.sso-symbol{
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:17px;
+}
+.microsoft-symbol{
+  width:16px;height:16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+}
+.microsoft-symbol i:nth-child(1){background:#f25022}
+.microsoft-symbol i:nth-child(2){background:#7fba00}
+.microsoft-symbol i:nth-child(3){background:#00a4ef}
+.microsoft-symbol i:nth-child(4){background:#ffb900}
+.signup{
+  text-align:center;
+  margin:34px 0 0;
+  font-size:12px;
+  color:#8d98a6;
+}
+.signup a{color:#a37d47;font-weight:800}
+.security-box{
+  margin-top:35px;
+  padding:16px;
+  background:#f5f1e9;
+  border:1px solid #ebe2d3;
+  border-radius:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+}
+.security-box span{font-size:19px;color:#a17d49}
+.security-box strong{
+  font-size:11px;
+  display:block;
+  margin-bottom:6px;
+}
+.security-box p{
+  color:#8d97a2;
+  font-size:10px;
+  line-height:1.8;
+  margin:0;
+}
+.login-footer{
+  margin-top:38px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  color:#9aa5b1;
+  font-size:10px;
+}
+.login-footer a:hover{color:#a37d47}
+
+/* RESET PASSWORD */
+.reset-view{display:none}
+.reset-view.active{display:block}
+.login-view.hidden{display:none}
+.back-button{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  background:none;
+  border:0;
+  color:#a37d47;
+  font-size:12px;
+  font-weight:800;
+  padding:0;
+  margin-bottom:30px;
+}
+.reset-icon{
+  display:grid;
+  place-items:center;
+  width:60px;height:60px;
+  border-radius:17px;
+  background:#f2e6d2;
+  color:#a78148;
+  font-size:28px;
+  margin-bottom:25px;
+}
+.loading-spinner{
+  width:16px;height:16px;
+  border:2px solid #ffffff66;
+  border-top-color:white;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:1100px){
+  .auth-layout{grid-template-columns:1fr 1fr}
+  .brand-panel{padding:40px}
+  .brand-content h1{font-size:42px}
+  .feature-list{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  .auth-layout{grid-template-columns:1fr}
+  .brand-panel{
+    min-height:auto;
+    padding:24px;
+  }
+  .brand-content,.brand-footer{display:none}
+  .login-panel{padding:45px 22px;min-height:calc(100vh - 100px)}
+  .login-container{max-width:470px}
+}
+@media(max-width:480px){
+  .login-heading{font-size:27px}
+  .login-top{margin-bottom:35px}
+  .sso-grid{grid-template-columns:1fr}
+  .form-options{align-items:flex-start}
+  .login-panel{padding:35px 18px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<div class="auth-layout">
+
+<!-- LEFT PANEL -->
+<section class="brand-panel" aria-label="Lexora platform information">
+
+  <a href="index.html" class="brand-logo">
+    <span class="logo-mark">L</span>
+    <span>
+      <span class="logo-name">Lexora<span>.</span></span>
+      <span class="logo-caption">INTELLIGENCE</span>
+    </span>
+  </a>
+
+  <div class="brand-content">
+    <div class="eyebrow">The future of legal intelligence</div>
+
+    <h1>
+      Where legal expertise meets
+      <em>intelligent technology.</em>
+    </h1>
+
+    <p class="brand-description">
+      An enterprise legal AI workspace designed for secure document
+      intelligence, contract lifecycle management, evidence-grounded
+      analysis, and collaborative legal workflows.
+    </p>
+
+    <div class="feature-list">
+
+      <div class="feature">
+        <div class="feature-icon">▤</div>
+        <strong>Document Intelligence</strong>
+        <p>Extract, classify and analyze legal documents with AI-assisted workflows.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">◇</div>
+        <strong>Risk Intelligence</strong>
+        <p>Surface clauses and potential risks for structured human review.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">✧</div>
+        <strong>Legal AI Copilot</strong>
+        <p>Ask document-grounded questions with source evidence and citations.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">◷</div>
+        <strong>Lifecycle Management</strong>
+        <p>Track obligations, expirations, renewals and review workflows.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="brand-footer">
+    <span>© 2026 Lexora Intelligence</span>
+    <span>Enterprise Legal AI Platform</span>
+  </div>
+
+</section>
+
+<!-- RIGHT PANEL -->
+<section class="login-panel">
+
+  <div class="login-container">
+
+    <div class="login-top">
+      <span class="secure-label">
+        <span class="secure-dot"></span>
+        Secure workspace access
+      </span>
+      <a href="index.html">← Back to website</a>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div class="login-view" id="loginView">
+
+      <h2 class="login-heading">Welcome back<span style="color:var(--gold)">.</span></h2>
+
+      <p class="login-subtitle">
+        Sign in to your Lexora workspace to access legal documents,
+        contract intelligence and team workflows.
+      </p>
+
+      <form id="loginForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Work Email Address</label>
+
+          <div class="input-wrap" id="emailWrap">
+            <span class="input-icon">✉</span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@company.com"
+              autocomplete="username"
+              maxlength="254"
+              required
+            >
+          </div>
+
+          <div class="field-error" id="emailError">
+            Enter a valid work email address.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+
+          <div class="input-wrap" id="passwordWrap">
+            <span class="input-icon">♙</span>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              id="togglePassword"
+              aria-label="Show password"
+            >Show</button>
+          </div>
+
+          <div class="field-error" id="passwordError">
+            Enter your password.
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember">
+            <input type="checkbox" id="rememberMe">
+            Remember this device
+          </label>
+
+          <button type="button" class="text-link" id="forgotPassword">
+            Forgot password?
+          </button>
+        </div>
+
+        <button class="primary-button" type="submit" id="loginButton">
+          <span id="loginButtonText">Sign In to Workspace</span>
+          <span id="loginArrow">→</span>
+        </button>
+
+        <div class="form-message" id="loginMessage" role="status" aria-live="polite"></div>
+
+      </form>
+
+      <div class="divider">OR CONTINUE WITH</div>
+
+      <div class="sso-grid">
+        <button class="sso-button" id="googleLogin" type="button">
+          <span class="sso-symbol" style="color:#4285f4">G</span>
+          Google
+        </button>
+
+        <button class="sso-button" id="microsoftLogin" type="button">
+          <span class="microsoft-symbol">
+            <i></i><i></i><i></i><i></i>
+          </span>
+          Microsoft
+        </button>
+      </div>
+
+      <p class="signup">
+        Need workspace access?
+        <a href="mailto:admin@example.invalid?subject=Lexora%20Workspace%20Access">Contact your administrator</a>
+      </p>
+
+      <div class="security-box">
+        <span>♧</span>
+        <div>
+          <strong>Designed for secure enterprise access</strong>
+          <p>
+            Authentication, session management, MFA, SSO, tenant isolation,
+            and access policies must be configured in your backend.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PASSWORD RESET VIEW -->
+    <div class="reset-view" id="resetView">
+
+      <button class="back-button" id="backToLogin" type="button">
+        ← Back to sign in
+      </button>
+
+      <div class="reset-icon">✉</div>
+
+      <h2 class="login-heading">Reset your password<span style="color:var(--gold)">.</span></h2>
+
+      <p class="login-subtitle">
+        Enter your work email address to request password reset
+        instructions from your organization.
+      </p>
+
+      <form id="resetForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="resetEmail">Work Email Address</label>
+
+          <div class="input-wrap">
+            <span class="input-icon">✉</span>
+            <input
+              type="email"
+              id="resetEmail"
+              autocomplete="email"
+              placeholder="name@company.com"
+              maxlength="254"
+              required
+            >
+          </div>
+        </div>
+
+        <button class="primary-button" type="submit" id="resetButton">
+          Request Reset Instructions →
+        </button>
+
+        <div class="form-message" id="resetMessage" role="status" aria-live="polite"></div>
+
+      </form>
+
+    </div>
+
+    <div class="login-footer">
+      <span>© 2026 Lexora Intelligence</span>
+      <span>Privacy · Security · Terms</span>
+    </div>
+
+  </div>
+
+</section>
+</div>
+
+<script>
+"use strict";
+
+/*
+==========================================================
+LEXORA AUTHENTICATION FRONTEND
+
+Configure the authentication endpoints below to match
+your actual FastAPI backend.
+
+Production recommendation:
+- HTTPS only
+- HttpOnly Secure SameSite session cookies
+- CSRF protection for cookie-based authentication
+- MFA / SSO
+- Rate limiting and account lockout
+- Server-side session verification
+- Tenant-aware authorization
+
+Never store authentication tokens in localStorage.
+==========================================================
+*/
+
+const CONFIG={
+  API_BASE_URL:"/api/v1",
+  LOGIN_ENDPOINT:"/auth/login",
+  RESET_ENDPOINT:"/auth/forgot-password",
+  SESSION_ENDPOINT:"/auth/me",
+  DASHBOARD_URL:"dashboard.html",
+
+  // Set to true only after implementing the matching
+  // authenticated backend and session-cookie contract.
+  AUTH_ENABLED:false
+};
+
+const $=selector=>document.querySelector(selector);
+
+function showMessage(element,text,type="error"){
+  element.textContent=text;
+  element.className="form-message show "+type;
+}
+
+function clearMessage(element){
+  element.textContent="";
+  element.className="form-message";
+}
+
+function setFieldError(input,wrapper,errorElement,invalid){
+  input.setAttribute("aria-invalid",String(invalid));
+  wrapper.classList.toggle("invalid",invalid);
+  errorElement.classList.toggle("show",invalid);
+}
+
+function validEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setLoading(loading){
+  const button=$("#loginButton");
+  button.disabled=loading;
+  $("#loginButtonText").textContent=loading
+    ?"Authenticating..."
+    :"Sign In to Workspace";
+
+  $("#loginArrow").innerHTML=loading
+    ?'<span class="loading-spinner" aria-hidden="true"></span>'
+    :"→";
+}
+
+async function readError(response){
+  try{
+    const data=await response.json();
+
+    if(typeof data.detail==="string"){
+      return data.detail;
+    }
+
+    return "Authentication request failed.";
+  }catch{
+    return "Authentication request failed.";
+  }
+}
+
+/*
+The backend should set an HttpOnly session cookie
+on successful login.
+
+Do not interpret an HTTP 200 response alone as proof
+of authentication. Verify the session using /auth/me.
+*/
+
+async function authenticate(email,password,remember){
+  const response=await fetch(
+    CONFIG.API_BASE_URL+CONFIG.LOGIN_ENDPOINT,
+    {
+      method:"POST",
+      credentials:"include",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify({
+        email,
+        password,
+        remember_device:remember
+      })
+    }
+  );
+
+  if(!response.ok){
+    throw new Error(await readError(response));
+  }
+
+  const sessionResponse=await fetch(
+    CONFIG.API_BASE_URL+CONFIG.SESSION_ENDPOINT,
+    {
+      method:"GET",
+      credentials:"include",
+      headers:{"Accept":"application/json"}
+    }
+  );
+
+  if(!sessionResponse.ok){
+    throw new Error("Could not verify your authenticated session.");
+  }
+
+  const session=await sessionResponse.json();
+
+  if(!session||!session.id){
+    throw new Error("The server did not return a valid user session.");
+  }
+
+  return session;
+}
+
+/* PASSWORD VISIBILITY */
+$("#togglePassword").addEventListener("click",()=>{
+  const input=$("#password");
+  const button=$("#togglePassword");
+
+  const visible=input.type==="password";
+  input.type=visible?"text":"password";
+  button.textContent=visible?"Hide":"Show";
+  button.setAttribute(
+    "aria-label",
+    visible?"Hide password":"Show password"
+  );
+});
+
+/* LOGIN */
+$("#loginForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const email=$("#email").value.trim();
+  const password=$("#password").value;
+  const remember=$("#rememberMe").checked;
+
+  clearMessage($("#loginMessage"));
+
+  const emailInvalid=!validEmail(email);
+  const passwordInvalid=password.length===0;
+
+  setFieldError(
+    $("#email"),
+    $("#emailWrap"),
+    $("#emailError"),
+    emailInvalid
+  );
+
+  setFieldError(
+    $("#password"),
+    $("#passwordWrap"),
+    $("#passwordError"),
+    passwordInvalid
+  );
+
+  if(emailInvalid||passwordInvalid)return;
+
+  if(!CONFIG.AUTH_ENABLED){
+    showMessage(
+      $("#loginMessage"),
+      "Authentication is not configured yet. Connect the FastAPI authentication endpoints and enable AUTH_ENABLED before signing in."
+    );
+    return;
+  }
+
+  setLoading(true);
+
+  try{
+    await authenticate(email,password,remember);
+
+    showMessage(
+      $("#loginMessage"),
+      "Authentication verified. Opening workspace...",
+      "success"
+    );
+
+    window.location.assign(CONFIG.DASHBOARD_URL);
+
+  }catch(error){
+    showMessage(
+      $("#loginMessage"),
+      error instanceof Error
+        ?error.message
+        :"Unable to sign in. Please try again."
+    );
+  }finally{
+    setLoading(false);
+  }
+});
+
+/* RESET VIEW */
+$("#forgotPassword").addEventListener("click",()=>{
+  $("#loginView").classList.add("hidden");
+  $("#resetView").classList.add("active");
+  $("#resetEmail").value=$("#email").value.trim();
+  clearMessage($("#resetMessage"));
+  $("#resetEmail").focus();
+});
+
+$("#backToLogin").addEventListener("click",()=>{
+  $("#resetView").classList.remove("active");
+  $("#loginView").classList.remove("hidden");
+  $("#email").focus();
+});
+
+/* PASSWORD RESET */
+$("#resetForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const email=$("#resetEmail").value.trim();
+  const message=$("#resetMessage");
+
+  clearMessage(message);
+
+  if(!validEmail(email)){
+    showMessage(message,"Enter a valid email address.");
+    return;
+  }
+
+  if(!CONFIG.AUTH_ENABLED){
+    showMessage(
+      message,
+      "Password reset is not connected. Configure your FastAPI password reset endpoint first."
+    );
+    return;
+  }
+
+  const button=$("#resetButton");
+  button.disabled=true;
+  button.textContent="Submitting...";
+
+  try{
+    const response=await fetch(
+      CONFIG.API_BASE_URL+CONFIG.RESET_ENDPOINT,
+      {
+        method:"POST",
+        credentials:"include",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email})
+      }
+    );
+
+    if(!response.ok){
+      throw new Error("Unable to process the request right now.");
+    }
+
+    showMessage(
+      message,
+      "If an account exists for this email, password reset instructions will be sent.",
+      "success"
+    );
+
+  }catch{
+    showMessage(
+      message,
+      "Unable to process the password reset request. Please try again."
+    );
+  }finally{
+    button.disabled=false;
+    button.textContent="Request Reset Instructions →";
+  }
+});
+
+/* SSO PLACEHOLDERS */
+$("#googleLogin").addEventListener("click",()=>{
+  showMessage(
+    $("#loginMessage"),
+    "Google SSO is not configured. Connect a secure OAuth/OIDC authorization-code flow in your backend."
+  );
+});
+
+$("#microsoftLogin").addEventListener("click",()=>{
+  showMessage(
+    $("#loginMessage"),
+    "Microsoft SSO is not configured. Connect Microsoft Entra ID through your backend."
+  );
+});
+
+/* CLEAR ERRORS ON EDIT */
+$("#email").addEventListener("input",()=>{
+  $("#emailWrap").classList.remove("invalid");
+  $("#emailError").classList.remove("show");
+  $("#email").removeAttribute("aria-invalid");
+});
+
+$("#password").addEventListener("input",()=>{
+  $("#passwordWrap").classList.remove("invalid");
+  $("#passwordError").classList.remove("show");
+  $("#password").removeAttribute("aria-invalid");
+});
+</script>
+
+</body>
+</html>
